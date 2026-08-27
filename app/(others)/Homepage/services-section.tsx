@@ -1,0 +1,190 @@
+"use client";
+
+import React from "react";
+import Link from "next/link";
+import { ArrowRight, Star, User, ShieldCheck } from "lucide-react";
+
+const services = [
+  {
+    id: "pooja-booking",
+    title: "Pooja Booking",
+    description: "Book authentic pujas performed by pandits",
+    link: "/puja-booking",
+    icon: (
+      <svg className="w-16 h-16 text-[#2b1810]" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M12 24h24v16H12z" />
+        <path d="M10 24c0-4 6-6 14-6s14 2 14 6" />
+        <path d="M24 6c2 3 1 6-2 8 4 0 6-3 4-8z" fill="#c85a17" opacity="0.4" />
+        <circle cx="16" cy="32" r="2" fill="currentColor" />
+        <circle cx="24" cy="32" r="2" fill="currentColor" />
+        <circle cx="32" cy="32" r="2" fill="currentColor" />
+      </svg>
+    ),
+  },
+  {
+    id: "match-making",
+    title: "Match Making",
+    description: "Find the perfect match with kundli matching",
+    link: "/match-making",
+    icon: (
+      <svg className="w-16 h-16 text-[#2b1810]" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <circle cx="18" cy="20" r="8" />
+        <circle cx="30" cy="20" r="8" />
+        <path d="M18 28v12M14 34h8M30 28v12M26 34h8" />
+        <path d="M24 16l2 2 4-4" stroke="#c85a17" strokeWidth="2" />
+      </svg>
+    ),
+  },
+  {
+    id: "horoscope",
+    title: "Horoscope",
+    description: "Discover what the stars have planned today.",
+    link: "/horoscope",
+    icon: (
+      <svg className="w-16 h-16 text-[#2b1810]" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <circle cx="24" cy="24" r="18" />
+        <circle cx="24" cy="24" r="10" strokeDasharray="3 3" />
+        <path d="M24 6v36M6 24h36M11 11l26 26M11 37L37 11" strokeWidth="1" opacity="0.5" />
+        <circle cx="24" cy="24" r="4" fill="#c85a17" />
+      </svg>
+    ),
+  },
+  {
+    id: "live-darshan",
+    title: "Live Darshan",
+    description: "Experience divine blessing through live temple darshan.",
+    link: "/live-darshan",
+    icon: (
+      <svg className="w-16 h-16 text-[#2b1810]" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M24 8l16 12v20H8V20z" />
+        <path d="M24 4v4M24 8L12 18M24 8l12 10" />
+        <polygon points="24,20 18,30 30,30" strokeWidth="1.5" fill="#c85a17" opacity="0.3" />
+        <path d="M20 40v-8a4 4 0 0 1 8 0v8" />
+      </svg>
+    ),
+  },
+  {
+    id: "panchang",
+    title: "Panchang",
+    description: "Check daily panchang tithi, muhurat & more.",
+    link: "/panchang",
+    icon: (
+      <svg className="w-16 h-16 text-[#2b1810]" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <circle cx="24" cy="24" r="16" />
+        <path d="M24 16v16M16 24h16" />
+        <path d="M16 16v8M32 24v8M24 32h8M16 24h8" strokeWidth="2" strokeLinecap="square" />
+      </svg>
+    ),
+  },
+  {
+    id: "kundli",
+    title: "Kundli",
+    description: "Generate your detailed kundli in seconds.",
+    link: "/kundli",
+    icon: (
+      <svg className="w-16 h-16 text-[#2b1810]" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <rect x="10" y="8" width="28" height="32" rx="2" />
+        <path d="M18 18v12M14 24h12M14 18h6M18 24h6" strokeWidth="2" />
+        <line x1="14" y1="34" x2="34" y2="34" />
+      </svg>
+    ),
+  },
+];
+
+export function ServicesSection() {
+  return (
+    <section className="w-full bg-[#fdf8f0] py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1300px] mx-auto flex flex-col items-center">
+        
+        {/* Section Header */}
+        <div className="flex items-center gap-3 text-[#c87638] mb-2">
+          <div className="h-[1px] w-16 bg-[#c87638]"></div>
+          <span className="text-xs font-bold uppercase tracking-widest">OUR SERVICES</span>
+          <div className="h-[1px] w-16 bg-[#c87638]"></div>
+        </div>
+
+        <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#801c10] text-center mb-8 sm:mb-12 tracking-tight">
+          All Your Spiritual Needs, One Trusted Platform
+        </h2>
+
+        {/* 6 Service Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 w-full">
+          {services.map((item) => (
+            <div
+              key={item.id}
+              className="bg-white rounded-3xl p-6 sm:p-8 border border-[#e6c896]/80 flex flex-col items-center text-center shadow-sm hover:shadow-xl hover:border-[#c85a17] transition-all group relative"
+            >
+              {/* Service Icon */}
+              <div className="mb-6 group-hover:scale-110 transition-transform">
+                {item.icon}
+              </div>
+
+              {/* Title & Description */}
+              <h3 className="font-serif text-2xl font-bold text-[#2b1810] mb-2">
+                {item.title}
+              </h3>
+              <p className="text-[#5c4033] text-sm leading-relaxed mb-8 max-w-[260px] flex-1">
+                {item.description}
+              </p>
+
+              {/* Dark Green Circle Arrow Action Button */}
+              <Link
+                href={item.link}
+                className="w-12 h-12 rounded-full bg-[#1b4327] hover:bg-[#13321d] flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-all"
+                aria-label={`Go to ${item.title}`}
+              >
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom Metrics Pill Banner */}
+        <div className="w-full max-w-6xl bg-white border border-[#e6c896] rounded-2xl sm:rounded-full py-6 px-8 shadow-md mt-12 sm:mt-16 flex flex-wrap items-center justify-around gap-6">
+          
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-500">
+              <Star className="w-6 h-6 fill-amber-400" />
+            </div>
+            <div>
+              <p className="font-bold text-xl text-[#2b1810]">10K +</p>
+              <p className="text-xs font-semibold text-[#5c4033]">Happy Customers</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600">
+              <User className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="font-bold text-xl text-[#2b1810]">500+</p>
+              <p className="text-xs font-semibold text-[#5c4033]">Expert Astrologers</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700">
+              <span className="text-xl">🪔</span>
+            </div>
+            <div>
+              <p className="font-bold text-xl text-[#2b1810]">25K+</p>
+              <p className="text-xs font-semibold text-[#5c4033]">Pujas Performed</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600">
+              <ShieldCheck className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="font-bold text-xl text-[#2b1810]">100%</p>
+              <p className="text-xs font-semibold text-[#5c4033]">Secure & Trusted</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+  );
+}

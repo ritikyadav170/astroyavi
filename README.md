@@ -1,6 +1,4 @@
-# HospitalAsync (AsyncHealth)
 
-A modern, responsive frontend application for healthcare and hospital management. Built to handle complex asynchronous operations seamlessly, providing an intuitive interface for medical staff and patients.
 
 ## 🚀 Tech Stack
 

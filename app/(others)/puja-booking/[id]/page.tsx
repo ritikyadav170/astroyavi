@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { AstroNavbar } from "../../Homepage/navbar";
 import { Footer } from "../../Homepage/footer";
 import {
@@ -228,14 +228,15 @@ const TIME_SLOTS = [
 
 export default function PujaDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const rawId = (params?.id as string) || "satyanarayana-puja";
-  
+
   // Find matching puja from database or fallback to Satyanarayana Puja
   const puja =
     PUJA_DATABASE[rawId] ||
     PUJA_DATABASE[
       Object.keys(PUJA_DATABASE).find((k) =>
-        rawId.toLowerCase().includes(k.split("-")[0])
+        rawId.toLowerCase().includes(k.split("-")[0]),
       ) || "satyanarayana-puja"
     ] ||
     PUJA_DATABASE["satyanarayana-puja"];
@@ -273,7 +274,6 @@ export default function PujaDetailPage() {
 
       {/* Main Details Body */}
       <div className="w-full flex-1 max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-10">
-        
         {/* Puja Title & Description */}
         <div className="space-y-4">
           <h1 className="font-sans text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
@@ -287,14 +287,15 @@ export default function PujaDetailPage() {
         {/* Highlights / Stats Bar Box */}
         <div className="w-full bg-white border border-amber-200/90 rounded-2xl p-5 sm:p-6 shadow-2xs">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            
             {/* Stat 1: Rating */}
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-500 shrink-0">
                 <Star className="w-6 h-6 fill-amber-400" />
               </div>
               <div>
-                <p className="font-bold text-base text-slate-900">{puja.rating}</p>
+                <p className="font-bold text-base text-slate-900">
+                  {puja.rating}
+                </p>
                 <p className="text-xs text-slate-500 font-medium">Rating</p>
               </div>
             </div>
@@ -305,8 +306,12 @@ export default function PujaDetailPage() {
                 <Calendar className="w-6 h-6" />
               </div>
               <div>
-                <p className="font-bold text-base text-slate-900">{puja.bookings}</p>
-                <p className="text-xs text-slate-500 font-medium">Puja Booking</p>
+                <p className="font-bold text-base text-slate-900">
+                  {puja.bookings}
+                </p>
+                <p className="text-xs text-slate-500 font-medium">
+                  Puja Booking
+                </p>
               </div>
             </div>
 
@@ -316,8 +321,12 @@ export default function PujaDetailPage() {
                 <Clock className="w-6 h-6" />
               </div>
               <div>
-                <p className="font-bold text-base text-slate-900">{puja.duration}</p>
-                <p className="text-xs text-slate-500 font-medium">Time Durations</p>
+                <p className="font-bold text-base text-slate-900">
+                  {puja.duration}
+                </p>
+                <p className="text-xs text-slate-500 font-medium">
+                  Time Durations
+                </p>
               </div>
             </div>
 
@@ -328,10 +337,11 @@ export default function PujaDetailPage() {
               </div>
               <div>
                 <p className="font-bold text-base text-slate-900">100%</p>
-                <p className="text-xs text-slate-500 font-medium">Secure & Trusted</p>
+                <p className="text-xs text-slate-500 font-medium">
+                  Secure & Trusted
+                </p>
               </div>
             </div>
-
           </div>
         </div>
 
@@ -382,7 +392,6 @@ export default function PujaDetailPage() {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl">
-            
             {/* Online Puja Card */}
             <div
               onClick={() => setPujaMode("online")}
@@ -397,7 +406,9 @@ export default function PujaDetailPage() {
                   <Tv className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-base text-slate-900">Online Puja</h3>
+                  <h3 className="font-bold text-base text-slate-900">
+                    Online Puja
+                  </h3>
                   <p className="text-xs text-slate-500 mt-0.5">
                     Join puja from anywhere via live video
                   </p>
@@ -432,7 +443,9 @@ export default function PujaDetailPage() {
                   <Home className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-base text-slate-900">Offline Puja</h3>
+                  <h3 className="font-bold text-base text-slate-900">
+                    Offline Puja
+                  </h3>
                   <p className="text-xs text-slate-500 mt-0.5">
                     Pandit will perform puja at your location
                   </p>
@@ -452,7 +465,6 @@ export default function PujaDetailPage() {
                 )}
               </div>
             </div>
-
           </div>
         </div>
 
@@ -491,8 +503,8 @@ export default function PujaDetailPage() {
                     isSelected
                       ? "bg-[#1E3B2B] text-white font-bold shadow-md"
                       : isPastOrDisabled
-                      ? "bg-slate-200 text-slate-500 cursor-not-allowed border border-slate-200"
-                      : "bg-white border border-slate-300 text-slate-800 hover:border-slate-400"
+                        ? "bg-slate-200 text-slate-500 cursor-not-allowed border border-slate-200"
+                        : "bg-white border border-slate-300 text-slate-800 hover:border-slate-400"
                   }`}
                 >
                   <span className="text-[11px] font-medium opacity-80">
@@ -521,8 +533,8 @@ export default function PujaDetailPage() {
                       isSelected
                         ? "bg-[#1E3B2B] text-white shadow-sm"
                         : !slot.available
-                        ? "bg-slate-200/80 text-slate-400 cursor-not-allowed"
-                        : "bg-white border border-slate-400 text-slate-800 hover:bg-slate-50"
+                          ? "bg-slate-200/80 text-slate-400 cursor-not-allowed"
+                          : "bg-white border border-slate-400 text-slate-800 hover:bg-slate-50"
                     }`}
                   >
                     {slot.time}
@@ -535,15 +547,13 @@ export default function PujaDetailPage() {
           {/* Action Button: Book Now */}
           <div className="pt-6 flex flex-col items-center justify-center">
             <button
-              onClick={handleBookNow}
+              onClick={() => router.push(`/puja-booking/${puja.id}/details`)}
               className="w-full sm:w-auto px-16 py-3.5 bg-[#1E3B2B] hover:bg-[#142a1e] text-white font-bold text-base rounded-full shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
             >
               Book Now
             </button>
           </div>
-
         </div>
-
       </div>
 
       {/* Confirmation Modal */}
@@ -557,7 +567,13 @@ export default function PujaDetailPage() {
               Booking Confirmed!
             </h3>
             <p className="text-sm text-slate-600">
-              Your session for <span className="font-semibold text-slate-900">{puja.name}</span> ({pujaMode.toUpperCase()}) is scheduled for <span className="font-semibold text-slate-900">15 July 2026 at {selectedTime}</span>.
+              Your session for{" "}
+              <span className="font-semibold text-slate-900">{puja.name}</span>{" "}
+              ({pujaMode.toUpperCase()}) is scheduled for{" "}
+              <span className="font-semibold text-slate-900">
+                15 July 2026 at {selectedTime}
+              </span>
+              .
             </p>
             <div className="pt-4 flex items-center justify-center gap-3">
               <button

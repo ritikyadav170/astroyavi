@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Star, User, ShieldCheck } from "lucide-react";
 import { LoginDialog } from "./LoginDialog";
@@ -168,7 +167,8 @@ export function ServicesSection() {
       router.push(item.link);
     } else {
       // Check if user is logged in
-      const userLoggedIn = localStorage.getItem("astroyavi_logged_in") === "true";
+      const userLoggedIn =
+        localStorage.getItem("astroyavi_logged_in") === "true";
       if (userLoggedIn) {
         router.push(item.link);
       } else {
@@ -203,42 +203,42 @@ export function ServicesSection() {
           All Your Spiritual Needs, One Trusted Platform
         </h2>
 
-        {/* 6 Service Cards Grid */}
+        {/* 6 Service Cards Grid with Smooth Hover Animation */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 w-full">
           {services.map((item) => (
             <div
               key={item.id}
               onClick={() => handleServiceClick(item)}
-              className="bg-white rounded-3xl p-6 sm:p-8 border border-[#e6c896]/80 flex flex-col items-center text-center shadow-sm hover:shadow-xl hover:border-[#c85a17] transition-all group relative cursor-pointer"
+              className="bg-white rounded-3xl p-6 sm:p-8 border border-[#e6c896]/80 flex flex-col items-center text-center shadow-xs hover:shadow-2xl hover:border-[#c85a17] hover:-translate-y-2 transition-all duration-300 group relative cursor-pointer"
             >
               {/* FREE Badge for Free Services */}
               {item.isFree && (
-                <span className="absolute top-4 right-5 bg-green-100 text-green-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider border border-green-300">
+                <span className="absolute top-4 right-5 bg-emerald-50 text-emerald-800 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-emerald-300 shadow-2xs">
                   Free Service
                 </span>
               )}
 
-              {/* Service Icon */}
-              <div className="mb-6 group-hover:scale-110 transition-transform">
+              {/* Service Icon with Smooth Scale & Rotate Animation */}
+              <div className="mb-6 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300">
                 {item.icon}
               </div>
 
               {/* Title & Description */}
-              <h3 className="font-serif text-2xl font-bold text-[#2b1810] mb-2">
+              <h3 className="font-serif text-2xl font-bold text-[#2b1810] mb-2 group-hover:text-[#c85a17] transition-colors duration-200">
                 {item.title}
               </h3>
               <p className="text-[#5c4033] text-sm leading-relaxed mb-8 max-w-[260px] flex-1">
                 {item.description}
               </p>
 
-              {/* Dark Green Circle Arrow Action Button */}
+              {/* Dark Green Circle Arrow Action Button with Scale Effect */}
               <button
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleServiceClick(item);
                 }}
-                className="w-12 h-12 rounded-full bg-[#1b4327] hover:bg-[#13321d] flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-all cursor-pointer"
+                className="w-12 h-12 rounded-full bg-[#1b4327] hover:bg-[#13321d] flex items-center justify-center text-white shadow-md group-hover:scale-110 group-hover:rotate-45 transition-all duration-300 cursor-pointer"
                 aria-label={`Go to ${item.title}`}
               >
                 <ArrowRight className="w-5 h-5" />
@@ -247,10 +247,10 @@ export function ServicesSection() {
           ))}
         </div>
 
-        {/* Bottom Metrics Pill Banner */}
+        {/* Bottom Metrics Pill Banner with Animated Hover Cards */}
         <div className="w-full max-w-6xl bg-white border border-[#e6c896] rounded-2xl sm:rounded-full py-6 px-8 shadow-md mt-12 sm:mt-16 flex flex-wrap items-center justify-around gap-6">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-500">
+          <div className="flex items-center gap-4 group hover:scale-105 transition-transform duration-200">
+            <div className="w-12 h-12 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-500 shadow-2xs">
               <Star className="w-6 h-6 fill-amber-400" />
             </div>
             <div>
@@ -261,8 +261,8 @@ export function ServicesSection() {
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600">
+          <div className="flex items-center gap-4 group hover:scale-105 transition-transform duration-200">
+            <div className="w-12 h-12 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600 shadow-2xs">
               <User className="w-6 h-6" />
             </div>
             <div>
@@ -273,8 +273,8 @@ export function ServicesSection() {
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700">
+          <div className="flex items-center gap-4 group hover:scale-105 transition-transform duration-200">
+            <div className="w-12 h-12 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700 shadow-2xs">
               <span className="text-xl">🪔</span>
             </div>
             <div>
@@ -285,8 +285,8 @@ export function ServicesSection() {
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600">
+          <div className="flex items-center gap-4 group hover:scale-105 transition-transform duration-200">
+            <div className="w-12 h-12 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600 shadow-2xs">
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>

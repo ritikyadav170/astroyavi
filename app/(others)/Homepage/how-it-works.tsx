@@ -60,18 +60,18 @@ export function HowItWorks() {
               {/* White Circle with Top Step Number Badge */}
               <div className="relative mb-6">
                 {/* Step Badge */}
-                <div className="absolute -top-1 -left-1 w-8 h-8 rounded-full bg-white text-[#163014] font-bold text-xs flex items-center justify-center border-2 border-[#163014] shadow-md z-10">
+                <div className="absolute -top-1 -left-1 w-8 h-8 rounded-full bg-white text-[#163014] font-bold text-xs flex items-center justify-center border-2 border-[#163014] shadow-md z-10 group-hover:scale-110 transition-transform duration-300">
                   {item.step}
                 </div>
 
                 {/* Circle Container */}
-                <div className="w-32 h-32 rounded-full bg-white flex items-center justify-center shadow-2xl group-hover:scale-105 transition-transform">
+                <div className="w-32 h-32 rounded-full bg-white flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:-translate-y-1 transition-all duration-300">
                   {item.icon}
                 </div>
               </div>
 
               {/* Step Title & Description */}
-              <h3 className="font-serif text-xl font-bold text-white mb-2">
+              <h3 className="font-serif text-xl font-bold text-white mb-2 group-hover:text-emerald-300 transition-colors">
                 {item.title}
               </h3>
               <p className="text-emerald-100/70 text-sm leading-relaxed max-w-[220px]">
@@ -80,7 +80,7 @@ export function HowItWorks() {
 
               {/* Connecting Arrow for Desktop */}
               {index < steps.length - 1 && (
-                <div className="hidden lg:block absolute top-16 -right-6 translate-x-1/2 text-emerald-200/50">
+                <div className="hidden lg:block absolute top-16 -right-6 translate-x-1/2 text-emerald-200/50 group-hover:text-emerald-300 group-hover:translate-x-3 transition-all duration-300">
                   <ArrowRight className="w-6 h-6" />
                 </div>
               )}

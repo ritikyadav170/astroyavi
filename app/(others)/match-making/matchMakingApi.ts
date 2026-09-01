@@ -1,4 +1,32 @@
-export const previousReports = [
+export interface ProfileDetails {
+  fullName: string;
+  dateOfBirth: string;
+  timeOfBirth: string;
+  placeOfBirth: string;
+}
+
+export interface PreviousReport {
+  initials: string;
+  name: string;
+  date: string;
+  color: string;
+}
+
+export interface ProfileCard {
+  id: string;
+  label: string;
+  image: string;
+}
+
+export interface Astrologer {
+  name: string;
+  title: string;
+  rating: number;
+  fee: string;
+  image: string;
+}
+
+export const previousReports: readonly PreviousReport[] = [
   {
     initials: "RP",
     name: "Rahul Sharma & Priya Sharma",
@@ -31,7 +59,7 @@ export const previousReports = [
   },
 ] as const;
 
-export const profileCards = [
+export const profileCards: readonly ProfileCard[] = [
   {
     id: "boy",
     label: "Boy",
@@ -60,7 +88,7 @@ export const compatibilityData = {
   values: [8, 8, 8, 2, 4, 0.5, 0.5, 1],
 } as const;
 
-export const recommendedAstrologers = [
+export const recommendedAstrologers: readonly Astrologer[] = [
   {
     name: "Vikram Singh",
     title: "Vedic Astrology",
@@ -105,3 +133,32 @@ export const recommendedAstrologers = [
 
 export const reportText =
   "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy.";
+
+// ==========================================
+// API INTEGRATION FUNCTION FOR MATCHMAKING
+// Connect your backend API URL here when ready
+// ==========================================
+export async function getMatchMakingReport(
+  boyDetails: ProfileDetails,
+  girlDetails: ProfileDetails
+) {
+  try {
+    // Example backend API call:
+    // const res = await fetch("/api/match-making", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({ boyDetails, girlDetails }),
+    // });
+    // return await res.json();
+    return {
+      score: "20/36",
+      compatibilityData,
+      reportText,
+      boyDetails,
+      girlDetails,
+    };
+  } catch (error) {
+    console.error("Error fetching match making report:", error);
+    throw error;
+  }
+}

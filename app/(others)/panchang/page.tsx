@@ -38,7 +38,7 @@ export default function PanchangPage() {
       <AstroNavbar />
 
       {/* Main Container */}
-      <div className="w-full flex-1 py-10 sm:py-14 px-4 sm:px-6 lg:px-8 max-w-[1350px] mx-auto flex flex-col items-center">
+      <div className="w-full flex-1 py-10 sm:py-14 px-4 sm:px-6 lg:px-8 max-w-[1350px] mx-auto flex  flex-col items-center">
         {/* Header & Date/Place Form */}
         <PanchangHeaderForm
           selectedDate={selectedDate}

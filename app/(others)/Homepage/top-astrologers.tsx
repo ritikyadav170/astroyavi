@@ -72,11 +72,12 @@ export function TopAstrologers() {
   return (
     <section className="w-full bg-[#fdf8f0] py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-[1350px] mx-auto flex flex-col items-center">
-        
         {/* Section Header */}
         <div className="flex items-center gap-3 text-[#c87638] mb-2">
           <div className="h-[1px] w-16 bg-[#c87638]"></div>
-          <span className="text-xs font-bold uppercase tracking-widest">TOP ASTROLOGERS</span>
+          <span className="text-xs font-bold uppercase tracking-widest">
+            TOP ASTROLOGERS
+          </span>
           <div className="h-[1px] w-16 bg-[#c87638]"></div>
         </div>
 
@@ -90,7 +91,7 @@ export function TopAstrologers() {
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`px-4 sm:px-5 py-2 text-xs sm:text-sm font-semibold rounded-full border transition-all ${
+              className={`px-4 sm:px-5 py-2 text-xs sm:text-sm font-semibold rounded-full border transition-all cursor-pointer ${
                 activeCategory === cat
                   ? "bg-[#1b4327] text-white border-[#1b4327] shadow-sm"
                   : "bg-white text-[#2b1810] border-[#3c2415]/40 hover:border-[#1b4327]"
@@ -103,10 +104,9 @@ export function TopAstrologers() {
 
         {/* Astrologers Cards Carousel Container */}
         <div className="relative w-full flex items-center justify-center">
-          
           {/* Left Arrow Button */}
-          <button 
-            className="hidden sm:flex absolute -left-5 z-20 w-11 h-11 rounded-full bg-[#1b4327] text-white items-center justify-center shadow-md hover:bg-[#13321d] transition-all"
+          <button
+            className="hidden sm:flex absolute -left-5 z-20 w-11 h-11 rounded-full bg-[#1b4327] text-white items-center justify-center shadow-md hover:bg-[#13321d] transition-all cursor-pointer"
             aria-label="Previous Astrologers"
           >
             <ChevronLeft className="w-6 h-6" />
@@ -119,15 +119,18 @@ export function TopAstrologers() {
                 key={astrologer.id}
                 className="bg-white rounded-3xl p-5 border border-[#e6c896] flex flex-col items-center text-center shadow-sm hover:shadow-xl hover:border-[#1b4327] transition-all group relative"
               >
-                
                 {/* Circular Profile Avatar with Online Badge */}
                 <div className="relative mb-3">
-                  <div className={`w-20 h-20 rounded-full ${astrologer.bgColor} border-2 border-[#1b4327] flex items-center justify-center text-white text-xl font-bold shadow-md`}>
+                  <div
+                    className={`w-20 h-20 rounded-full ${astrologer.bgColor} border-2 border-[#1b4327] flex items-center justify-center text-white text-xl font-bold shadow-md`}
+                  >
                     {astrologer.initials}
                   </div>
                   <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 bg-white px-2 py-0.5 rounded-full border border-green-600 flex items-center gap-1 shadow-xs">
                     <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                    <span className="text-[9px] font-bold text-green-700 uppercase">Online</span>
+                    <span className="text-[9px] font-bold text-green-700 uppercase">
+                      Online
+                    </span>
                   </span>
                 </div>
 
@@ -148,34 +151,34 @@ export function TopAstrologers() {
                 {/* Price */}
                 <div className="flex items-center gap-1.5 text-sm font-bold text-[#2b1810] mb-5">
                   <span>₹{astrologer.price}/min</span>
-                  <s className="text-xs text-red-500 font-normal">₹{astrologer.originalPrice}/min</s>
+                  <s className="text-xs text-red-500 font-normal">
+                    ₹{astrologer.originalPrice}/min
+                  </s>
                 </div>
 
                 {/* Action Communication Buttons */}
                 <div className="flex items-center justify-center gap-2 w-full">
-                  <button className="w-10 h-10 rounded-full border border-slate-300 hover:border-[#1b4327] flex items-center justify-center text-[#1b4327] hover:bg-[#1b4327] hover:text-white transition-all">
+                  <button className="w-10 h-10 rounded-full border border-slate-300 hover:border-[#1b4327] flex items-center justify-center text-[#1b4327] hover:bg-[#1b4327] hover:text-white transition-all cursor-pointer">
                     <Phone className="w-4 h-4" />
                   </button>
-                  <button className="w-10 h-10 rounded-full bg-amber-400 hover:bg-amber-500 flex items-center justify-center text-slate-950 transition-all shadow-xs">
+                  <button className="w-10 h-10 rounded-full bg-amber-400 hover:bg-amber-500 flex items-center justify-center text-slate-950 transition-all shadow-xs cursor-pointer">
                     <MessageSquare className="w-4 h-4" />
                   </button>
-                  <button className="w-10 h-10 rounded-full border border-slate-300 hover:border-[#1b4327] flex items-center justify-center text-[#1b4327] hover:bg-[#1b4327] hover:text-white transition-all">
+                  <button className="w-10 h-10 rounded-full border border-slate-300 hover:border-[#1b4327] flex items-center justify-center text-[#1b4327] hover:bg-[#1b4327] hover:text-white transition-all cursor-pointer">
                     <Video className="w-4 h-4" />
                   </button>
                 </div>
-
               </div>
             ))}
           </div>
 
           {/* Right Arrow Button */}
-          <button 
-            className="hidden sm:flex absolute -right-5 z-20 w-11 h-11 rounded-full bg-[#1b4327] text-white items-center justify-center shadow-md hover:bg-[#13321d] transition-all"
+          <button
+            className="hidden sm:flex absolute -right-5 z-20 w-11 h-11 rounded-full bg-[#1b4327] text-white items-center justify-center shadow-md hover:bg-[#13321d] transition-all cursor-pointer"
             aria-label="Next Astrologers"
           >
             <ChevronRight className="w-6 h-6" />
           </button>
-
         </div>
 
         {/* View All Astrologers Button */}
@@ -185,7 +188,6 @@ export function TopAstrologers() {
         >
           View All Astrologers &gt;
         </Link>
-
       </div>
     </section>
   );

@@ -5,9 +5,9 @@ import { CheckCircle2, Lock, Tag } from "lucide-react";
 
 export function WhyChooseUs() {
   return (
-    <section className="w-full bg-[#fdf8f0] py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
+    <section className="w-full bg-[#fdf8f0] py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
       <div className="max-w-[1300px] mx-auto flex flex-col items-center">
-        
+
         {/* Section Header */}
         <div className="flex items-center gap-3 text-[#c87638] mb-8 sm:mb-10">
           <div className="h-[1px] w-16 bg-[#c87638]"></div>
@@ -17,7 +17,7 @@ export function WhyChooseUs() {
 
         {/* Top 2-Column Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center w-full mb-10 sm:mb-14">
-          
+
           {/* Left Text Content (6 cols) */}
           <div className="lg:col-span-6 space-y-6">
             <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-[#163014] tracking-tight leading-[1.1]">
@@ -76,7 +76,7 @@ export function WhyChooseUs() {
 
         {/* Bottom 3 Feature Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-          
+
           <div className="bg-white rounded-2xl p-6 border border-[#e6c896] flex items-start gap-4 shadow-sm hover:shadow-md transition-all">
             <div className="w-12 h-12 rounded-full bg-[#fde8d0] flex items-center justify-center shrink-0 text-[#c85a17]">
               <CheckCircle2 className="w-6 h-6" />

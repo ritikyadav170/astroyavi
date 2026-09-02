@@ -5,7 +5,7 @@ import { FeatureBadges } from "./feature-badges";
 
 export function HeroSection() {
   return (
-    <section className="relative w-full min-h-screen bg-[#fdf8f0] overflow-hidden flex flex-col justify-between">
+    <section className="relative w-full min-h-screen bg-[#fdf8f0] flex flex-col justify-between">
 
       {/* Background Overlay */}
       <div
@@ -15,7 +15,7 @@ export function HeroSection() {
         <div className="absolute inset-0 bg-gradient-to-r from-[#fdf8f0] via-[#fdf8f0]/95 sm:via-[#fdf8f0]/85 to-transparent"></div>
       </div>
 
-      {/* Top Navbar */}
+      {/* Sticky Top Navbar */}
       <AstroNavbar />
 
       {/* Hero Main Content */}
@@ -26,9 +26,9 @@ export function HeroSection() {
           <div className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left space-y-6 max-w-2xl mx-auto lg:mx-0">
 
             {/* Ornament */}
-            <div className="flex items-center gap-3 w-full justify-center lg:justify-start text-[#c87638]">
+            <div className="flex items-center gap-3 w-full justify-center lg:justify-start text-[#c87638] animate-in fade-in duration-1000">
               <div className="h-[1px] w-24 sm:w-32 bg-gradient-to-r from-transparent to-[#c87638]"></div>
-              <div className="flex items-center gap-1 text-xs">
+              <div className="flex items-center gap-1 text-xs animate-pulse">
                 <span>◆</span>
                 <span className="text-base">❁</span>
                 <span>◆</span>
@@ -37,23 +37,23 @@ export function HeroSection() {
             </div>
 
             {/* Headline */}
-            <div className="space-y-1">
+            <div className="space-y-2 animate-in slide-in-from-bottom-6 fade-in duration-700 fill-mode-both delay-100">
               <h1 className="font-serif text-5xl sm:text-7xl lg:text-8xl font-bold tracking-tight text-[#2b1810] leading-[1.05]">
                 Your Life.
               </h1>
               <h1 className="font-serif text-5xl sm:text-7xl lg:text-8xl font-bold tracking-tight text-[#2b1810] leading-[1.05]">
-                Guided by <span className="text-[#c85a17]">Stars.</span>
+                Guided by <span className="text-[#c85a17] relative inline-block">Stars.<span className="absolute bottom-2 left-0 w-full h-[6px] bg-[#c85a17]/20 -z-10 rounded-full"></span></span>
               </h1>
             </div>
 
             {/* Sub-headline */}
-            <div className="space-y-1 text-base sm:text-xl font-medium text-[#4a3020]/90 leading-relaxed font-sans max-w-xl">
+            <div className="space-y-1 text-base sm:text-xl font-medium text-[#4a3020]/90 leading-relaxed font-sans max-w-xl animate-in slide-in-from-bottom-6 fade-in duration-700 fill-mode-both delay-200">
               <p>Consult Expert Astrologers • Book Pujas • Live Darshan</p>
               <p>Check Panchang • Match Kundli & More</p>
             </div>
 
             {/* Accent Ornament */}
-            <div className="flex items-center gap-2 text-[#c87638] text-xs pt-1 justify-center lg:justify-start">
+            <div className="flex items-center gap-2 text-[#c87638] text-xs pt-1 justify-center lg:justify-start animate-in fade-in duration-700 delay-300">
               <div className="h-[1px] w-12 bg-[#c87638]/50"></div>
               <span>◆</span>
               <div className="h-[1px] w-12 bg-[#c87638]/50"></div>

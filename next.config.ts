@@ -54,11 +54,6 @@
 
 // export default nextConfig;
 
-
-
-
-
-
 import { NextConfig } from "next";
 
 /** @type {import('next').NextConfig} */
@@ -87,6 +82,15 @@ const nextConfig: NextConfig = {
     },
   },
   reactStrictMode: true,
+
+  async rewrites() {
+    return [
+      {
+        source: "/api/proxy/:path*",
+        destination: `${process.env.NEXT_PUBLIC_URL}/:path*`,
+      },
+    ];
+  },
 
   async headers() {
     return [

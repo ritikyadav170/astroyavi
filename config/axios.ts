@@ -3,9 +3,9 @@ import Axios from "axios";
 
 // Create an Axios instance with default settings.
 const axios = Axios.create({
-  baseURL: process.env.NEXT_PUBLIC_URL,
+  baseURL: "/api/proxy",
   headers: { "Content-Type": "application/json" },
-  withCredentials: true,
+  withCredentials: false,
 });
 
 // Interceptor to handle auth expiration (401) redirects.

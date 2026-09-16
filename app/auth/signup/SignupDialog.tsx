@@ -11,9 +11,18 @@ interface SignupDialogProps {
   onClose: () => void;
 }
 
+const countries = [
+  { code: "+91", flag: "🇮🇳", name: "India" },
+  { code: "+1", flag: "🇺🇸", name: "United States" },
+  { code: "+44", flag: "🇬🇧", name: "United Kingdom" },
+  { code: "+971", flag: "🇦🇪", name: "United Arab Emirates" },
+  { code: "+61", flag: "🇦🇺", name: "Australia" },
+];
+
 export function SignupDialog({ isOpen, onClose }: SignupDialogProps) {
   const [mounted, setMounted] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [countryCode, setCountryCode] = useState("+91");
   const [email, setEmail] = useState("");
   const [agreed, setAgreed] = useState(true);
   const [submitted, setSubmitted] = useState(false);
@@ -28,7 +37,7 @@ export function SignupDialog({ isOpen, onClose }: SignupDialogProps) {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (phoneNumber.length !== 10 || !email || !agreed || loading) return;
+    if (phoneNumber.length < 7 || !email || !agreed || loading) return;
 
     setLoading(true);
     setError("");
@@ -36,7 +45,7 @@ export function SignupDialog({ isOpen, onClose }: SignupDialogProps) {
       await axios.post("/signUp", {
         mobile: phoneNumber,
         email,
-        countryCode: "+91",
+        countryCode,
       });
       setSubmitted(true);
     } catch (requestError) {
@@ -76,7 +85,7 @@ export function SignupDialog({ isOpen, onClose }: SignupDialogProps) {
               OTP Sent
             </h1>
             <p className="text-sm text-slate-500">
-              We sent a verification code to +91 {phoneNumber}.
+              We sent a verification code to {countryCode} {phoneNumber}.
             </p>
             <button
               type="button"
@@ -102,17 +111,27 @@ export function SignupDialog({ isOpen, onClose }: SignupDialogProps) {
 
             <form onSubmit={handleSubmit} className="mt-6 space-y-5">
               <div className="flex w-full items-center rounded-full border border-slate-400 bg-white px-1.5 py-1.5 shadow-sm transition focus-within:border-[#163014] focus-within:ring-2 focus-within:ring-[#163014]/20">
-                <div className="flex shrink-0 items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-slate-700 sm:text-sm">
-                  <span className="text-base">🇮🇳</span>
-                  <span>+91</span>
-                  <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
+                <div className="relative flex shrink-0 items-center">
+                  <select
+                    aria-label="Country code"
+                    value={countryCode}
+                    onChange={(event) => setCountryCode(event.target.value)}
+                    className="appearance-none bg-transparent py-1.5 pl-2 pr-7 text-xs font-semibold text-slate-700 outline-none sm:text-sm"
+                  >
+                    {countries.map((country) => (
+                      <option key={country.code} value={country.code}>
+                        {country.flag} {country.name} ({country.code})
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="pointer-events-none absolute right-1 h-3.5 w-3.5 text-slate-400" />
                 </div>
                 <div className="my-auto h-6 w-px bg-slate-200" />
                 <input
                   aria-label="Mobile number"
                   type="tel"
                   inputMode="numeric"
-                  maxLength={10}
+                  maxLength={15}
                   required
                   value={phoneNumber}
                   onChange={(event) =>
@@ -136,7 +155,7 @@ export function SignupDialog({ isOpen, onClose }: SignupDialogProps) {
               <button
                 type="submit"
                 disabled={
-                  phoneNumber.length !== 10 || !email || !agreed || loading
+                  phoneNumber.length < 7 || !email || !agreed || loading
                 }
                 className="w-full rounded-full bg-[#163014] py-3.5 text-sm font-bold text-white shadow-md transition hover:bg-[#0e210d] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
               >

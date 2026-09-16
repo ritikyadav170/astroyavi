@@ -273,9 +273,10 @@ function CountryPicker({
 interface SignupDialogProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
-export function SignupDialog({ isOpen, onClose }: SignupDialogProps) {
+export function SignupDialog({ isOpen, onClose, onSuccess }: SignupDialogProps) {
   const [mounted, setMounted] = useState(false);
   const [authMethod, setAuthMethod] = useState<"phone" | "email">("phone");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -294,8 +295,15 @@ export function SignupDialog({ isOpen, onClose }: SignupDialogProps) {
     if (isOpen) {
       setError("");
       setLoading(false);
+      setSubmitted(false);
     }
   }, [isOpen]);
+
+  const handleClose = () => {
+    setSubmitted(false);
+    setError("");
+    onClose();
+  };
 
   if (!isOpen || !mounted) return null;
 
@@ -358,7 +366,7 @@ export function SignupDialog({ isOpen, onClose }: SignupDialogProps) {
         {!submitted && (
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             aria-label="Close signup dialog"
             className="absolute right-5 top-5 flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all duration-200 hover:rotate-90 hover:bg-slate-200 hover:text-slate-900 cursor-pointer"
           >
@@ -372,8 +380,12 @@ export function SignupDialog({ isOpen, onClose }: SignupDialogProps) {
             phoneNumber={phoneNumber}
             countryCode={selectedCountry.dialCode}
             email={email}
-            onClose={onClose}
+            onClose={handleClose}
             onBack={() => setSubmitted(false)}
+            onSuccess={() => {
+              if (onSuccess) onSuccess();
+              handleClose();
+            }}
             embedded
           />
         ) : (

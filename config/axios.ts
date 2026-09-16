@@ -8,6 +8,28 @@ const axios = Axios.create({
   withCredentials: false,
 });
 
+// Request interceptor to automatically attach Authorization token
+axios.interceptors.request.use(
+  (config) => {
+    if (typeof window !== "undefined") {
+      const token =
+        localStorage.getItem("astroyavi_token") ||
+        localStorage.getItem("token") ||
+        localStorage.getItem("accessToken") ||
+        localStorage.getItem("authToken");
+
+      if (token) {
+        config.headers.Authorization = token.startsWith("Bearer ")
+          ? token
+          : `Bearer ${token}`;
+        config.headers["token"] = token;
+      }
+    }
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
+
 // Interceptor to handle auth expiration (401) redirects.
 axios.interceptors.response.use(
   (response) => response,
@@ -17,7 +39,7 @@ axios.interceptors.response.use(
         typeof window !== "undefined" &&
         !window.location.pathname.startsWith("/auth")
       ) {
-        window.location.replace("/auth/login");
+        // window.location.replace("/auth/login");
       }
     }
     return Promise.reject(error);

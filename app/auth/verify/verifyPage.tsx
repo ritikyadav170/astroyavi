@@ -155,11 +155,37 @@ export function VerifyPage({
               deviceType,
             };
 
-        await axios.post("/verifyOtp", payload);
+        const response = await axios.post("/verifyOtp", payload);
+        const resData = response?.data;
 
-        // Set logged-in flag in storage
+        // Set logged-in flag and store token & user info in storage
         if (typeof window !== "undefined") {
           localStorage.setItem("astroyavi_logged_in", "true");
+
+          const token =
+            resData?.token ||
+            resData?.data?.token ||
+            resData?.accessToken ||
+            resData?.data?.accessToken ||
+            resData?.jwt ||
+            resData?.data?.jwt;
+
+          if (token) {
+            localStorage.setItem("astroyavi_token", token);
+            localStorage.setItem("token", token);
+          }
+
+          const userData =
+            resData?.user ||
+            resData?.data?.user ||
+            resData?.data?.data ||
+            resData?.data;
+
+          if (userData && typeof userData === "object") {
+            localStorage.setItem("astroyavi_user", JSON.stringify(userData));
+          }
+
+          window.dispatchEvent(new Event("astroyavi_auth_change"));
         }
 
         toast.success("Verification Successful", {
@@ -176,7 +202,7 @@ export function VerifyPage({
           } else if (onClose) {
             onClose();
           }
-        }, 1200);
+        }, 1000);
       } catch (requestError: unknown) {
         const errorMessage =
           requestError instanceof Error
@@ -284,7 +310,7 @@ export function VerifyPage({
               Verified Successfully!
             </h2>
             <p className="text-xs font-medium text-slate-500 sm:text-sm">
-              Your Astroyavi account is ready. Redirecting...
+              Your Astroyavi account is ready.
             </p>
           </div>
 

@@ -1,19 +1,125 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { ChevronDown, Menu, X, ArrowRight } from "lucide-react";
+import { ChevronDown, Menu, X, ArrowRight, User, Sparkles } from "lucide-react";
 import { SignupDialog } from "../../auth/signup/SignupDialog";
+
+const LogOutIcon = ({ className = "h-4 w-4" }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+    <polyline points="16 17 21 12 16 7" />
+    <line x1="21" x2="9" y1="12" y2="12" />
+  </svg>
+);
+
+const WalletIcon = ({ className = "h-4 w-4" }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1" />
+    <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4" />
+  </svg>
+);
+
+const ScrollIcon = ({ className = "h-4 w-4" }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M8 21h12a2 2 0 0 0 2-2v-2H10v2a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v3h4" />
+    <path d="M19 17V5a2 2 0 0 0-2-2H4" />
+  </svg>
+);
+
+const FlameIcon = ({ className = "h-4 w-4" }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
+  </svg>
+);
 
 export function AstroNavbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const profileDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const storedAuth = localStorage.getItem("astroyavi_logged_in");
-    if (storedAuth === "true") setIsLoggedIn(true);
+    const checkAuth = () => {
+      const storedAuth = typeof window !== "undefined" ? localStorage.getItem("astroyavi_logged_in") : null;
+      setIsLoggedIn(storedAuth === "true");
+    };
+
+    checkAuth();
+    window.addEventListener("astroyavi_auth_change", checkAuth);
+    window.addEventListener("storage", checkAuth);
+
+    return () => {
+      window.removeEventListener("astroyavi_auth_change", checkAuth);
+      window.removeEventListener("storage", checkAuth);
+    };
   }, []);
+
+  // Handle click outside profile dropdown
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        profileDropdownRef.current &&
+        !profileDropdownRef.current.contains(event.target as Node)
+      ) {
+        setProfileDropdownOpen(false);
+      }
+    }
+
+    if (profileDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [profileDropdownOpen]);
+
+  const handleLogout = () => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("astroyavi_logged_in");
+      window.dispatchEvent(new Event("astroyavi_auth_change"));
+    }
+    setIsLoggedIn(false);
+    setProfileDropdownOpen(false);
+    setMobileMenuOpen(false);
+  };
 
   const handleProtectedClick = (e: React.MouseEvent) => {
     if (!isLoggedIn) {
@@ -174,26 +280,139 @@ export function AstroNavbar() {
           )}
         </nav>
 
-        {/* Authentication buttons */}
+        {/* Authentication or Profile Header Section */}
         <div className="hidden lg:flex items-center gap-3 relative">
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setShowLoginModal(true)}
-              className="relative group overflow-hidden px-5 py-2 text-sm font-semibold text-[#2d1a0e] border border-[#2d1a0e]/60 rounded-xl hover:border-[#c85a17] hover:text-[#c85a17] hover:shadow-sm transition-all duration-300"
-            >
-              <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
-              Sign up
-            </button>
+          {isLoggedIn ? (
+            /* User Profile Avatar Dropdown */
+            <div className="relative" ref={profileDropdownRef}>
+              <button
+                type="button"
+                onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                aria-label="User Profile"
+                className="group relative flex items-center gap-2 rounded-full border border-amber-400/80 bg-gradient-to-r from-amber-50 via-white to-amber-50/80 py-1.5 pl-2 pr-3.5 shadow-sm transition-all duration-300 hover:border-[#c85a17] hover:shadow-md cursor-pointer"
+              >
+                <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-[#163014] text-white shadow-xs group-hover:scale-105 transition-transform">
+                  <User className="h-4 w-4 text-amber-200" />
+                  <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-500" />
+                </div>
+                <div className="flex flex-col text-left">
+                  <span className="text-xs font-bold text-slate-800 group-hover:text-[#c85a17] transition-colors">
+                    My Profile
+                  </span>
+                </div>
+                <ChevronDown
+                  className={`h-3.5 w-3.5 text-slate-400 transition-transform duration-200 ${
+                    profileDropdownOpen ? "rotate-180 text-[#c85a17]" : ""
+                  }`}
+                />
+              </button>
 
-            {/* <button
-              onClick={() => setShowLoginModal(true)}
-              className="relative group overflow-hidden px-6 py-2 text-sm font-semibold text-white bg-[#1b4327] hover:bg-[#13321d] hover:scale-105 hover:shadow-[0_0_20px_rgba(27,67,39,0.35)] transition-all duration-300 rounded-xl cursor-pointer"
-            >
-              <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
-              Login
-            </button> */}
-          </div>
+              {/* Profile Dropdown Menu */}
+              {profileDropdownOpen && (
+                <div className="absolute right-0 top-full mt-2 w-64 rounded-2xl border border-amber-200/80 bg-white/95 p-2 shadow-2xl backdrop-blur-xl animate-in fade-in zoom-in-95 duration-150 z-50">
+                  {/* Account Header / Link to Profile */}
+                  <Link
+                    href="/profile"
+                    onClick={() => setProfileDropdownOpen(false)}
+                    className="flex items-center gap-3 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50/60 p-3 border border-amber-200/50 hover:bg-amber-100/60 transition group/acc"
+                  >
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#163014] text-amber-200 shadow-sm group-hover/acc:scale-105 transition-transform">
+                      <User className="h-5 w-5" />
+                    </div>
+                    <div className="flex flex-col truncate flex-1">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-bold text-slate-900 group-hover/acc:text-[#c85a17] transition-colors">
+                          Astroyavi User
+                        </span>
+                        <Sparkles className="h-3 w-3 text-[#c85a17]" />
+                      </div>
+                      <span className="text-[10px] font-semibold text-emerald-700">
+                        ● Verified Account
+                      </span>
+                    </div>
+                    <ArrowRight className="h-3.5 w-3.5 text-slate-400 group-hover/acc:text-[#c85a17] group-hover/acc:translate-x-0.5 transition-all" />
+                  </Link>
+
+                  {/* Navigation Links */}
+                  <div className="my-1.5 space-y-0.5">
+                    <Link
+                      href="/profile"
+                      onClick={() => setProfileDropdownOpen(false)}
+                      className="flex items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-amber-50/80 hover:text-slate-900"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <User className="h-4 w-4 text-[#c85a17]" />
+                        <span>My Profile</span>
+                      </div>
+                      <ArrowRight className="h-3.5 w-3.5 text-slate-400" />
+                    </Link>
+
+                    <Link
+                      href="/kundli"
+                      onClick={() => setProfileDropdownOpen(false)}
+                      className="flex items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-amber-50/80 hover:text-slate-900"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <ScrollIcon className="h-4 w-4 text-amber-600" />
+                        <span>My Kundli</span>
+                      </div>
+                      <ArrowRight className="h-3.5 w-3.5 text-slate-400" />
+                    </Link>
+
+                    <Link
+                      href="/puja-booking"
+                      onClick={() => setProfileDropdownOpen(false)}
+                      className="flex items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-amber-50/80 hover:text-slate-900"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <FlameIcon className="h-4 w-4 text-orange-600" />
+                        <span>Puja Bookings</span>
+                      </div>
+                      <ArrowRight className="h-3.5 w-3.5 text-slate-400" />
+                    </Link>
+
+                    <Link
+                      href="/wallet"
+                      onClick={() => setProfileDropdownOpen(false)}
+                      className="flex items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-amber-50/80 hover:text-slate-900"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <WalletIcon className="h-4 w-4 text-emerald-600" />
+                        <span>Wallet & Recharge</span>
+                      </div>
+                      <ArrowRight className="h-3.5 w-3.5 text-slate-400" />
+                    </Link>
+                  </div>
+
+                  <div className="my-1 border-t border-slate-100" />
+
+                  {/* Logout Action */}
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-xs font-bold text-red-600 transition hover:bg-red-50 cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <LogOutIcon className="h-4 w-4 text-red-500" />
+                      <span>Log Out</span>
+                    </div>
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            /* Sign Up / Login CTA when logged out */
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setShowLoginModal(true)}
+                className="relative group overflow-hidden px-5 py-2 text-sm font-semibold text-[#2d1a0e] border border-[#2d1a0e]/60 rounded-xl hover:border-[#c85a17] hover:text-[#c85a17] hover:shadow-sm transition-all duration-300 cursor-pointer"
+              >
+                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
+                Sign up
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Mobile Toggle */}
@@ -213,6 +432,37 @@ export function AstroNavbar() {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="lg:hidden bg-[#fffdf9]/98 border-b border-amber-900/20 backdrop-blur-xl px-6 py-5 flex flex-col gap-4 text-[#2d1a0e] text-base font-medium shadow-2xl animate-in slide-in-from-top-4 fade-in duration-300 absolute w-full left-0">
+          {/* If Logged In, show Mobile Profile Summary */}
+          {isLoggedIn && (
+            <div className="flex items-center justify-between p-3 rounded-2xl bg-amber-50/80 border border-amber-200/70 mb-1">
+              <Link
+                href="/profile"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-3 hover:opacity-80 transition"
+              >
+                <div className="h-10 w-10 rounded-full bg-[#163014] text-amber-200 flex items-center justify-center shadow-xs">
+                  <User className="h-5 w-5" />
+                </div>
+                <div>
+                  <div className="text-sm font-bold text-slate-900">
+                    My Profile
+                  </div>
+                  <div className="text-[11px] font-semibold text-emerald-700">
+                    ● View Profile
+                  </div>
+                </div>
+              </Link>
+              <Link
+                href="/wallet"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-1 text-xs font-bold text-[#c85a17] bg-white px-2.5 py-1.5 rounded-lg border border-amber-200 shadow-xs"
+              >
+                <WalletIcon className="h-3.5 w-3.5" />
+                <span>Wallet</span>
+              </Link>
+            </div>
+          )}
+
           <Link
             href="/talk-to-astrologer"
             onClick={() => setMobileMenuOpen(false)}
@@ -281,26 +531,40 @@ export function AstroNavbar() {
             </Link>
           )}
 
-          <div className="flex items-center gap-3 pt-4 border-t border-amber-900/10 mt-2">
-            <button
-              type="button"
-              onClick={() => {
-                setShowLoginModal(true);
-                setMobileMenuOpen(false);
-              }}
-              className="flex-1 text-center px-4 py-2.5 text-sm font-semibold border border-[#2d1a0e]/60 rounded-xl hover:bg-amber-50 transition-colors"
-            >
-              Sign up
-            </button>
-            <button
-              onClick={() => {
-                setShowLoginModal(true);
-                setMobileMenuOpen(false);
-              }}
-              className="flex-1 px-4 py-2.5 text-sm font-semibold bg-[#1b4327] text-white rounded-xl active:scale-95 transition-transform"
-            >
-              Login
-            </button>
+          {/* Bottom Controls: Sign Up or Logout */}
+          <div className="pt-4 border-t border-amber-900/10 mt-2">
+            {isLoggedIn ? (
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-bold text-red-600 bg-red-50/80 hover:bg-red-100 border border-red-200/80 rounded-xl transition-colors cursor-pointer"
+              >
+                <LogOutIcon className="h-4 w-4" />
+                <span>Log Out</span>
+              </button>
+            ) : (
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowLoginModal(true);
+                    setMobileMenuOpen(false);
+                  }}
+                  className="flex-1 text-center px-4 py-2.5 text-sm font-semibold border border-[#2d1a0e]/60 rounded-xl hover:bg-amber-50 transition-colors"
+                >
+                  Sign up
+                </button>
+                <button
+                  onClick={() => {
+                    setShowLoginModal(true);
+                    setMobileMenuOpen(false);
+                  }}
+                  className="flex-1 px-4 py-2.5 text-sm font-semibold bg-[#1b4327] text-white rounded-xl active:scale-95 transition-transform"
+                >
+                  Login
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -308,7 +572,13 @@ export function AstroNavbar() {
       <SignupDialog
         isOpen={showLoginModal}
         onClose={() => setShowLoginModal(false)}
+        onSuccess={() => {
+          setIsLoggedIn(true);
+          setShowLoginModal(false);
+        }}
       />
     </header>
   );
 }
+
+export default AstroNavbar;

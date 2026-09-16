@@ -100,7 +100,7 @@
 
 "use client";
 
-import React from "react";
+
 import { UserCheck, CalendarDays, MessageSquare, ArrowRight } from "lucide-react";
 
 const steps = [

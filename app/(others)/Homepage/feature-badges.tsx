@@ -69,8 +69,7 @@
 
 "use client";
 
-import React from "react";
-import { UserCheck, Sparkles, CalendarDays, Compass, ShieldCheck } from "lucide-react";
+import { UserCheck,  CalendarDays,  ShieldCheck } from "lucide-react";
 
 const features = [
   {

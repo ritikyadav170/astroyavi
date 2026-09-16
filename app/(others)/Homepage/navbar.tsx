@@ -36,11 +36,12 @@ export function AstroNavbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#fdf8f0]/95 backdrop-blur-md border-b border-[#e6c896]/50 shadow-sm transition-all duration-300">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+    <header className="sticky top-0 z-50 w-full bg-[#fdf8f0]/95 backdrop-blur-md border-b border-[#e6c896]/60 shadow-sm transition-all duration-300">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
 
+        {/* Logo with Gold Aura Glow */}
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-11 h-11 rounded-full border-2 border-[#d4af37] flex items-center justify-center shadow-md relative overflow-hidden group-hover:scale-110 group-hover:rotate-[15deg] transition-all duration-300 ease-out bg-[#131b3e]">
+          <div className="w-11 h-11 rounded-full border-2 border-[#d4af37] flex items-center justify-center shadow-md relative overflow-hidden group-hover:scale-110 group-hover:rotate-[15deg] group-hover:border-amber-400 group-hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] transition-all duration-500 ease-out bg-[#131b3e]">
             <img src="/images/astroyavi_logo.jpeg" alt="Astroyavi Logo" className="w-full h-full object-cover rounded-full" onError={(e) => { (e.target as HTMLElement).setAttribute("src", "/images/logo.svg"); }} />
           </div>
           <span className="font-serif text-2xl font-bold tracking-tight text-[#2d1a0e] group-hover:text-[#c85a17] transition-colors duration-300">
@@ -48,18 +49,26 @@ export function AstroNavbar() {
           </span>
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-[15px] font-semibold text-[#2d1a0e]">
-          <div className="relative group cursor-pointer py-2">
-            <div className="flex items-center gap-1 group-hover:text-[#c85a17] transition-colors duration-300">
+        {/* Desktop Nav Links with Reflection Sheen & Golden Glow */}
+        <nav className="hidden lg:flex items-center gap-1 xl:gap-2 text-[14.5px] font-semibold text-[#2d1a0e]">
+          
+          {/* Talk to Astrologer */}
+          <div className="relative group py-1.5 px-3 rounded-full transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/10 hover:via-orange-500/15 hover:to-amber-500/10 overflow-hidden cursor-pointer">
+            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
+            
+            <div className="flex items-center gap-1 text-[#2d1a0e] group-hover:text-[#c85a17] transition-colors duration-300">
               <Link href="/talk-to-astrologer" className="relative">
                 <span>Talk to Astrologer</span>
-                <span className="absolute left-0 bottom-[-4px] w-0 h-[2px] bg-[#c85a17] group-hover:w-full transition-all duration-300 ease-out"></span>
               </Link>
-              <ChevronDown className="w-4 h-4 text-[#3c2415]/70 group-hover:rotate-180 transition-transform duration-300" />
+              <ChevronDown className="w-3.5 h-3.5 text-[#3c2415]/70 group-hover:rotate-180 group-hover:text-[#c85a17] transition-transform duration-300" />
             </div>
-            <div className="absolute top-full left-0 hidden group-hover:flex flex-col bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-amber-100 p-2 min-w-[210px] animate-in fade-in slide-in-from-top-3 duration-200 z-50">
+
+            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-[#c85a17] via-amber-400 to-[#c85a17] group-hover:w-3/4 transition-all duration-300 rounded-full shadow-[0_0_8px_#c85a17]"></span>
+
+            {/* Dropdown Menu */}
+            <div className="absolute top-full left-0 hidden group-hover:flex flex-col bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-amber-200/80 p-2.5 min-w-[220px] animate-in fade-in slide-in-from-top-3 duration-200 z-50">
               {['Chat with Astrologers', 'Call with Astrologers'].map((txt, i) => (
-                <Link key={i} href="/talk-to-astrologer" className="flex items-center justify-between px-4 py-2.5 rounded-xl hover:bg-amber-50 text-sm font-semibold text-slate-800 transition-all hover:translate-x-1 duration-200 group/link">
+                <Link key={i} href="/talk-to-astrologer" className="flex items-center justify-between px-4 py-2.5 rounded-xl hover:bg-amber-50/80 text-sm font-semibold text-slate-800 transition-all hover:translate-x-1 duration-200 group/link">
                   <span>{txt}</span>
                   <ArrowRight className="w-4 h-4 text-slate-400 group-hover/link:text-[#c85a17] transition-colors" />
                 </Link>
@@ -67,22 +76,29 @@ export function AstroNavbar() {
             </div>
           </div>
 
-          <Link href="/live-darshan" className="relative py-2 group hover:text-[#c85a17] transition-colors duration-300">
+          {/* Live Darshan */}
+          <Link href="/live-darshan" className="relative group py-1.5 px-3 rounded-full transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/10 hover:via-orange-500/15 hover:to-amber-500/10 overflow-hidden text-[#2d1a0e] hover:text-[#c85a17]">
+            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
             <span>Live Darshan</span>
-            <span className="absolute left-0 bottom-[-2px] w-0 h-[2px] bg-[#c85a17] group-hover:w-full transition-all duration-300 ease-out"></span>
+            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-[#c85a17] via-amber-400 to-[#c85a17] group-hover:w-3/4 transition-all duration-300 rounded-full shadow-[0_0_8px_#c85a17]"></span>
           </Link>
 
-          <div className="relative group cursor-pointer py-2">
-            <div className="flex items-center gap-1 group-hover:text-[#c85a17] transition-colors duration-300">
+          {/* Horoscope */}
+          <div className="relative group py-1.5 px-3 rounded-full transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/10 hover:via-orange-500/15 hover:to-amber-500/10 overflow-hidden cursor-pointer">
+            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
+            
+            <div className="flex items-center gap-1 text-[#2d1a0e] group-hover:text-[#c85a17] transition-colors duration-300">
               <Link href="/horoscope" onClick={handleProtectedClick} className="relative">
                 <span>Horoscope</span>
-                <span className="absolute left-0 bottom-[-4px] w-0 h-[2px] bg-[#c85a17] group-hover:w-full transition-all duration-300 ease-out"></span>
               </Link>
-              <ChevronDown className="w-4 h-4 text-[#3c2415]/70 group-hover:rotate-180 transition-transform duration-300" />
+              <ChevronDown className="w-3.5 h-3.5 text-[#3c2415]/70 group-hover:rotate-180 group-hover:text-[#c85a17] transition-transform duration-300" />
             </div>
-            <div className="absolute top-full left-0 hidden group-hover:flex flex-col bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-amber-100 p-2 min-w-[210px] animate-in fade-in slide-in-from-top-3 duration-200 z-50">
+
+            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-[#c85a17] via-amber-400 to-[#c85a17] group-hover:w-3/4 transition-all duration-300 rounded-full shadow-[0_0_8px_#c85a17]"></span>
+
+            <div className="absolute top-full left-0 hidden group-hover:flex flex-col bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-amber-200/80 p-2.5 min-w-[220px] animate-in fade-in slide-in-from-top-3 duration-200 z-50">
               {['Daily', 'Tomorrow', 'Weekly', 'Monthly'].map((txt, i) => (
-                <Link key={i} href="/horoscope" onClick={handleProtectedClick} className="flex items-center justify-between px-4 py-2.5 rounded-xl hover:bg-amber-50 text-sm font-semibold text-slate-800 transition-all hover:translate-x-1 duration-200 group/link">
+                <Link key={i} href="/horoscope" onClick={handleProtectedClick} className="flex items-center justify-between px-4 py-2.5 rounded-xl hover:bg-amber-50/80 text-sm font-semibold text-slate-800 transition-all hover:translate-x-1 duration-200 group/link">
                   <span>{txt} Horoscope</span>
                   <ArrowRight className="w-4 h-4 text-slate-400 group-hover/link:text-[#c85a17] transition-colors" />
                 </Link>
@@ -90,40 +106,51 @@ export function AstroNavbar() {
             </div>
           </div>
 
-          <Link href="/puja-booking" onClick={handleProtectedClick} className="relative py-2 group hover:text-[#c85a17] transition-colors duration-300">
+          {/* Puja Booking */}
+          <Link href="/puja-booking" onClick={handleProtectedClick} className="relative group py-1.5 px-3 rounded-full transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/10 hover:via-orange-500/15 hover:to-amber-500/10 overflow-hidden text-[#2d1a0e] hover:text-[#c85a17]">
+            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
             <span>Puja Booking</span>
-            <span className="absolute left-0 bottom-[-2px] w-0 h-[2px] bg-[#c85a17] group-hover:w-full transition-all duration-300 ease-out"></span>
+            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-[#c85a17] via-amber-400 to-[#c85a17] group-hover:w-3/4 transition-all duration-300 rounded-full shadow-[0_0_8px_#c85a17]"></span>
           </Link>
 
-          <Link href="/match-making" onClick={handleProtectedClick} className="relative py-2 group hover:text-[#c85a17] transition-colors duration-300">
+          {/* Match Making */}
+          <Link href="/match-making" onClick={handleProtectedClick} className="relative group py-1.5 px-3 rounded-full transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/10 hover:via-orange-500/15 hover:to-amber-500/10 overflow-hidden text-[#2d1a0e] hover:text-[#c85a17]">
+            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
             <span>Match Making</span>
-            <span className="absolute left-0 bottom-[-2px] w-0 h-[2px] bg-[#c85a17] group-hover:w-full transition-all duration-300 ease-out"></span>
+            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-[#c85a17] via-amber-400 to-[#c85a17] group-hover:w-3/4 transition-all duration-300 rounded-full shadow-[0_0_8px_#c85a17]"></span>
           </Link>
 
-          <Link href="/kundli" className="relative py-2 group hover:text-[#c85a17] transition-colors duration-300">
+          {/* Kundli */}
+          <Link href="/kundli" className="relative group py-1.5 px-3 rounded-full transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/10 hover:via-orange-500/15 hover:to-amber-500/10 overflow-hidden text-[#2d1a0e] hover:text-[#c85a17]">
+            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
             <span>Kundli</span>
-            <span className="absolute left-0 bottom-[-2px] w-0 h-[2px] bg-[#c85a17] group-hover:w-full transition-all duration-300 ease-out"></span>
+            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-[#c85a17] via-amber-400 to-[#c85a17] group-hover:w-3/4 transition-all duration-300 rounded-full shadow-[0_0_8px_#c85a17]"></span>
           </Link>
 
-          <Link href="/panchang" className="relative py-2 group hover:text-[#c85a17] transition-colors duration-300">
+          {/* Panchang */}
+          <Link href="/panchang" className="relative group py-1.5 px-3 rounded-full transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/10 hover:via-orange-500/15 hover:to-amber-500/10 overflow-hidden text-[#2d1a0e] hover:text-[#c85a17]">
+            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
             <span>Panchang</span>
-            <span className="absolute left-0 bottom-[-2px] w-0 h-[2px] bg-[#c85a17] group-hover:w-full transition-all duration-300 ease-out"></span>
+            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-[#c85a17] via-amber-400 to-[#c85a17] group-hover:w-3/4 transition-all duration-300 rounded-full shadow-[0_0_8px_#c85a17]"></span>
           </Link>
 
+          {/* Remedies (After Login) */}
           {isLoggedIn && (
-            <Link href="/puja-booking" className="relative py-2 group hover:text-[#c85a17] transition-colors duration-300">
+            <Link href="/puja-booking" className="relative group py-1.5 px-3 rounded-full transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/10 hover:via-orange-500/15 hover:to-amber-500/10 overflow-hidden text-[#2d1a0e] hover:text-[#c85a17]">
+              <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
               <span>Remedies</span>
-              <span className="absolute left-0 bottom-[-2px] w-0 h-[2px] bg-[#c85a17] group-hover:w-full transition-all duration-300 ease-out"></span>
+              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-[#c85a17] via-amber-400 to-[#c85a17] group-hover:w-3/4 transition-all duration-300 rounded-full shadow-[0_0_8px_#c85a17]"></span>
             </Link>
           )}
         </nav>
 
-        <div className="hidden lg:flex items-center gap-4 relative">
+        {/* Buttons / Profile */}
+        <div className="hidden lg:flex items-center gap-3 relative">
           {isLoggedIn ? (
             <div className="relative">
               <button
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                className="w-11 h-11 rounded-full border-2 border-slate-300 hover:border-[#1b4327] hover:scale-105 hover:shadow-lg overflow-hidden p-0.5 transition-all duration-300 cursor-pointer"
+                className="w-11 h-11 rounded-full border-2 border-slate-300 hover:border-[#1b4327] hover:scale-105 hover:shadow-[0_0_15px_rgba(27,67,39,0.3)] overflow-hidden p-0.5 transition-all duration-300 cursor-pointer"
                 aria-label="User Profile Menu"
               >
                 <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="Rohit Kumar" className="w-full h-full object-cover rounded-full" />
@@ -171,21 +198,29 @@ export function AstroNavbar() {
             </div>
           ) : (
             <div className="flex items-center gap-3">
-              <Link href="/auth/signup" className="px-5 py-2.5 text-sm font-semibold text-[#2d1a0e] border border-[#2d1a0e]/60 rounded-xl hover:border-[#c85a17] hover:text-[#c85a17] hover:bg-amber-50/50 hover:shadow-sm transition-all duration-300">
+              <Link href="/auth/signup" className="relative group overflow-hidden px-5 py-2 text-sm font-semibold text-[#2d1a0e] border border-[#2d1a0e]/60 rounded-xl hover:border-[#c85a17] hover:text-[#c85a17] hover:shadow-sm transition-all duration-300">
+                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
                 Sign up
               </Link>
-              <button onClick={() => setShowLoginModal(true)} className="px-6 py-2.5 text-sm font-semibold text-white bg-[#1b4327] hover:bg-[#13321d] hover:scale-105 hover:shadow-lg transition-all duration-300 rounded-xl cursor-pointer">
+              
+              <button 
+                onClick={() => setShowLoginModal(true)} 
+                className="relative group overflow-hidden px-6 py-2 text-sm font-semibold text-white bg-[#1b4327] hover:bg-[#13321d] hover:scale-105 hover:shadow-[0_0_20px_rgba(27,67,39,0.35)] transition-all duration-300 rounded-xl cursor-pointer"
+              >
+                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
                 Login
               </button>
             </div>
           )}
         </div>
 
+        {/* Mobile Toggle */}
         <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden text-[#2d1a0e] p-2 rounded-lg bg-amber-100/50 border border-amber-900/20 active:scale-95 transition-transform duration-200" aria-label="Toggle Navigation">
           {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
 
+      {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="lg:hidden bg-[#fffdf9]/98 border-b border-amber-900/20 backdrop-blur-xl px-6 py-5 flex flex-col gap-4 text-[#2d1a0e] text-base font-medium shadow-2xl animate-in slide-in-from-top-4 fade-in duration-300 absolute w-full left-0">
           <Link href="/talk-to-astrologer" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#c85a17] transition-colors">Talk to Astrologer</Link>
@@ -200,7 +235,7 @@ export function AstroNavbar() {
           {!isLoggedIn && (
             <div className="flex items-center gap-3 pt-4 border-t border-amber-900/10 mt-2">
               <Link href="/auth/signup" className="flex-1 text-center px-4 py-2.5 text-sm font-semibold border border-[#2d1a0e]/60 rounded-xl hover:bg-amber-50 transition-colors">Sign up</Link>
-              <button onClick={() => { setShowLoginModal(true); setMobileMenuOpen(false); }} className="flex-1 px-4 py-2.5 text-sm font-semibold bg-[#1b4327] text-[#ffffff] rounded-xl active:scale-95 transition-transform">Login</button>
+              <button onClick={() => { setShowLoginModal(true); setMobileMenuOpen(false); }} className="flex-1 px-4 py-2.5 text-sm font-semibold bg-[#1b4327] text-white rounded-xl active:scale-95 transition-transform">Login</button>
             </div>
           )}
         </div>

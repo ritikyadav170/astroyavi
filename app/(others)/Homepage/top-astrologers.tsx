@@ -274,7 +274,7 @@
 
 "use client";
 
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { Star, Phone, MessageSquare, Video, ChevronLeft, ChevronRight } from "lucide-react";
 

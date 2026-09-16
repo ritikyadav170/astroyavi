@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { AstroNavbar } from "../Homepage/navbar";
 import { Footer } from "../Homepage/footer";
 import { Astrologer, getAstrologers } from "./talkToAstrologerApi";

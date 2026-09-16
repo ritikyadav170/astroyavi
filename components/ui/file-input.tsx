@@ -1,9 +1,9 @@
 "use client";
-import { cn } from "@lib/utils";
+import { cn } from "@/lib/utils";
 import { toast } from "./toaster";
 import { Button } from "./button";
 import { ScrollArea } from "./scroll-area";
-import { formatBytes } from "@lib/formatBytes";
+import { formatBytes } from "@/lib/formatBytes";
 import { Ref, useEffect, useState } from "react";
 import { Download, File, Upload, X } from "lucide-react";
 import Dropzone, { DropzoneProps, FileRejection } from "react-dropzone";

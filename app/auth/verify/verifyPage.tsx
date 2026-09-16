@@ -1,6 +1,6 @@
 "use client";
 
-import React, {
+import {
   useEffect,
   useRef,
   useState,
@@ -15,10 +15,9 @@ import {
   ShieldCheck,
   RotateCcw,
   Loader2,
+  Mail,
   AlertCircle,
   Sparkles,
-  Mail,
-  Smartphone,
 } from "lucide-react";
 import { toast } from "@components/ui/toaster";
 import axios from "../../../config/axios";
@@ -56,7 +55,10 @@ export function VerifyPage({
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
   const [error, setError] = useState("");
+
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
+  const otpRef = useRef(otp);
+  otpRef.current = otp;
 
   const isEmailMode = authMethod === "email";
 
@@ -129,7 +131,7 @@ export function VerifyPage({
   // Verify OTP submission
   const handleVerify = useCallback(
     async (currentOtp?: string[]) => {
-      const activeOtp = currentOtp || otp;
+      const activeOtp = currentOtp || otpRef.current;
       if (!activeOtp.every(Boolean) || loading) return;
 
       setLoading(true);
@@ -140,20 +142,20 @@ export function VerifyPage({
 
         const payload = isEmailMode
           ? {
-              otp: otpString,
-              email,
-              fcmToken,
-              deviceId,
-              deviceType,
-            }
+            otp: otpString,
+            email,
+            fcmToken,
+            deviceId,
+            deviceType,
+          }
           : {
-              otp: otpString,
-              mobile: phoneNumber,
-              countryCode,
-              fcmToken,
-              deviceId,
-              deviceType,
-            };
+            otp: otpString,
+            mobile: phoneNumber,
+            countryCode,
+            fcmToken,
+            deviceId,
+            deviceType,
+          };
 
         const response = await axios.post("/verifyOtp", payload);
         const resData = response?.data;
@@ -218,7 +220,6 @@ export function VerifyPage({
       }
     },
     [
-      otp,
       loading,
       isEmailMode,
       phoneNumber,
@@ -229,7 +230,7 @@ export function VerifyPage({
       deviceType,
       onSuccess,
       onClose,
-    ],
+    ]
   );
 
   // Auto-submit when all 4 digits are filled
@@ -369,11 +370,10 @@ export function VerifyPage({
                   }
                   onKeyDown={(event) => handleKeyDown(index, event)}
                   onPaste={handlePaste}
-                  className={`h-14 w-12 rounded-2xl border text-center text-xl font-bold text-slate-900 outline-none transition-all duration-150 sm:h-16 sm:w-14 sm:text-2xl ${
-                    isFilled
-                      ? "border-[#163014] bg-emerald-50/30 text-[#163014] shadow-xs"
-                      : "border-slate-300 bg-slate-50/50 hover:border-slate-400 focus:bg-white focus:border-[#163014] focus:ring-4 focus:ring-[#163014]/10"
-                  }`}
+                  className={`h-14 w-12 rounded-2xl border text-center text-xl font-bold text-slate-900 outline-none transition-all duration-150 sm:h-16 sm:w-14 sm:text-2xl ${isFilled
+                    ? "border-[#163014] bg-emerald-50/30 text-[#163014] shadow-xs"
+                    : "border-slate-300 bg-slate-50/50 hover:border-slate-400 focus:bg-white focus:border-[#163014] focus:ring-4 focus:ring-[#163014]/10"
+                    }`}
                 />
               );
             })}

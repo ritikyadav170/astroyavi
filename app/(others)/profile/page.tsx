@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import {
   User,
@@ -11,23 +11,20 @@ import {
   MapPin,
   Sparkles,
   ShieldCheck,
+  RefreshCw,
   Edit3,
-  Wallet,
   Scroll,
   Flame,
   ArrowRight,
   LogOut,
   ChevronRight,
   Loader2,
-  RefreshCw,
-  AlertCircle,
-  CheckCircle2,
   X,
-  MessageSquare,
-  Globe,
+  // Added missing imports below:
+  Wallet,
   HeartHandshake,
-  Check,
   BellRing,
+  MessageSquare,
 } from "lucide-react";
 import { AstroNavbar } from "../Homepage/navbar";
 import { Footer } from "../Homepage/footer";

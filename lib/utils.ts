@@ -15,6 +15,9 @@ export function formatFileSize(bytes: number): string {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 }
 
+export const formatBytes = formatFileSize;
+
+
 export function formatTime(seconds: number): string {
   if (seconds < 60) {
     return `${Math.round(seconds)}s`;

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { Star, MessageSquare } from "lucide-react";
 import { Astrologer } from "../talkToAstrologerApi";
 import { formatImageUrl } from "@/lib/utils";

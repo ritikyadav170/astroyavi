@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { ChevronDown, Menu, X, ArrowRight, User, Sparkles } from "lucide-react";
 import { SignupDialog } from "../../auth/signup/SignupDialog";

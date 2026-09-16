@@ -3,9 +3,18 @@
 import React, { useMemo } from "react";
 import { defineStepper } from "@stepperize/react";
 
+export interface Step {
+  id: string;
+  title: string;
+  description?: string;
+  [key: string]: unknown;
+}
+
+export type Steps = Step;
+
 type StepperProps = {
   title?: string;
-  steps: Steps[];
+  steps: Step[];
   children: (nav: {
     currentStepId: string;
     next: () => void;
@@ -14,7 +23,7 @@ type StepperProps = {
 };
 
 export function Stepper({ title, steps, children }: StepperProps) {
-  const { useStepper } = useMemo(() => defineStepper(...steps), [steps]);
+  const { useStepper } = useMemo(() => (defineStepper as any)(...steps), [steps]);
 
   const stepper = useStepper();
 
@@ -31,7 +40,7 @@ export function Stepper({ title, steps, children }: StepperProps) {
         {/* Mobile: Horizontal scrollable steps with current step label */}
         <div className="lg:hidden flex flex-col gap-2 pb-4 pt-2">
           <div className="flex overflow-x-auto gap-2 no-scrollbar scroll-smooth items-center">
-            {stepper.state.all.map((stepItem, index) => {
+            {stepper.state.all.map((stepItem: any, index: number) => {
               const isCurrent = index === stepper.state.current.index;
               const isCompleted = index < stepper.state.current.index;
 
@@ -57,13 +66,13 @@ export function Stepper({ title, steps, children }: StepperProps) {
             })}
           </div>
           <p className="text-sm font-semibold text-primary truncate">
-            {stepper.state.current.data.title}
+            {((stepper.state.current as any)?.data?.title || (stepper.state.current as any)?.title || "")}
           </p>
         </div>
 
         {/* Desktop: Vertical Steps */}
         <div className="hidden lg:flex flex-col relative space-y-5">
-          {stepper.state.all.map((stepItem, index) => {
+          {stepper.state.all.map((stepItem: any, index: number) => {
             const isCurrent = index === stepper.state.current.index;
             const isCompleted = index < stepper.state.current.index;
             const isLast = index === stepper.state.all.length - 1;
@@ -98,13 +107,13 @@ export function Stepper({ title, steps, children }: StepperProps) {
                   <p
                     className={`text-base transition-colors duration-200 ${isCurrent ? "font-semibold text-primary" : isCompleted ? "font-medium text-foreground" : "text-muted-foreground"}`}
                   >
-                    {stepItem.title}
+                    {stepItem.title || stepItem.data?.title}
                   </p>
-                  {stepItem.description && (
+                  {(stepItem.description || stepItem.data?.description) && (
                     <p
                       className={`text-xs mt-1 transition-colors duration-200 ${isCurrent ? "text-muted-foreground" : "text-muted-foreground"}`}
                     >
-                      {stepItem.description}
+                      {stepItem.description || stepItem.data?.description}
                     </p>
                   )}
                 </div>
@@ -117,7 +126,7 @@ export function Stepper({ title, steps, children }: StepperProps) {
       {/* Step Content */}
       <div className="border border-gray-100 rounded-xl bg-white shadow-sm flex flex-col overflow-hidden lg:flex-1 lg:min-h-0">
         {children({
-          currentStepId: stepper.state.current.data.id as string,
+          currentStepId: ((stepper.state.current as any)?.data?.id || (stepper.state.current as any)?.id || "") as string,
           next: stepper.navigation.next,
           prev: stepper.navigation.prev,
         })}

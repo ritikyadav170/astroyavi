@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   X,
   Star,
@@ -11,10 +11,7 @@ import {
   Sparkles,
   Globe,
   Award,
-  Clock,
   Loader2,
-  CheckCircle2,
-  Lock,
 } from "lucide-react";
 import { Astrologer, getAstrologerById } from "../talkToAstrologerApi";
 import { toast } from "@components/ui/toaster";

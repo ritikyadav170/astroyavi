@@ -122,10 +122,6 @@ const nextConfig: NextConfig = {
             value: "none",
           },
           {
-            key: "Cache-Control",
-            value: "no-store, max-age=0, no-cache",
-          },
-          {
             key: "Cross-Origin-Opener-Policy",
             value: "same-origin",
           },

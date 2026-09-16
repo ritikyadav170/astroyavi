@@ -70,6 +70,7 @@ const FlameIcon = ({ className = "h-4 w-4" }: { className?: string }) => (
 );
 
 export function AstroNavbar() {
+  const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -77,6 +78,7 @@ export function AstroNavbar() {
   const profileDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    setMounted(true);
     const checkAuth = () => {
       const storedAuth = typeof window !== "undefined" ? localStorage.getItem("astroyavi_logged_in") : null;
       setIsLoggedIn(storedAuth === "true");
@@ -281,8 +283,10 @@ export function AstroNavbar() {
         </nav>
 
         {/* Authentication or Profile Header Section */}
-        <div className="hidden lg:flex items-center gap-3 relative">
-          {isLoggedIn ? (
+        <div className="hidden lg:flex items-center gap-3 relative min-w-[100px] justify-end">
+          {!mounted ? (
+            <div className="h-9 w-20 rounded-xl bg-transparent" />
+          ) : isLoggedIn ? (
             /* User Profile Avatar Dropdown */
             <div className="relative" ref={profileDropdownRef}>
               <button

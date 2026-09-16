@@ -30,3 +30,24 @@ export function formatTime(seconds: number): string {
     return minutes === 0 ? `${hours}h` : `${hours}h ${minutes}m`;
   }
 }
+
+export function formatImageUrl(url?: string | null): string {
+  if (!url || typeof url !== "string") return "";
+  const trimmed = url.trim();
+  if (!trimmed) return "";
+  if (
+    trimmed.startsWith("http://") ||
+    trimmed.startsWith("https://") ||
+    trimmed.startsWith("data:") ||
+    trimmed.startsWith("blob:") ||
+    trimmed.startsWith("/images/") ||
+    trimmed.startsWith("/_next/")
+  ) {
+    return trimmed;
+  }
+  if (trimmed.startsWith("/")) {
+    return `http://160.187.87.138:9859${trimmed}`;
+  }
+  return `http://160.187.87.138:9859/${trimmed}`;
+}
+

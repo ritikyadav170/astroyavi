@@ -6,22 +6,34 @@ import { Footer } from "../Homepage/footer";
 import { Astrologer, getAstrologers } from "./talkToAstrologerApi";
 import { AstrologerSearchToolbar } from "./components/AstrologerSearchToolbar";
 import { AstrologerGrid } from "./components/AstrologerGrid";
+import { AstrologerDetailModal } from "./components/AstrologerDetailModal";
+import { Loader2 } from "lucide-react";
 
 export default function TalkToAstrologerPage() {
   const [activeCategory, setActiveCategory] = useState("All Astrologers");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("popular");
   const [astrologers, setAstrologers] = useState<Astrologer[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedAstrologer, setSelectedAstrologer] = useState<Astrologer | null>(null);
 
-  // Fetch astrologers based on filters, search query, and sorting
+  // Fetch astrologers from GET /asterologer
   useEffect(() => {
     let isMounted = true;
+    setLoading(true);
 
-    getAstrologers(activeCategory, searchQuery, sortBy).then((data) => {
-      if (isMounted) {
-        setAstrologers(data);
-      }
-    });
+    getAstrologers(activeCategory, searchQuery, sortBy)
+      .then((data) => {
+        if (isMounted) {
+          setAstrologers(data);
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to load astrologers:", err);
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
 
     return () => {
       isMounted = false;
@@ -45,16 +57,36 @@ export default function TalkToAstrologerPage() {
           setSortBy={setSortBy}
         />
 
-        {/* Astrologers 5-Column Grid */}
-        <AstrologerGrid
-          astrologers={astrologers}
-          onResetFilters={() => {
-            setActiveCategory("All Astrologers");
-            setSearchQuery("");
-            setSortBy("popular");
-          }}
-        />
+        {/* Loading Spinner */}
+        {loading && astrologers.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-24 gap-3">
+            <Loader2 className="h-8 w-8 animate-spin text-[#1b4327]" />
+            <p className="text-sm font-semibold text-slate-600">
+              Loading astrologers from temple network...
+            </p>
+          </div>
+        ) : (
+          /* Astrologers 5-Column Grid */
+          <AstrologerGrid
+            astrologers={astrologers}
+            onResetFilters={() => {
+              setActiveCategory("All Astrologers");
+              setSearchQuery("");
+              setSortBy("popular");
+            }}
+            onSelectAstrologer={(astro) => setSelectedAstrologer(astro)}
+          />
+        )}
       </div>
+
+      {/* Astrologer Detail Modal (GET /asterologer/:id) */}
+      {selectedAstrologer && (
+        <AstrologerDetailModal
+          astrologerId={selectedAstrologer.id || selectedAstrologer._id || null}
+          initialAstrologer={selectedAstrologer}
+          onClose={() => setSelectedAstrologer(null)}
+        />
+      )}
 
       {/* Footer */}
       <Footer />

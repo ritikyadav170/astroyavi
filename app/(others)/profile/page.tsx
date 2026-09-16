@@ -33,6 +33,7 @@ import { AstroNavbar } from "../Homepage/navbar";
 import { Footer } from "../Homepage/footer";
 import axios from "../../../config/axios";
 import { toast } from "@components/ui/toaster";
+import { formatImageUrl } from "@/lib/utils";
 
 export interface UserWallet {
   balance?: number;
@@ -73,6 +74,7 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<UserProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [imgError, setImgError] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -326,10 +328,11 @@ export default function ProfilePage() {
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                   {/* Avatar Frame */}
                   <div className="relative flex h-20 w-20 shrink-0 items-center justify-center rounded-3xl bg-[#163014] text-amber-200 shadow-xl sm:h-24 sm:w-24 overflow-hidden border-2 border-amber-400/70">
-                    {profile?.profileImage ? (
+                    {profile?.profileImage && !imgError ? (
                       <img
-                        src={profile.profileImage}
+                        src={formatImageUrl(profile.profileImage)}
                         alt={displayName}
+                        onError={() => setImgError(true)}
                         className="h-full w-full object-cover"
                       />
                     ) : (
@@ -699,6 +702,26 @@ export default function ProfilePage() {
                 <p className="text-xs text-slate-500">
                   Fill in your details for personalized Kundli and astrology predictions
                 </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3.5 p-3 rounded-2xl bg-amber-50/80 border border-amber-200/70 mb-4">
+              <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#163014] text-amber-200 shadow-xs overflow-hidden border border-amber-300/80">
+                {profile?.profileImage && !imgError ? (
+                  <img
+                    src={formatImageUrl(profile.profileImage)}
+                    alt={displayName}
+                    onError={() => setImgError(true)}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <User className="h-7 w-7 text-amber-200" />
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-bold text-slate-800 truncate">{displayName}</p>
+                <p className="text-[11px] text-slate-500 font-medium">{displayMobile}</p>
+                <p className="text-[10px] text-emerald-700 font-semibold mt-0.5">● Verified Account</p>
               </div>
             </div>
 

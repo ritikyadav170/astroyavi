@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { ChevronDown, Menu, X, ArrowRight, User, Sparkles } from "lucide-react";
 import { SignupDialog } from "../../auth/signup/SignupDialog";
+import { formatImageUrl } from "@/lib/utils";
+import axios from "@/config/axios";
 
 const LogOutIcon = ({ className = "h-4 w-4" }: { className?: string }) => (
   <svg
@@ -73,15 +75,60 @@ export function AstroNavbar() {
   const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userProfile, setUserProfile] = useState<{ name?: string; profileImage?: string } | null>(null);
+  const [imgError, setImgError] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const profileDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
-    const checkAuth = () => {
-      const storedAuth = typeof window !== "undefined" ? localStorage.getItem("astroyavi_logged_in") : null;
-      setIsLoggedIn(storedAuth === "true");
+    const checkAuth = async () => {
+      if (typeof window !== "undefined") {
+        const storedAuth = localStorage.getItem("astroyavi_logged_in");
+        const isAuth = storedAuth === "true";
+        setIsLoggedIn(isAuth);
+
+        const cachedUser = localStorage.getItem("astroyavi_user");
+        if (cachedUser) {
+          try {
+            const parsed = JSON.parse(cachedUser);
+            setUserProfile(parsed);
+            setImgError(false);
+          } catch {
+            setUserProfile(null);
+          }
+        }
+
+        // Fetch latest profile from API to ensure fresh profileImage
+        if (isAuth) {
+          const token =
+            localStorage.getItem("astroyavi_token") ||
+            localStorage.getItem("token") ||
+            localStorage.getItem("accessToken");
+
+          if (token) {
+            try {
+              const headers: Record<string, string> = {
+                Authorization: token.startsWith("Bearer ") ? token : `Bearer ${token}`,
+                token: token,
+              };
+              const res = await axios.get("/profile", { headers });
+              if (res?.data) {
+                const userObj =
+                  res.data.data?.user || res.data.user || res.data.data || res.data;
+                if (userObj) {
+                  setUserProfile(userObj);
+                  localStorage.setItem("astroyavi_user", JSON.stringify(userObj));
+                  setImgError(false);
+                }
+              }
+            } catch {
+              // Ignore background fetch error
+            }
+          }
+        }
+      }
     };
 
     checkAuth();
@@ -295,13 +342,22 @@ export function AstroNavbar() {
                 aria-label="User Profile"
                 className="group relative flex items-center gap-2 rounded-full border border-amber-400/80 bg-gradient-to-r from-amber-50 via-white to-amber-50/80 py-1.5 pl-2 pr-3.5 shadow-sm transition-all duration-300 hover:border-[#c85a17] hover:shadow-md cursor-pointer"
               >
-                <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-[#163014] text-white shadow-xs group-hover:scale-105 transition-transform">
-                  <User className="h-4 w-4 text-amber-200" />
+                <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-[#163014] text-white shadow-xs group-hover:scale-105 transition-transform overflow-hidden border border-amber-300/60">
+                  {userProfile?.profileImage && !imgError ? (
+                    <img
+                      src={formatImageUrl(userProfile.profileImage)}
+                      alt={userProfile?.name || "Profile"}
+                      onError={() => setImgError(true)}
+                      className="h-full w-full object-cover rounded-full"
+                    />
+                  ) : (
+                    <User className="h-4 w-4 text-amber-200" />
+                  )}
                   <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-500" />
                 </div>
                 <div className="flex flex-col text-left">
-                  <span className="text-xs font-bold text-slate-800 group-hover:text-[#c85a17] transition-colors">
-                    My Profile
+                  <span className="text-xs font-bold text-slate-800 group-hover:text-[#c85a17] transition-colors line-clamp-1 max-w-[90px]">
+                    {userProfile?.name ? userProfile.name.split(" ")[0] : "My Profile"}
                   </span>
                 </div>
                 <ChevronDown
@@ -320,15 +376,24 @@ export function AstroNavbar() {
                     onClick={() => setProfileDropdownOpen(false)}
                     className="flex items-center gap-3 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50/60 p-3 border border-amber-200/50 hover:bg-amber-100/60 transition group/acc"
                   >
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#163014] text-amber-200 shadow-sm group-hover/acc:scale-105 transition-transform">
-                      <User className="h-5 w-5" />
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#163014] text-amber-200 shadow-sm group-hover/acc:scale-105 transition-transform overflow-hidden border border-amber-300/60">
+                      {userProfile?.profileImage && !imgError ? (
+                        <img
+                          src={formatImageUrl(userProfile.profileImage)}
+                          alt={userProfile?.name || "Profile"}
+                          onError={() => setImgError(true)}
+                          className="h-full w-full object-cover rounded-full"
+                        />
+                      ) : (
+                        <User className="h-5 w-5" />
+                      )}
                     </div>
                     <div className="flex flex-col truncate flex-1">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-xs font-bold text-slate-900 group-hover/acc:text-[#c85a17] transition-colors">
-                          Astroyavi User
+                        <span className="text-xs font-bold text-slate-900 group-hover/acc:text-[#c85a17] transition-colors truncate">
+                          {userProfile?.name || "Astroyavi User"}
                         </span>
-                        <Sparkles className="h-3 w-3 text-[#c85a17]" />
+                        <Sparkles className="h-3 w-3 text-[#c85a17] shrink-0" />
                       </div>
                       <span className="text-[10px] font-semibold text-emerald-700">
                         ● Verified Account
@@ -444,8 +509,17 @@ export function AstroNavbar() {
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center gap-3 hover:opacity-80 transition"
               >
-                <div className="h-10 w-10 rounded-full bg-[#163014] text-amber-200 flex items-center justify-center shadow-xs">
-                  <User className="h-5 w-5" />
+                <div className="h-10 w-10 rounded-full bg-[#163014] text-amber-200 flex items-center justify-center shadow-xs overflow-hidden border border-amber-300/60">
+                  {userProfile?.profileImage && !imgError ? (
+                    <img
+                      src={formatImageUrl(userProfile.profileImage)}
+                      alt={userProfile?.name || "Profile"}
+                      onError={() => setImgError(true)}
+                      className="h-full w-full object-cover rounded-full"
+                    />
+                  ) : (
+                    <User className="h-5 w-5" />
+                  )}
                 </div>
                 <div>
                   <div className="text-sm font-bold text-slate-900">

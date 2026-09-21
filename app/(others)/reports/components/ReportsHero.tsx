@@ -4,6 +4,8 @@ import React from "react";
 import { Sparkles, FileText, Search, ShieldCheck, CheckCircle2, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
+import { DEFAULT_REPORT_CATEGORIES, getReportCategories } from "../reports";
+
 interface ReportsHeroProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
@@ -11,20 +13,56 @@ interface ReportsHeroProps {
   setSelectedCategory: (cat: any) => void;
 }
 
+const CATEGORY_ICON_MAP: Record<string, string> = {
+  all: "✨",
+  vedic_reports: "📜",
+  natal_report: "🌟",
+  natal_couple_report: "💍",
+  prediction_report: "🔮",
+  numerology_report: "🔢",
+  vedic_numerology_v2: "🕉️",
+  western_reports_v2: "🌌",
+  test: "🧪",
+};
+
 export function ReportsHero({
   searchQuery,
   setSearchQuery,
   selectedCategory,
   setSelectedCategory,
 }: ReportsHeroProps) {
-  const categories = [
-    { id: "all", label: "All Reports", icon: "✨" },
-    { id: "kundli", label: "Kundli & Life", icon: "📜" },
-    { id: "marriage", label: "Love & Milan", icon: "💍" },
-    { id: "career", label: "Career & Finance", icon: "💼" },
-    { id: "dosha", label: "Dosha & Nivaran", icon: "🛡️" },
-    { id: "remedies", label: "Gemstone & Remedies", icon: "💎" },
-  ];
+  const [categories, setCategories] = React.useState(
+    DEFAULT_REPORT_CATEGORIES.map((c) => ({
+      id: c.key,
+      label: c.label,
+      icon: c.icon,
+    }))
+  );
+
+  React.useEffect(() => {
+    let isMounted = true;
+    async function loadCategories() {
+      try {
+        const res = await getReportCategories({ limit: 20 });
+        if (res?.data && Array.isArray(res.data) && res.data.length > 0 && isMounted) {
+          const apiCats = res.data
+            .filter((c: any) => c.key !== "test")
+            .map((c: any) => ({
+              id: c.key || c._id,
+              label: c.title || c.shortTitle || c.key,
+              icon: CATEGORY_ICON_MAP[c.key] || "📜",
+            }));
+          setCategories([{ id: "all", label: "All Reports", icon: "✨" }, ...apiCats]);
+        }
+      } catch {
+        // Fallback to default presets
+      }
+    }
+    loadCategories();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <div className="relative w-full overflow-hidden bg-gradient-to-b from-[#fdf6e9] via-[#fbf1dc] to-[#fdf8f0] border-b border-[#e6c896]/60 pt-10 pb-12 sm:pt-14 sm:pb-16 px-4 sm:px-6 lg:px-8">

@@ -12,11 +12,11 @@ import { ReportReviews } from "./components/ReportReviews";
 import { ReportsFAQ } from "./components/ReportsFAQ";
 import { ReportsConsultCTA } from "./components/ReportsConsultCTA";
 import { ReportPreviewModal } from "./components/ReportPreviewModal";
-import { AstrologyReportItem, ReportCategory } from "./reports";
+import { AstrologyReportItem } from "./reports";
 
 export default function ReportsPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<ReportCategory>("all");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [previewReport, setPreviewReport] = useState<AstrologyReportItem | null>(null);
 
   const handleOpenPreview = (report: AstrologyReportItem) => {
@@ -50,6 +50,7 @@ export default function ReportsPage() {
       <ReportsCatalog
         searchQuery={searchQuery}
         selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
         onOpenPreview={handleOpenPreview}
       />
 

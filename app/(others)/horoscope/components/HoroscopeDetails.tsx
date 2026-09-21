@@ -1,6 +1,6 @@
 "use client";
 
-import { CategorySection } from "../horoscopeApi";
+import { CategorySection } from "../horoscope";
 
 interface HoroscopeDetailsProps {
   sections: CategorySection[];

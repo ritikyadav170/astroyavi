@@ -12,7 +12,7 @@ import {
   ArrowRight,
   ShieldCheck,
 } from "lucide-react";
-import { AstrologyReportItem } from "../types";
+import { AstrologyReportItem } from "../reports";
 import Link from "next/link";
 
 interface ReportPreviewModalProps {

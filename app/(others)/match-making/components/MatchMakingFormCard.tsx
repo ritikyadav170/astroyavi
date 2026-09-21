@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { previousReports, ProfileDetails } from "../matchMakingApi";
+import { previousReports, ProfileDetails } from "../matchMaking";
 
 interface MatchMakingFormCardProps {
   boyDetails: ProfileDetails;

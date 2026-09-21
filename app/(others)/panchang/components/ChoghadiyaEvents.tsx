@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { choghadiyaList, planetaryEvents } from "../panchangApi";
+import { choghadiyaList, planetaryEvents } from "../panchang";
 
 export function ChoghadiyaEvents() {
   return (
@@ -26,13 +26,12 @@ export function ChoghadiyaEvents() {
                   </p>
                 </div>
                 <span
-                  className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                    item.status === "Auspicious"
+                  className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${item.status === "Auspicious"
                       ? "bg-green-100 text-green-800"
                       : item.status === "Inauspicious"
-                      ? "bg-red-100 text-red-800"
-                      : "bg-amber-100 text-amber-800"
-                  }`}
+                        ? "bg-red-100 text-red-800"
+                        : "bg-amber-100 text-amber-800"
+                    }`}
                 >
                   {item.status}
                 </span>

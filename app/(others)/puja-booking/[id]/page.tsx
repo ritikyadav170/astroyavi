@@ -8,7 +8,7 @@ import {
   PujaDetailData,
   TIME_SLOTS,
   getPujaDetailById,
-} from "../pujaBookingApi";
+} from "../pujaBooking";
 import { PujaStatsBar } from "../components/PujaStatsBar";
 import { PujaGalleryAndBenefits } from "../components/PujaGalleryAndBenefits";
 import {
@@ -94,11 +94,10 @@ export default function PujaDetailPage() {
             {/* Online Puja Card */}
             <div
               onClick={() => setPujaMode("online")}
-              className={`p-5 rounded-2xl border-2 flex items-center justify-between cursor-pointer transition-all ${
-                pujaMode === "online"
+              className={`p-5 rounded-2xl border-2 flex items-center justify-between cursor-pointer transition-all ${pujaMode === "online"
                   ? "border-[#1E3B2B] bg-white shadow-sm"
                   : "border-slate-200 bg-white hover:border-slate-300"
-              }`}
+                }`}
             >
               <div className="flex items-start gap-4">
                 <div className="p-2.5 rounded-xl bg-slate-100 text-slate-700">
@@ -115,11 +114,10 @@ export default function PujaDetailPage() {
               </div>
 
               <div
-                className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                  pujaMode === "online"
+                className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${pujaMode === "online"
                     ? "border-[#1E3B2B] bg-[#1E3B2B]"
                     : "border-slate-300"
-                }`}
+                  }`}
               >
                 {pujaMode === "online" && (
                   <div className="w-2 h-2 rounded-full bg-white" />
@@ -130,11 +128,10 @@ export default function PujaDetailPage() {
             {/* Offline Puja Card */}
             <div
               onClick={() => setPujaMode("offline")}
-              className={`p-5 rounded-2xl border-2 flex items-center justify-between cursor-pointer transition-all ${
-                pujaMode === "offline"
+              className={`p-5 rounded-2xl border-2 flex items-center justify-between cursor-pointer transition-all ${pujaMode === "offline"
                   ? "border-[#1E3B2B] bg-white shadow-sm"
                   : "border-slate-200 bg-white hover:border-slate-300"
-              }`}
+                }`}
             >
               <div className="flex items-start gap-4">
                 <div className="p-2.5 rounded-xl bg-slate-100 text-slate-700">
@@ -151,11 +148,10 @@ export default function PujaDetailPage() {
               </div>
 
               <div
-                className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                  pujaMode === "offline"
+                className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${pujaMode === "offline"
                     ? "border-[#1E3B2B] bg-[#1E3B2B]"
                     : "border-slate-300"
-                }`}
+                  }`}
               >
                 {pujaMode === "offline" && (
                   <div className="w-2 h-2 rounded-full bg-white" />
@@ -196,13 +192,12 @@ export default function PujaDetailPage() {
                   key={item.dayNumber}
                   disabled={isPastOrDisabled}
                   onClick={() => setSelectedDay(item.dayNumber)}
-                  className={`w-12 py-2.5 rounded-xl text-center flex flex-col items-center justify-center transition-all shrink-0 cursor-pointer ${
-                    isSelected
+                  className={`w-12 py-2.5 rounded-xl text-center flex flex-col items-center justify-center transition-all shrink-0 cursor-pointer ${isSelected
                       ? "bg-[#1E3B2B] text-white font-bold shadow-md"
                       : isPastOrDisabled
                         ? "bg-slate-200 text-slate-500 cursor-not-allowed border border-slate-200"
                         : "bg-white border border-slate-300 text-slate-800 hover:border-slate-400"
-                  }`}
+                    }`}
                 >
                   <span className="text-[11px] font-medium opacity-80">
                     {item.dayName}
@@ -226,13 +221,12 @@ export default function PujaDetailPage() {
                     key={slot.time}
                     disabled={!slot.available}
                     onClick={() => setSelectedTime(slot.time)}
-                    className={`px-5 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-                      isSelected
+                    className={`px-5 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer ${isSelected
                         ? "bg-[#1E3B2B] text-white shadow-sm"
                         : !slot.available
                           ? "bg-slate-200/80 text-slate-400 cursor-not-allowed"
                           : "bg-white border border-slate-400 text-slate-800 hover:bg-slate-50"
-                    }`}
+                      }`}
                   >
                     {slot.time}
                   </button>

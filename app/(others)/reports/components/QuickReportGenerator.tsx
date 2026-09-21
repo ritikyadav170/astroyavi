@@ -14,7 +14,7 @@ import {
   Flame,
   Star,
 } from "lucide-react";
-import { UserReportForm } from "../types";
+import { UserReportForm } from "../reports";
 
 export function QuickReportGenerator() {
   const [formData, setFormData] = useState<UserReportForm>({
@@ -87,11 +87,10 @@ export function QuickReportGenerator() {
                     key={item.id}
                     type="button"
                     onClick={() => setFormData({ ...formData, reportType: item.id })}
-                    className={`flex items-center justify-center gap-2 p-3 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-                      formData.reportType === item.id
+                    className={`flex items-center justify-center gap-2 p-3 rounded-xl border text-xs font-bold transition-all cursor-pointer ${formData.reportType === item.id
                         ? "bg-gradient-to-r from-[#c85a17] to-amber-600 border-amber-300 text-white shadow-md shadow-orange-950/40"
                         : "bg-white/10 hover:bg-white/15 border-white/20 text-slate-200"
-                    }`}
+                      }`}
                   >
                     <span>{item.icon}</span>
                     <span>{item.label}</span>
@@ -129,11 +128,10 @@ export function QuickReportGenerator() {
                       key={g}
                       type="button"
                       onClick={() => setFormData({ ...formData, gender: g })}
-                      className={`py-3 rounded-xl border text-xs font-bold capitalize transition-all cursor-pointer ${
-                        formData.gender === g
+                      className={`py-3 rounded-xl border text-xs font-bold capitalize transition-all cursor-pointer ${formData.gender === g
                           ? "bg-amber-500/30 border-amber-400 text-amber-200"
                           : "bg-white/10 border-white/20 text-slate-300"
-                      }`}
+                        }`}
                     >
                       {g}
                     </button>
@@ -294,11 +292,10 @@ export function QuickReportGenerator() {
                 <button
                   key={t.id}
                   onClick={() => setActiveTab(t.id as any)}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
-                    activeTab === t.id
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${activeTab === t.id
                       ? "bg-amber-400 text-[#131b3e] shadow-md"
                       : "text-slate-300 hover:text-white hover:bg-white/10"
-                  }`}
+                    }`}
                 >
                   {t.label}
                 </button>

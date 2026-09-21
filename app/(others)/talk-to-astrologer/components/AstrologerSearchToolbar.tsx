@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Search, SlidersHorizontal } from "lucide-react";
-import { filterCategories } from "../talkToAstrologerApi";
+import { filterCategories } from "../talkToAstrologer";
 
 interface AstrologerSearchToolbarProps {
   activeCategory: string;
@@ -92,11 +92,10 @@ export function AstrologerSearchToolbar({
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`shrink-0 px-5 py-2 text-xs sm:text-sm font-semibold rounded-full border transition-all cursor-pointer ${
-                activeCategory === cat
+              className={`shrink-0 px-5 py-2 text-xs sm:text-sm font-semibold rounded-full border transition-all cursor-pointer ${activeCategory === cat
                   ? "bg-[#1b4327] text-white border-[#1b4327] shadow-sm"
                   : "bg-white text-[#2b1810] border-[#e6c896] hover:border-[#1b4327]"
-              }`}
+                }`}
             >
               {cat}
             </button>

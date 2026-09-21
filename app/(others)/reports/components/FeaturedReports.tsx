@@ -15,7 +15,7 @@ import {
   Check,
   Download,
 } from "lucide-react";
-import { AstrologyReportItem } from "../types";
+import { AstrologyReportItem } from "../reports";
 
 interface FeaturedReportsProps {
   onOpenPreview: (report: AstrologyReportItem) => void;

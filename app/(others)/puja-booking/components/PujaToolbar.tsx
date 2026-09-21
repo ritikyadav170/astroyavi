@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Search, SlidersHorizontal, X } from "lucide-react";
-import { CATEGORIES } from "../pujaBookingApi";
+import { CATEGORIES } from "../pujaBooking";
 
 interface PujaToolbarProps {
   searchQuery: string;
@@ -64,11 +64,10 @@ export function PujaToolbar({
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all shrink-0 cursor-pointer ${
-                  isActive
+                className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all shrink-0 cursor-pointer ${isActive
                     ? "bg-[#1E3B2B] text-white shadow-sm"
                     : "bg-white border border-slate-300 text-slate-800 hover:border-slate-400 hover:bg-slate-50"
-                }`}
+                  }`}
               >
                 {cat}
               </button>
@@ -100,11 +99,10 @@ export function PujaToolbar({
                   setSelectedCategory(cat);
                   setShowFilterModal(false);
                 }}
-                className={`px-4 py-2 rounded-xl text-xs font-semibold text-center border transition-all cursor-pointer ${
-                  selectedCategory === cat
+                className={`px-4 py-2 rounded-xl text-xs font-semibold text-center border transition-all cursor-pointer ${selectedCategory === cat
                     ? "bg-[#1E3B2B] text-white border-[#1E3B2B]"
                     : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
-                }`}
+                  }`}
               >
                 {cat}
               </button>

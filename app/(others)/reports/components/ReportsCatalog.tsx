@@ -15,7 +15,7 @@ import {
   Check,
   Filter,
 } from "lucide-react";
-import { AstrologyReportItem, ReportCategory } from "../types";
+import { AstrologyReportItem, ReportCategory } from "../reports";
 
 interface ReportsCatalogProps {
   searchQuery: string;

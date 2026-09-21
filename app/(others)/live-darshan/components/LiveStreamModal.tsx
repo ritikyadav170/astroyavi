@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { X, Sparkles, Volume2, VolumeX, Maximize2 } from "lucide-react";
-import { Mandir } from "../liveDarshanApi";
+import { Mandir } from "../liveDarshan";
 
 interface LiveStreamModalProps {
   mandir: Mandir;

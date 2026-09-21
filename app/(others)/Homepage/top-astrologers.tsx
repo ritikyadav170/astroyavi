@@ -15,7 +15,7 @@ import {
   Astrologer,
   getAstrologers,
   filterCategories,
-} from "../talk-to-astrologer/talkToAstrologerApi";
+} from "../talk-to-astrologer/talkToAstrologer";
 import { AstrologerDetailModal } from "../talk-to-astrologer/components/AstrologerDetailModal";
 import { formatImageUrl } from "@/lib/utils";
 
@@ -183,11 +183,10 @@ export function TopAstrologers() {
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`px-5 sm:px-6 py-2.5 text-xs sm:text-sm font-semibold rounded-full border transition-all duration-300 cursor-pointer ${
-                activeCategory === cat
+              className={`px-5 sm:px-6 py-2.5 text-xs sm:text-sm font-semibold rounded-full border transition-all duration-300 cursor-pointer ${activeCategory === cat
                   ? "bg-[#1b4327] text-white border-[#1b4327] shadow-lg scale-105"
                   : "bg-white text-[#2b1810] border-[#3c2415]/30 hover:border-[#1b4327] hover:bg-amber-50 hover:shadow-sm"
-              }`}
+                }`}
             >
               {cat}
             </button>

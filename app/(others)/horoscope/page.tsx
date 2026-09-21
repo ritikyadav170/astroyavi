@@ -11,7 +11,7 @@ import {
   ZodiacSignName,
   TimePeriod,
   CategorySection,
-} from "./horoscopeApi";
+} from "./horoscope";
 import { ZodiacHeader } from "./components/ZodiacHeader";
 import { HoroscopeDetails } from "./components/HoroscopeDetails";
 import { RecommendedAstrologers } from "./components/RecommendedAstrologers";

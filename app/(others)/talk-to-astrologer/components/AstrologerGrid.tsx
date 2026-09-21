@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Star, MessageSquare } from "lucide-react";
-import { Astrologer } from "../talkToAstrologerApi";
+import { Astrologer } from "../talkToAstrologer";
 import { formatImageUrl } from "@/lib/utils";
 
 interface AstrologerGridProps {

@@ -7,7 +7,7 @@ import { Footer } from "../Homepage/footer";
 import {
   ProfileDetails,
   getMatchMakingReport,
-} from "./matchMakingApi";
+} from "./matchMaking";
 import { ProfileSelector } from "./components/ProfileSelector";
 import { MatchMakingFormCard } from "./components/MatchMakingFormCard";
 import { MatchMakingReportView } from "./components/MatchMakingReportView";

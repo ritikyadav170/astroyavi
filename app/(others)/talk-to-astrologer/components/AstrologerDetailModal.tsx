@@ -13,7 +13,7 @@ import {
   Award,
   Loader2,
 } from "lucide-react";
-import { Astrologer, getAstrologerById } from "../talkToAstrologerApi";
+import { Astrologer, getAstrologerById } from "../talkToAstrologer";
 import { toast } from "@components/ui/toaster";
 import { formatImageUrl } from "@/lib/utils";
 

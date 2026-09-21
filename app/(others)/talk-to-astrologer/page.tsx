@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { AstroNavbar } from "../Homepage/navbar";
 import { Footer } from "../Homepage/footer";
-import { Astrologer, getAstrologers } from "./talkToAstrologerApi";
+import { Astrologer, getAstrologers } from "./talkToAstrologer";
 import { AstrologerSearchToolbar } from "./components/AstrologerSearchToolbar";
 import { AstrologerGrid } from "./components/AstrologerGrid";
 import { AstrologerDetailModal } from "./components/AstrologerDetailModal";

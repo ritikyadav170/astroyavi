@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Star, Calendar, Clock, ShieldCheck } from "lucide-react";
-import { PujaDetailData } from "../pujaBookingApi";
+import { PujaDetailData } from "../pujaBooking";
 
 interface PujaStatsBarProps {
   puja: PujaDetailData;

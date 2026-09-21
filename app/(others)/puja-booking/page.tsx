@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { AstroNavbar } from "../Homepage/navbar";
 import { Footer } from "../Homepage/footer";
-import { PujaItem, getPujaList } from "./pujaBookingApi";
+import { PujaItem, getPujaList } from "./pujaBooking";
 import { PujaToolbar } from "./components/PujaToolbar";
 import { PujaGrid } from "./components/PujaGrid";
 

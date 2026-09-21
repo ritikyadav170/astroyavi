@@ -7,7 +7,7 @@ import {
   ZodiacSignName,
   TimePeriod,
   ZodiacSign,
-} from "../horoscopeApi";
+} from "../horoscope";
 
 interface ZodiacHeaderProps {
   selectedSign: ZodiacSignName;

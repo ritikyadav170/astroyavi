@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Eye, Play } from "lucide-react";
-import { Mandir } from "../liveDarshanApi";
+import { Mandir } from "../liveDarshan";
 
 interface MandirGridProps {
   mandirs: Mandir[];

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { profileCards } from "../matchMakingApi";
+import { profileCards } from "../matchMaking";
 
 interface ProfileSelectorProps {
   selectedProfiles: string[];

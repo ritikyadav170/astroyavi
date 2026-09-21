@@ -7,7 +7,7 @@ import {
   PanchangMetricsData,
   defaultMetrics,
   getPanchangData,
-} from "./panchangApi";
+} from "./panchang";
 import { PanchangHeaderForm } from "./components/PanchangHeaderForm";
 import { PanchangMetrics } from "./components/PanchangMetrics";
 import { PanchangCalendarWidget } from "./components/PanchangCalendarWidget";

@@ -8,7 +8,7 @@ import {
   MessageSquare,
   Video,
 } from "lucide-react";
-import { Astrologer, getAstrologers } from "../../talk-to-astrologer/talkToAstrologerApi";
+import { Astrologer, getAstrologers } from "../../talk-to-astrologer/talkToAstrologer";
 import { AstrologerDetailModal } from "../../talk-to-astrologer/components/AstrologerDetailModal";
 import { formatImageUrl } from "@/lib/utils";
 
@@ -124,7 +124,7 @@ export function KundliAstrologers() {
           setList(data.slice(0, 5));
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   return (

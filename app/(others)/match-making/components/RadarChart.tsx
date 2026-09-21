@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { compatibilityData } from "../matchMakingApi";
+import { compatibilityData } from "../matchMaking";
 
 export function RadarChart() {
   const radialPoints = useMemo(() => {

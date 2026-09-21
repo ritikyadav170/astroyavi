@@ -9,7 +9,7 @@ import {
   Sparkles,
   Clock,
 } from "lucide-react";
-import { PanchangMetricsData } from "../panchangApi";
+import { PanchangMetricsData } from "../panchang";
 
 interface PanchangMetricsProps {
   metrics: PanchangMetricsData;

@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { PujaItem } from "../pujaBookingApi";
+import { PujaItem } from "../pujaBooking";
 
 interface PujaGridProps {
   pujas: PujaItem[];

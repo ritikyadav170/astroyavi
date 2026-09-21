@@ -86,13 +86,6 @@ export const reportTabs: readonly string[] = [
 // ==========================================
 export async function getKundliReport(data: KundliFormData) {
   try {
-    // Example backend API call:
-    // const res = await fetch("/api/kundli", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify(data),
-    // });
-    // return await res.json();
     return { success: true, data };
   } catch (error) {
     console.error("Error fetching Kundli data:", error);

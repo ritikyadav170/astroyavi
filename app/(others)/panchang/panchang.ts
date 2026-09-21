@@ -156,13 +156,9 @@ export const defaultMetrics: PanchangMetricsData = {
 
 // ==========================================
 // API INTEGRATION FUNCTION FOR PANCHANG
-// Connect your backend API URL here when ready
 // ==========================================
 export async function getPanchangData(date: string, place: string) {
   try {
-    // Example backend API call:
-    // const res = await fetch(`/api/panchang?date=${date}&place=${encodeURIComponent(place)}`);
-    // return await res.json();
     return {
       metrics: defaultMetrics,
       choghadiya: choghadiyaList,

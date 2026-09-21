@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { AstroNavbar } from "../Homepage/navbar";
 import { Footer } from "../Homepage/footer";
-import { Mandir, getLiveMandirs } from "./liveDarshanApi";
+import { Mandir, getLiveMandirs } from "./liveDarshan";
 import { MandirSearchHeader } from "./components/MandirSearchHeader";
 import { MandirGrid } from "./components/MandirGrid";
 import { LiveStreamModal } from "./components/LiveStreamModal";

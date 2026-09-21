@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { PujaDetailData } from "../pujaBookingApi";
+import { PujaDetailData } from "../pujaBooking";
 
 interface PujaGalleryAndBenefitsProps {
   puja: PujaDetailData;

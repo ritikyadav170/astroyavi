@@ -14,7 +14,7 @@ import {
   profileCards,
   recommendedAstrologers,
   reportText,
-} from "../matchMakingApi";
+} from "../matchMaking";
 
 interface MatchMakingReportViewProps {
   onReset: () => void;

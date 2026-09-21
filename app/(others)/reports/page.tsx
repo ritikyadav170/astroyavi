@@ -12,7 +12,7 @@ import { ReportReviews } from "./components/ReportReviews";
 import { ReportsFAQ } from "./components/ReportsFAQ";
 import { ReportsConsultCTA } from "./components/ReportsConsultCTA";
 import { ReportPreviewModal } from "./components/ReportPreviewModal";
-import { AstrologyReportItem, ReportCategory } from "./types";
+import { AstrologyReportItem, ReportCategory } from "./reports";
 
 export default function ReportsPage() {
   const [searchQuery, setSearchQuery] = useState("");

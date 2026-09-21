@@ -25,6 +25,7 @@ import {
   createReportTransaction,
   getMyReportTransactions,
 } from "../reports";
+import { formatImageUrl } from "@/lib/utils";
 import { toast } from "@components/ui/toaster";
 
 interface ReportPreviewModalProps {
@@ -305,6 +306,16 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
             <div className="space-y-6">
               {/* Header Box */}
               <div className="p-6 rounded-2xl bg-white border border-amber-200/80 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
+                {report.thumbImage && (
+                  <img
+                    src={formatImageUrl(report.thumbImage)}
+                    alt={report.title}
+                    className="w-20 h-20 rounded-2xl object-cover border-2 border-amber-400/80 shadow-md p-0.5 bg-amber-50/70 shrink-0"
+                    onError={(e) => {
+                      (e.target as HTMLElement).style.display = "none";
+                    }}
+                  />
+                )}
                 <div className="space-y-1.5 flex-1">
                   <div className="flex items-center justify-center sm:justify-start gap-2">
                     <span className="px-3 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-[#c85a17] border border-amber-300">

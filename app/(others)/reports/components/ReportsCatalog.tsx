@@ -371,8 +371,28 @@ export function ReportsCatalog({
         </div>
       )}
 
-      {/* Case 1: Grouped View (When "All" is active with no search query) */}
-      {groupedByCategory && groupedByCategory.length > 0 ? (
+      {/* Content: Loading Skeleton or Grouped or Filtered or Empty */}
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
+          {[1, 2, 3, 4, 5, 6].map((n) => (
+            <div
+              key={n}
+              className="bg-white rounded-2xl p-6 border border-amber-200/60 shadow-xs h-72 flex flex-col justify-between"
+            >
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="w-12 h-12 rounded-xl bg-amber-100/60" />
+                  <div className="w-20 h-5 rounded-full bg-amber-100/60" />
+                </div>
+                <div className="w-3/4 h-5 rounded-lg bg-slate-200" />
+                <div className="w-full h-10 rounded-lg bg-slate-100" />
+              </div>
+              <div className="w-full h-9 rounded-xl bg-amber-100/50" />
+            </div>
+          ))}
+        </div>
+      ) : groupedByCategory && groupedByCategory.length > 0 ? (
+        /* Case 1: Grouped View (When "All" is active with no search query) */
         <div className="space-y-12">
           {groupedByCategory.map((group) => (
             <div key={group.categoryKey} className="space-y-4">

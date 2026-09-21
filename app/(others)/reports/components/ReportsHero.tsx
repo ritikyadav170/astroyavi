@@ -137,7 +137,13 @@ export function ReportsHero({
             return (
               <button
                 key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
+                onClick={() => {
+                  setSelectedCategory(cat.id);
+                  const el = document.getElementById("catalog");
+                  if (el) {
+                    el.scrollIntoView({ behavior: "smooth" });
+                  }
+                }}
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer ${
                   isActive
                     ? "bg-[#c85a17] text-white shadow-md shadow-orange-900/20 scale-105"

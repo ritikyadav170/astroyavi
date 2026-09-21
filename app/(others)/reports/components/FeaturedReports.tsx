@@ -116,7 +116,8 @@ export function FeaturedReports({ onOpenPreview }: FeaturedReportsProps) {
         {reports.map((report) => (
           <div
             key={report.id}
-            className="group relative bg-white rounded-3xl p-6 border border-amber-200/90 shadow-sm hover:shadow-xl hover:border-[#c85a17]/50 transition-all duration-300 flex flex-col justify-between"
+            onClick={() => onOpenPreview(report)}
+            className="group relative bg-white rounded-3xl p-6 border border-amber-200/90 shadow-sm hover:shadow-xl hover:border-[#c85a17]/50 transition-all duration-300 flex flex-col justify-between cursor-pointer"
           >
             <div>
               {/* Top Row: Thumbnail Image & Tag */}
@@ -184,7 +185,7 @@ export function FeaturedReports({ onOpenPreview }: FeaturedReportsProps) {
 
               {/* Feature Bullets from benefits */}
               <div className="space-y-1.5 mb-5">
-                {report.benefits.slice(0, 3).map((feat, idx) => (
+                {(report.benefits || []).slice(0, 3).map((feat, idx) => (
                   <div key={idx} className="flex items-start gap-2 text-xs text-slate-700 font-medium">
                     <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
                     <span className="line-clamp-1">{feat}</span>
@@ -197,7 +198,10 @@ export function FeaturedReports({ onOpenPreview }: FeaturedReportsProps) {
             <div className="flex items-center gap-2 pt-3 border-t border-slate-100">
               <button
                 type="button"
-                onClick={() => onOpenPreview(report)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpenPreview(report);
+                }}
                 className="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#c85a17] to-[#df6d28] hover:from-[#b04d11] hover:to-[#c85a17] text-white font-bold text-xs sm:text-sm text-center shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-1.5 group/btn cursor-pointer"
               >
                 <span>Get Report</span>
@@ -205,7 +209,10 @@ export function FeaturedReports({ onOpenPreview }: FeaturedReportsProps) {
               </button>
               <button
                 type="button"
-                onClick={() => onOpenPreview(report)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpenPreview(report);
+                }}
                 className="p-2.5 rounded-xl bg-amber-50/80 hover:bg-amber-100/80 border border-amber-200 text-slate-800 font-semibold text-xs transition-colors flex items-center gap-1 cursor-pointer"
                 title="Preview Sample Report"
               >

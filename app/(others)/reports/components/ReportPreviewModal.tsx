@@ -7,17 +7,11 @@ import {
   Download,
   Star,
   CheckCircle2,
-  Printer,
   Sparkles,
   ArrowRight,
-  ShieldCheck,
-  Calendar,
-  Clock,
-  MapPin,
   User,
   Loader2,
   AlertCircle,
-  ExternalLink,
   Layers,
   History,
 } from "lucide-react";
@@ -37,11 +31,12 @@ interface ReportPreviewModalProps {
   onClose: () => void;
 }
 
-export function ReportPreviewModal({ report, onClose }: ReportPreviewModalProps) {
+export function ReportPreviewModal({ report: initialReport, onClose }: ReportPreviewModalProps) {
+  const [report, setReport] = useState<AstrologyReportItem | null>(initialReport);
   const [activeTab, setActiveTab] = useState<"preview" | "order" | "my-reports">("preview");
   const [variants, setVariants] = useState<ReportVariantData[]>([]);
   const [selectedVariant, setSelectedVariant] = useState<ReportVariantData | null>(null);
-  const [loadingVariants, setLoadingVariants] = useState(false);
+  const [loadingDetails, setLoadingDetails] = useState(false);
 
   // Order Form State
   const [language, setLanguage] = useState<"en" | "hi">("en");
@@ -86,55 +81,78 @@ export function ReportPreviewModal({ report, onClose }: ReportPreviewModalProps)
     tzone: 5.5,
   });
 
-  const isCoupleReport = (report?.personCount || 1) === 2 || report?.categoryKey === "natal_couple_report" || report?.reportType === "match_making";
+  const isCoupleReport =
+    (report?.personCount || 1) === 2 ||
+    report?.categoryKey === "natal_couple_report" ||
+    report?.reportType === "match_making";
 
-  // Load variants when report opens
+  // Sync initialReport
   useEffect(() => {
-    if (!report) return;
+    setReport(initialReport);
+  }, [initialReport]);
+
+  // Load package details and variants when report opens
+  useEffect(() => {
+    if (!initialReport) return;
     setActiveTab("preview");
     setOrderSuccess(null);
     setOrderError("");
 
     let isMounted = true;
-    async function loadVariants() {
-      const packageId = report?.backendPackageId || report?.id;
-      if (!packageId) {
-        setVariants(report?.variants || []);
-        if (report?.variants && report.variants.length > 0) {
-          setSelectedVariant(report.variants.find((v) => v.isDefault) || report.variants[0]);
-        }
-        return;
-      }
+    async function loadFullData() {
+      const packageId = initialReport?.backendPackageId || initialReport?.id;
+      if (!packageId) return;
 
-      setLoadingVariants(true);
+      setLoadingDetails(true);
       try {
-        const res = await getReportPackageVariants({
-          reportPackage: packageId,
-        });
-        if (res?.data && Array.isArray(res.data) && res.data.length > 0 && isMounted) {
-          setVariants(res.data);
-          const def = res.data.find((v: any) => v.isDefault) || res.data[0];
+        // 1. Fetch live package by ID
+        const [pkgRes, varRes] = await Promise.allSettled([
+          getReportPackageById(packageId),
+          getReportPackageVariants({ reportPackage: packageId }),
+        ]);
+
+        if (pkgRes.status === "fulfilled" && pkgRes.value?.data && isMounted) {
+          const pkg = pkgRes.value.data;
+          const catObj = typeof pkg.category === "object" ? pkg.category : null;
+          const firstVariant = pkg.variants && pkg.variants[0];
+
+          setReport((prev) => ({
+            ...(prev || initialReport!),
+            title: pkg.title || prev?.title || "Astrology Report",
+            shortTitle: pkg.shortTitle || prev?.shortTitle,
+            thumbImage: pkg.thumbImage || prev?.thumbImage,
+            description: pkg.description || prev?.description || "",
+            benefits: pkg.benefits && pkg.benefits.length > 0 ? pkg.benefits : prev?.benefits || [],
+            reportType: pkg.reportType || prev?.reportType || "vedic_report",
+            personCount: pkg.personCount || prev?.personCount || 1,
+            hasVariants: Boolean(pkg.hasVariants),
+            variants: pkg.variants || prev?.variants || [],
+            categoryKey: catObj?.key || prev?.categoryKey || "vedic_reports",
+            categoryTitle: catObj?.title || prev?.categoryTitle || "Vedic Reports",
+          }));
+        }
+
+        // 2. Set variants
+        if (varRes.status === "fulfilled" && varRes.value?.data && Array.isArray(varRes.value.data) && varRes.value.data.length > 0 && isMounted) {
+          setVariants(varRes.value.data);
+          const def = varRes.value.data.find((v: any) => v.isDefault) || varRes.value.data[0];
           setSelectedVariant(def);
-        } else if (report?.variants && report.variants.length > 0 && isMounted) {
-          setVariants(report.variants);
-          setSelectedVariant(report.variants.find((v) => v.isDefault) || report.variants[0]);
+        } else if (initialReport?.variants && initialReport.variants.length > 0 && isMounted) {
+          setVariants(initialReport.variants);
+          setSelectedVariant(initialReport.variants.find((v) => v.isDefault) || initialReport.variants[0]);
         }
       } catch (err) {
-        console.error("Failed to load variants", err);
-        if (report?.variants && report.variants.length > 0 && isMounted) {
-          setVariants(report.variants);
-          setSelectedVariant(report.variants.find((v) => v.isDefault) || report.variants[0]);
-        }
+        console.error("Failed to load report package details", err);
       } finally {
-        if (isMounted) setLoadingVariants(false);
+        if (isMounted) setLoadingDetails(false);
       }
     }
 
-    loadVariants();
+    loadFullData();
     return () => {
       isMounted = false;
     };
-  }, [report]);
+  }, [initialReport]);
 
   // Load user transactions when My Reports tab is selected
   useEffect(() => {
@@ -306,52 +324,89 @@ export function ReportPreviewModal({ report, onClose }: ReportPreviewModalProps)
                 </div>
               </div>
 
-              {/* Package Variants Selection (if any) */}
-              {variants.length > 1 && (
-                <div className="space-y-2">
+              {/* Package Variants Selection */}
+              <div className="space-y-3 p-5 rounded-2xl bg-white border border-amber-200/80 shadow-xs">
+                <div className="flex items-center justify-between">
                   <h4 className="font-serif font-bold text-sm text-[#2d1a0e] flex items-center gap-1.5">
                     <Layers className="w-4 h-4 text-[#c85a17]" />
-                    <span>Choose Timeline / Variant:</span>
+                    <span>Available Package Variants &amp; Timelines:</span>
                   </h4>
+                  <span className="text-[11px] font-bold text-[#c85a17] bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
+                    {variants.length} {variants.length === 1 ? "Option" : "Options"} Available
+                  </span>
+                </div>
+
+                {loadingDetails ? (
+                  <div className="py-6 flex items-center justify-center gap-2 text-xs text-slate-500">
+                    <Loader2 className="w-4 h-4 animate-spin text-[#c85a17]" />
+                    <span>Fetching live package variants...</span>
+                  </div>
+                ) : variants.length > 0 ? (
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     {variants.map((v) => {
                       const isSelected = selectedVariant?._id === v._id;
+                      const discountPercent =
+                        v.price > v.sellPrice
+                          ? Math.round(((v.price - v.sellPrice) / v.price) * 100)
+                          : 0;
+
                       return (
-                        <button
+                        <div
                           key={v._id}
-                          type="button"
                           onClick={() => setSelectedVariant(v)}
-                          className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer ${
+                          className={`p-4 rounded-2xl border text-left transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between ${
                             isSelected
-                              ? "bg-amber-50/90 border-[#c85a17] shadow-sm ring-2 ring-[#c85a17]/20"
-                              : "bg-white border-slate-200 hover:border-amber-300"
+                              ? "bg-gradient-to-b from-amber-50/90 to-orange-50/60 border-[#c85a17] shadow-md ring-2 ring-[#c85a17]/30 scale-[1.02]"
+                              : "bg-white border-slate-200 hover:border-amber-300 hover:shadow-sm"
                           }`}
                         >
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold text-slate-800">
-                              {typeof v.variantName === "string" ? v.variantName : "Standard"}
+                          {discountPercent > 0 && (
+                            <span className="absolute top-2 right-2 px-2 py-0.5 rounded-md text-[9px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                              {discountPercent}% OFF
                             </span>
-                            {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-[#c85a17]" />}
+                          )}
+
+                          <div>
+                            <div className="flex items-center gap-1.5 mb-1">
+                              <span
+                                className={`w-4 h-4 rounded-full border flex items-center justify-center text-[10px] ${
+                                  isSelected
+                                    ? "border-[#c85a17] bg-[#c85a17] text-white"
+                                    : "border-slate-300 bg-slate-100 text-transparent"
+                                }`}
+                              >
+                                ✓
+                              </span>
+                              <span className="text-xs font-bold text-slate-900 line-clamp-1">
+                                {typeof v.variantName === "string" ? v.variantName : "Standard Report"}
+                              </span>
+                            </div>
+
+                            <p className="text-[11px] text-slate-500 font-medium">
+                              {v.duration ? v.duration : v.pages ? `${v.pages} Pages PDF` : "Detailed Analysis"}
+                            </p>
                           </div>
-                          <div className="text-[11px] text-slate-500 mt-1">
-                            {v.pages ? `${v.pages} Pages` : "Comprehensive"}
-                          </div>
-                          <div className="flex items-baseline gap-1 mt-1.5">
-                            <span className="text-sm font-extrabold text-[#c85a17]">
+
+                          <div className="flex items-baseline gap-1.5 mt-3 pt-2 border-t border-slate-100">
+                            <span className="text-base font-black text-[#c85a17]">
                               ₹{v.sellPrice}
                             </span>
                             {v.price > v.sellPrice && (
-                              <span className="text-[10px] text-slate-400 line-through">
+                              <span className="text-xs text-slate-400 line-through">
                                 ₹{v.price}
                               </span>
                             )}
                           </div>
-                        </button>
+                        </div>
                       );
                     })}
                   </div>
-                </div>
-              )}
+                ) : (
+                  <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs text-slate-700">
+                    Standard comprehensive edition included with full charts and remedies.
+                  </div>
+                )}
+              </div>
 
               {/* What's Inside This Report */}
               <div className="space-y-3">
@@ -483,6 +538,60 @@ export function ReportPreviewModal({ report, onClose }: ReportPreviewModalProps)
                       </button>
                     </div>
                   </div>
+
+                  {/* Variant Selection in Order Tab (if variants exist) */}
+                  {variants.length > 1 && (
+                    <div className="p-4 rounded-2xl bg-white border border-amber-200/80 space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-serif font-bold text-xs sm:text-sm text-[#2d1a0e] flex items-center gap-1.5">
+                          <Layers className="w-4 h-4 text-[#c85a17]" />
+                          <span>Select Package Variant / Duration:</span>
+                        </h4>
+                        <span className="text-[11px] font-bold text-[#c85a17] bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                          {selectedVariant?.variantName || "Selected"}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                        {variants.map((v) => {
+                          const isSelected = selectedVariant?._id === v._id;
+                          return (
+                            <button
+                              key={v._id}
+                              type="button"
+                              onClick={() => setSelectedVariant(v)}
+                              className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                                isSelected
+                                  ? "bg-amber-50/90 border-[#c85a17] shadow-xs ring-2 ring-[#c85a17]/20"
+                                  : "bg-slate-50/70 border-slate-200 hover:border-amber-300"
+                              }`}
+                            >
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs font-bold text-slate-800">
+                                  {typeof v.variantName === "string" ? v.variantName : "Standard"}
+                                </span>
+                                {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-[#c85a17]" />}
+                              </div>
+                              <div className="flex items-baseline gap-1 mt-1">
+                                <span className="text-sm font-extrabold text-[#c85a17]">
+                                  ₹{v.sellPrice}
+                                </span>
+                                {v.price > v.sellPrice && (
+                                  <span className="text-[10px] text-slate-400 line-through">
+                                    ₹{v.price}
+                                  </span>
+                                )}
+                                {v.pages && (
+                                  <span className="text-[10px] text-slate-500 ml-auto">
+                                    {v.pages} pgs
+                                  </span>
+                                )}
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
 
                   {/* Person 1 Details */}
                   <div className="p-5 rounded-2xl bg-white border border-amber-200/80 space-y-4">

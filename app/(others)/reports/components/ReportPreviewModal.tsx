@@ -25,7 +25,6 @@ import {
   createReportTransaction,
   getMyReportTransactions,
 } from "../reports";
-import Link from "next/link";
 import { toast } from "@components/ui/toaster";
 
 interface ReportPreviewModalProps {

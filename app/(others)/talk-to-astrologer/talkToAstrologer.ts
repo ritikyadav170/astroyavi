@@ -188,10 +188,27 @@ export function formatImageUrl(url?: string): string {
   ) {
     return trimmed;
   }
-  if (trimmed.startsWith("/")) {
-    return `http://160.187.87.138:9859${trimmed}`;
+  const envUrl =
+    process.env.NEXT_PUBLIC_IMAGE_BASE_URL ||
+    process.env.NEXT_PUBLIC_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    "";
+  let hostOrigin = "";
+  if (envUrl) {
+    try {
+      const parsed = new URL(envUrl);
+      hostOrigin = parsed.origin;
+    } catch {
+      hostOrigin = envUrl.replace(/\/api\/user\/?$/, "").replace(/\/api\/?$/, "");
+    }
   }
-  return `http://160.187.87.138:9859/${trimmed}`;
+
+  if (!hostOrigin) return trimmed;
+
+  if (trimmed.startsWith("/")) {
+    return `${hostOrigin}${trimmed}`;
+  }
+  return `${hostOrigin}/${trimmed}`;
 }
 
 // Normalize raw API item to Astrologer interface

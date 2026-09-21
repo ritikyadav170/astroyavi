@@ -156,6 +156,23 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
     };
   }, [initialReport]);
 
+  const handleSelectVariant = async (variant: ReportVariantData) => {
+    setSelectedVariant(variant);
+    try {
+      if (variant._id) {
+        const res = await getReportPackageVariantById(variant._id);
+        if (res?.data) {
+          setSelectedVariant((prev) => ({
+            ...(prev || variant),
+            ...res.data,
+          }));
+        }
+      }
+    } catch (err) {
+      console.error("Error fetching single variant details:", err);
+    }
+  };
+
   // Load user transactions when My Reports tab is selected
   useEffect(() => {
     if (activeTab === "my-reports") {
@@ -355,7 +372,7 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                       return (
                         <div
                           key={v._id}
-                          onClick={() => setSelectedVariant(v)}
+                          onClick={() => handleSelectVariant(v)}
                           className={`p-4 rounded-2xl border text-left transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between ${
                             isSelected
                               ? "bg-gradient-to-b from-amber-50/90 to-orange-50/60 border-[#c85a17] shadow-md ring-2 ring-[#c85a17]/30 scale-[1.02]"
@@ -542,15 +559,15 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                   </div>
 
                   {/* Variant Selection in Order Tab (if variants exist) */}
-                  {variants.length > 1 && (
-                    <div className="p-4 rounded-2xl bg-white border border-amber-200/80 space-y-2.5">
+                  {variants.length > 0 && (
+                    <div className="p-4 rounded-2xl bg-white border border-[#e6c896] space-y-2.5 shadow-2xs">
                       <div className="flex items-center justify-between">
-                        <h4 className="font-serif font-bold text-xs sm:text-sm text-[#2d1a0e] flex items-center gap-1.5">
-                          <Layers className="w-4 h-4 text-[#c85a17]" />
+                        <h4 className="font-serif font-bold text-xs sm:text-sm text-[#2b1810] flex items-center gap-1.5">
+                          <Layers className="w-4 h-4 text-[#1b4327]" />
                           <span>Select Package Variant / Duration:</span>
                         </h4>
-                        <span className="text-[11px] font-bold text-[#c85a17] bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
-                          {selectedVariant?.variantName || "Selected"}
+                        <span className="text-[11px] font-bold text-[#1b4327] bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-300">
+                          {selectedVariant?.variantName || "Standard"}
                         </span>
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
@@ -560,21 +577,21 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                             <button
                               key={v._id}
                               type="button"
-                              onClick={() => setSelectedVariant(v)}
+                              onClick={() => handleSelectVariant(v)}
                               className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                                 isSelected
-                                  ? "bg-amber-50/90 border-[#c85a17] shadow-xs ring-2 ring-[#c85a17]/20"
-                                  : "bg-slate-50/70 border-slate-200 hover:border-amber-300"
+                                  ? "bg-emerald-50/70 border-[#1b4327] shadow-xs ring-2 ring-[#1b4327]/20"
+                                  : "bg-slate-50/70 border-slate-200 hover:border-[#1b4327]/60"
                               }`}
                             >
                               <div className="flex items-center justify-between">
-                                <span className="text-xs font-bold text-slate-800">
+                                <span className="text-xs font-bold text-slate-900">
                                   {typeof v.variantName === "string" ? v.variantName : "Standard"}
                                 </span>
-                                {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-[#c85a17]" />}
+                                {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-[#1b4327]" />}
                               </div>
                               <div className="flex items-baseline gap-1 mt-1">
-                                <span className="text-sm font-extrabold text-[#c85a17]">
+                                <span className="text-sm font-extrabold text-[#1b4327]">
                                   ₹{v.sellPrice}
                                 </span>
                                 {v.price > v.sellPrice && (

@@ -14,6 +14,16 @@ import {
   AlertCircle,
   Layers,
   History,
+  ShieldCheck,
+  Zap,
+  BookOpen,
+  Calendar,
+  Clock,
+  MapPin,
+  Check,
+  Eye,
+  Award,
+  Flame,
 } from "lucide-react";
 import {
   AstrologyReportItem,
@@ -33,12 +43,30 @@ interface ReportPreviewModalProps {
   onClose: () => void;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Beautiful Vedic Astrological SVG Emblems for fallback / decoration
+// ─────────────────────────────────────────────────────────────────────────────
+
+function KundliModalEmblem() {
+  return (
+    <svg viewBox="0 0 100 100" className="w-full h-full p-1" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="46" fill="#fffbeb" stroke="#d97706" strokeWidth="2.5" />
+      <rect x="22" y="22" width="56" height="56" transform="rotate(45 50 50)" fill="#ffffff" stroke="#801c10" strokeWidth="2" />
+      <line x1="10" y1="10" x2="90" y2="90" stroke="#d97706" strokeWidth="1.5" strokeDasharray="2 2" />
+      <line x1="90" y1="10" x2="10" y2="90" stroke="#d97706" strokeWidth="1.5" strokeDasharray="2 2" />
+      <circle cx="50" cy="50" r="14" fill="#801c10" stroke="#f59e0b" strokeWidth="2" />
+      <circle cx="50" cy="50" r="6" fill="#f59e0b" />
+    </svg>
+  );
+}
+
 export function ReportPreviewModal({ report: initialReport, onClose }: ReportPreviewModalProps) {
   const [report, setReport] = useState<AstrologyReportItem | null>(initialReport);
   const [activeTab, setActiveTab] = useState<"preview" | "order" | "my-reports">("preview");
   const [variants, setVariants] = useState<ReportVariantData[]>([]);
   const [selectedVariant, setSelectedVariant] = useState<ReportVariantData | null>(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   // Order Form State
   const [language, setLanguage] = useState<"en" | "hi">("en");
@@ -91,6 +119,7 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
   // Sync initialReport
   useEffect(() => {
     setReport(initialReport);
+    setImgError(false);
   }, [initialReport]);
 
   // Load package details and variants when report opens
@@ -101,71 +130,91 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
     setOrderError("");
 
     let isMounted = true;
-    async function loadFullData() {
-      const packageId = initialReport?.backendPackageId || initialReport?.id;
-      if (!packageId) return;
-
+    async function loadData() {
       setLoadingDetails(true);
       try {
-        // 1. Fetch live package by ID
-        const [pkgRes, varRes] = await Promise.allSettled([
-          getReportPackageById(packageId),
-          getReportPackageVariants({ reportPackage: packageId }),
-        ]);
+        const pkgId = initialReport?.backendPackageId || initialReport?.id;
+        if (pkgId) {
+          const [pkgRes, variantsRes] = await Promise.allSettled([
+            getReportPackageById(pkgId),
+            getReportPackageVariants({ reportPackage: pkgId, limit: 20 }),
+          ]);
 
-        if (pkgRes.status === "fulfilled" && pkgRes.value?.data && isMounted) {
-          const pkg = pkgRes.value.data;
-          const catObj = typeof pkg.category === "object" ? pkg.category : null;
-          const firstVariant = pkg.variants && pkg.variants[0];
+          if (isMounted) {
+            let loadedVariants: ReportVariantData[] = [];
+            if (variantsRes.status === "fulfilled" && variantsRes.value?.data) {
+              const resData = Array.isArray(variantsRes.value.data)
+                ? variantsRes.value.data
+                : variantsRes.value.data?.variants;
+              if (Array.isArray(resData) && resData.length > 0) {
+                loadedVariants = resData;
+              }
+            }
 
-          setReport((prev) => ({
-            ...(prev || initialReport!),
-            title: pkg.title || prev?.title || "Astrology Report",
-            shortTitle: pkg.shortTitle || prev?.shortTitle,
-            thumbImage: pkg.thumbImage || prev?.thumbImage,
-            description: pkg.description || prev?.description || "",
-            benefits: pkg.benefits && pkg.benefits.length > 0 ? pkg.benefits : prev?.benefits || [],
-            reportType: pkg.reportType || prev?.reportType || "vedic_report",
-            personCount: pkg.personCount || prev?.personCount || 1,
-            hasVariants: Boolean(pkg.hasVariants),
-            variants: pkg.variants || prev?.variants || [],
-            categoryKey: catObj?.key || prev?.categoryKey || "vedic_reports",
-            categoryTitle: catObj?.title || prev?.categoryTitle || "Vedic Reports",
-          }));
-        }
+            if (loadedVariants.length === 0 && initialReport?.variants && initialReport.variants.length > 0) {
+              loadedVariants = initialReport.variants;
+            }
 
-        // 2. Set variants
-        if (varRes.status === "fulfilled" && varRes.value?.data && Array.isArray(varRes.value.data) && varRes.value.data.length > 0 && isMounted) {
-          setVariants(varRes.value.data);
-          const def = varRes.value.data.find((v: any) => v.isDefault) || varRes.value.data[0];
-          setSelectedVariant(def);
-        } else if (initialReport?.variants && initialReport.variants.length > 0 && isMounted) {
-          setVariants(initialReport.variants);
-          setSelectedVariant(initialReport.variants.find((v) => v.isDefault) || initialReport.variants[0]);
+            setVariants(loadedVariants);
+
+            if (loadedVariants.length > 0) {
+              const def = loadedVariants.find((v) => v.isDefault) || loadedVariants[0];
+              setSelectedVariant(def);
+            }
+
+            if (pkgRes.status === "fulfilled" && pkgRes.value?.data) {
+              const bPkg = pkgRes.value.data;
+              const catObj = typeof bPkg.category === "object" ? bPkg.category : null;
+              const rawImg =
+                bPkg.thumbImage ||
+                bPkg.image ||
+                bPkg.thumbnail ||
+                bPkg.icon ||
+                bPkg.photo ||
+                bPkg.coverImage ||
+                bPkg.img ||
+                initialReport.thumbImage ||
+                "";
+
+              setReport((prev) => ({
+                ...(prev || initialReport),
+                title: bPkg.title || prev?.title || initialReport.title,
+                shortTitle: bPkg.shortTitle || prev?.shortTitle,
+                hindiTitle: bPkg.shortTitle ? `${bPkg.shortTitle} रिपोर्ट` : prev?.hindiTitle,
+                description: bPkg.description || prev?.description || initialReport.description,
+                thumbImage: formatImageUrl(rawImg),
+                benefits:
+                  bPkg.benefits && bPkg.benefits.length > 0
+                    ? bPkg.benefits
+                    : prev?.benefits || initialReport.benefits,
+                categoryTitle: catObj?.title || prev?.categoryTitle,
+                categoryKey: catObj?.key || prev?.categoryKey || "vedic_reports",
+                hasVariants: Boolean(bPkg.hasVariants || loadedVariants.length > 1),
+                variants: loadedVariants,
+              }));
+            }
+          }
         }
       } catch (err) {
-        console.error("Failed to load report package details", err);
+        console.error("Error fetching report details:", err);
       } finally {
         if (isMounted) setLoadingDetails(false);
       }
     }
 
-    loadFullData();
+    loadData();
     return () => {
       isMounted = false;
     };
   }, [initialReport]);
 
-  const handleSelectVariant = async (variant: ReportVariantData) => {
-    setSelectedVariant(variant);
+  const handleSelectVariant = async (v: ReportVariantData) => {
+    setSelectedVariant(v);
     try {
-      if (variant._id) {
-        const res = await getReportPackageVariantById(variant._id);
-        if (res?.data) {
-          setSelectedVariant((prev) => ({
-            ...(prev || variant),
-            ...res.data,
-          }));
+      if (v._id) {
+        const fullVariantRes = await getReportPackageVariantById(v._id);
+        if (fullVariantRes?.data) {
+          setSelectedVariant(fullVariantRes.data);
         }
       }
     } catch (err) {
@@ -221,7 +270,7 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
       const res = await createReportTransaction(payload);
       setOrderSuccess(res?.data || res);
       toast.success("Report Order Placed Successfully!", {
-        description: "Your report is being prepared. You can view or download it.",
+        description: "Your report is being generated. You can view or download it.",
       });
     } catch (err: any) {
       setOrderError(
@@ -234,20 +283,30 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
 
   const currentPrice = selectedVariant?.sellPrice ?? report.sellPrice ?? 299;
   const originalPrice = selectedVariant?.price ?? report.price ?? 599;
+  const discountPercent =
+    originalPrice > currentPrice
+      ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100)
+      : 0;
+
+  const validImageUrl = formatImageUrl(report.thumbImage);
+  const hasValidImage = Boolean(validImageUrl) && !imgError;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-3xl max-h-[92vh] bg-[#fdfaf3] rounded-3xl shadow-2xl border border-amber-300 overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
-        {/* Modal Top Header */}
-        <div className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-[#2d1a0e] via-[#432414] to-[#2d1a0e] text-white border-b border-amber-500/30">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-900/65 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="relative w-full max-w-3xl max-h-[92vh] bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
+        {/* 1. Modal Top Banner Header */}
+        <div className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-[#801c10] via-[#59140b] to-[#2b1810] text-white border-b border-amber-400/30 shadow-xs">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-amber-400/20 border border-amber-400 text-amber-300 flex items-center justify-center">
-              <Sparkles className="w-4 h-4" />
+            <div className="w-10 h-10 rounded-full bg-amber-400/20 border border-amber-300 text-amber-300 flex items-center justify-center shadow-inner shrink-0">
+              <Sparkles className="w-5 h-5 animate-pulse" />
             </div>
             <div>
-              <span className="text-[10px] uppercase font-bold tracking-wider text-amber-300 block">
-                Vedic Astrology Report Suite
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] uppercase font-bold tracking-widest text-amber-300 block">
+                  VEDIC ASTROLOGY REPORT SUITE
+                </span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+              </div>
               <h3 className="font-serif text-base sm:text-lg font-bold text-white line-clamp-1">
                 {report.title}
               </h3>
@@ -255,43 +314,43 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition-all cursor-pointer hover:scale-105 active:scale-95"
             aria-label="Close Modal"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="flex items-center border-b border-amber-200/80 bg-white px-4 sm:px-6 gap-2 sm:gap-4 overflow-x-auto text-xs font-bold">
+        {/* 2. Crisp Segmented Navigation Bar on Clean White */}
+        <div className="flex items-center border-b border-slate-100 bg-white px-4 sm:px-6 py-3 gap-2 overflow-x-auto text-xs font-bold">
           <button
             onClick={() => setActiveTab("preview")}
-            className={`py-3 px-3 border-b-2 transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`py-2 px-4 rounded-full transition-all cursor-pointer flex items-center gap-1.5 ${
               activeTab === "preview"
-                ? "border-[#c85a17] text-[#c85a17]"
-                : "border-transparent text-slate-500 hover:text-slate-900"
+                ? "bg-[#1b4327] text-white shadow-sm ring-2 ring-amber-300/40"
+                : "bg-slate-50 text-slate-600 border border-slate-200/70 hover:border-[#1b4327] hover:text-[#1b4327]"
             }`}
           >
             <FileText className="w-3.5 h-3.5" />
-            <span>Overview & Preview</span>
+            <span>Overview &amp; Sample</span>
           </button>
           <button
             onClick={() => setActiveTab("order")}
-            className={`py-3 px-3 border-b-2 transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`py-2 px-4 rounded-full transition-all cursor-pointer flex items-center gap-1.5 ${
               activeTab === "order"
-                ? "border-[#c85a17] text-[#c85a17]"
-                : "border-transparent text-slate-500 hover:text-slate-900"
+                ? "bg-[#1b4327] text-white shadow-sm ring-2 ring-amber-300/40"
+                : "bg-slate-50 text-slate-600 border border-slate-200/70 hover:border-[#1b4327] hover:text-[#1b4327]"
             }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Generate & Order Report</span>
+            <span>Generate &amp; Order Report</span>
           </button>
           <button
             onClick={() => setActiveTab("my-reports")}
-            className={`py-3 px-3 border-b-2 transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`py-2 px-4 rounded-full transition-all cursor-pointer flex items-center gap-1.5 ${
               activeTab === "my-reports"
-                ? "border-[#c85a17] text-[#c85a17]"
-                : "border-transparent text-slate-500 hover:text-slate-900"
+                ? "bg-[#1b4327] text-white shadow-sm ring-2 ring-amber-300/40"
+                : "bg-slate-50 text-slate-600 border border-slate-200/70 hover:border-[#1b4327] hover:text-[#1b4327]"
             }`}
           >
             <History className="w-3.5 h-3.5" />
@@ -299,46 +358,67 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
           </button>
         </div>
 
-        {/* Scrollable Content Body */}
-        <div className="flex-1 overflow-y-auto p-5 sm:p-7 space-y-6 text-slate-800 text-sm">
+        {/* 3. Scrollable Content Body on Pure White */}
+        <div className="flex-1 overflow-y-auto p-5 sm:p-7 space-y-6 bg-white text-slate-800 text-sm">
           {/* TAB 1: OVERVIEW & SAMPLE PREVIEW */}
           {activeTab === "preview" && (
             <div className="space-y-6">
-              {/* Header Box */}
-              <div className="p-6 rounded-2xl bg-white border border-amber-200/80 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
-                {report.thumbImage && (
-                  <img
-                    src={formatImageUrl(report.thumbImage)}
-                    alt={report.title}
-                    className="w-20 h-20 rounded-2xl object-cover border-2 border-amber-400/80 shadow-md p-0.5 bg-amber-50/70 shrink-0"
-                    onError={(e) => {
-                      (e.target as HTMLElement).style.display = "none";
-                    }}
-                  />
-                )}
-                <div className="space-y-1.5 flex-1">
-                  <div className="flex items-center justify-center sm:justify-start gap-2">
-                    <span className="px-3 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-[#c85a17] border border-amber-300">
-                      Vedic Certified Calculation
+              {/* Grand Vedic Hero Certificate Box */}
+              <div className="p-6 rounded-3xl bg-gradient-to-br from-amber-50/50 via-white to-orange-50/30 border border-amber-200/80 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-6 relative overflow-hidden">
+                {/* Left Visual Artwork */}
+                <div className="relative shrink-0 flex items-center justify-center">
+                  {hasValidImage ? (
+                    <img
+                      src={validImageUrl}
+                      alt={report.title}
+                      onError={() => setImgError(true)}
+                      className="w-24 h-24 rounded-2xl object-cover border-2 border-[#1b4327] shadow-md p-1 bg-white"
+                    />
+                  ) : (
+                    <div className="w-24 h-24 rounded-2xl bg-amber-50/80 border-2 border-amber-300 flex items-center justify-center shadow-md p-1">
+                      <KundliModalEmblem />
+                    </div>
+                  )}
+                </div>
+
+                {/* Content Description */}
+                <div className="space-y-2 flex-1 text-center sm:text-left">
+                  <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
+                    <span className="px-3 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-[#801c10] border border-amber-300 shadow-2xs">
+                      ✨ Certified Vedic Accuracy
                     </span>
-                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                      {report.pages}
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs">
+                      📜 {report.pages}
                     </span>
+                    {discountPercent > 0 && (
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-red-100 text-red-800 border border-red-300 shadow-2xs">
+                        {discountPercent}% OFF
+                      </span>
+                    )}
                   </div>
-                  <h2 className="font-serif text-2xl font-bold text-[#2d1a0e]">
+
+                  <h2 className="font-serif text-xl sm:text-2xl font-bold text-slate-900">
                     {report.title}
                   </h2>
-                  <p className="text-xs text-slate-600 leading-relaxed">
+
+                  {report.hindiTitle && (
+                    <span className="inline-block text-xs font-semibold text-[#801c10] bg-amber-100/60 px-2.5 py-0.5 rounded-full border border-amber-200">
+                      {report.hindiTitle}
+                    </span>
+                  )}
+
+                  <p className="text-xs text-slate-600 leading-relaxed max-w-lg">
                     {report.description}
                   </p>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 flex flex-col items-center justify-center shrink-0 min-w-[130px]">
-                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                    Special Price
+                {/* Right Price Card */}
+                <div className="p-4 rounded-2xl bg-white border border-amber-200 flex flex-col items-center justify-center shrink-0 min-w-[140px] shadow-sm">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                    SPECIAL OFFER
                   </span>
-                  <div className="flex items-baseline gap-1 mt-0.5">
-                    <span className="text-2xl font-black text-[#c85a17]">
+                  <div className="flex items-baseline gap-1.5 mt-1">
+                    <span className="text-2xl font-black text-[#801c10]">
                       ₹{currentPrice}
                     </span>
                     {originalPrice > currentPrice && (
@@ -347,34 +427,34 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                       </span>
                     )}
                   </div>
-                  <span className="text-[10px] text-emerald-700 font-bold mt-1">
-                    Instant Download
+                  <span className="text-[10px] text-emerald-700 font-bold mt-1.5 flex items-center gap-1">
+                    <Zap className="w-3 h-3 text-emerald-600" /> Instant PDF
                   </span>
                 </div>
               </div>
 
               {/* Package Variants Selection */}
-              <div className="space-y-3 p-5 rounded-2xl bg-white border border-amber-200/80 shadow-xs">
+              <div className="space-y-3 p-5 rounded-3xl bg-slate-50/50 border border-slate-200/80 shadow-xs">
                 <div className="flex items-center justify-between">
-                  <h4 className="font-serif font-bold text-sm text-[#2d1a0e] flex items-center gap-1.5">
-                    <Layers className="w-4 h-4 text-[#c85a17]" />
+                  <h4 className="font-serif font-bold text-sm text-slate-900 flex items-center gap-1.5">
+                    <Layers className="w-4 h-4 text-[#801c10]" />
                     <span>Available Package Variants &amp; Timelines:</span>
                   </h4>
-                  <span className="text-[11px] font-bold text-[#c85a17] bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
+                  <span className="text-[11px] font-bold text-[#801c10] bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
                     {variants.length} {variants.length === 1 ? "Option" : "Options"} Available
                   </span>
                 </div>
 
                 {loadingDetails ? (
                   <div className="py-6 flex items-center justify-center gap-2 text-xs text-slate-500">
-                    <Loader2 className="w-4 h-4 animate-spin text-[#c85a17]" />
+                    <Loader2 className="w-4 h-4 animate-spin text-[#1b4327]" />
                     <span>Fetching live package variants...</span>
                   </div>
                 ) : variants.length > 0 ? (
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     {variants.map((v) => {
                       const isSelected = selectedVariant?._id === v._id;
-                      const discountPercent =
+                      const varDiscount =
                         v.price > v.sellPrice
                           ? Math.round(((v.price - v.sellPrice) / v.price) * 100)
                           : 0;
@@ -385,13 +465,13 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                           onClick={() => handleSelectVariant(v)}
                           className={`p-4 rounded-2xl border text-left transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between ${
                             isSelected
-                              ? "bg-gradient-to-b from-amber-50/90 to-orange-50/60 border-[#c85a17] shadow-md ring-2 ring-[#c85a17]/30 scale-[1.02]"
-                              : "bg-white border-slate-200 hover:border-amber-300 hover:shadow-sm"
+                              ? "bg-white border-[#1b4327] shadow-md ring-2 ring-[#1b4327]/30 scale-[1.02]"
+                              : "bg-white border-slate-200 hover:border-amber-300 hover:shadow-xs"
                           }`}
                         >
-                          {discountPercent > 0 && (
+                          {varDiscount > 0 && (
                             <span className="absolute top-2 right-2 px-2 py-0.5 rounded-md text-[9px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                              {discountPercent}% OFF
+                              {varDiscount}% OFF
                             </span>
                           )}
 
@@ -400,14 +480,14 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                               <span
                                 className={`w-4 h-4 rounded-full border flex items-center justify-center text-[10px] ${
                                   isSelected
-                                    ? "border-[#c85a17] bg-[#c85a17] text-white"
+                                    ? "border-[#1b4327] bg-[#1b4327] text-white"
                                     : "border-slate-300 bg-slate-100 text-transparent"
                                 }`}
                               >
                                 ✓
                               </span>
                               <span className="text-xs font-bold text-slate-900 line-clamp-1">
-                                {typeof v.variantName === "string" ? v.variantName : "Standard Report"}
+                                {typeof v.variantName === "string" ? v.variantName : "Standard Edition"}
                               </span>
                             </div>
 
@@ -417,7 +497,7 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                           </div>
 
                           <div className="flex items-baseline gap-1.5 mt-3 pt-2 border-t border-slate-100">
-                            <span className="text-base font-black text-[#c85a17]">
+                            <span className="text-base font-black text-[#801c10]">
                               ₹{v.sellPrice}
                             </span>
                             {v.price > v.sellPrice && (
@@ -437,77 +517,96 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                 )}
               </div>
 
-              {/* What's Inside This Report */}
+              {/* Comprehensive Features & Sections */}
               <div className="space-y-3">
-                <h4 className="font-serif font-bold text-sm text-[#2d1a0e] flex items-center gap-1.5">
+                <h4 className="font-serif font-bold text-sm text-slate-900 flex items-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                  <span>Comprehensive Report Features:</span>
+                  <span>Comprehensive Report Features &amp; Sections:</span>
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   {(report.benefits || []).map((feat, i) => (
                     <div
                       key={i}
-                      className="p-3 rounded-xl bg-amber-50/70 border border-amber-200/60 flex items-start gap-2"
+                      className="p-3.5 rounded-2xl bg-slate-50/70 hover:bg-emerald-50/30 border border-slate-200/70 hover:border-emerald-300 flex items-start gap-2.5 transition-colors shadow-2xs"
                     >
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                       <span className="text-xs font-medium text-slate-800">{feat}</span>
                     </div>
                   ))}
-                  <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-200/60 flex items-start gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                  <div className="p-3.5 rounded-2xl bg-slate-50/70 hover:bg-emerald-50/30 border border-slate-200/70 hover:border-emerald-300 flex items-start gap-2.5 transition-colors shadow-2xs">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                     <span className="text-xs font-medium text-slate-800">
-                      Verified Mahadasha Timeline & Astrological Yogas
+                      Verified Mahadasha Timeline &amp; Astrological Yogas
                     </span>
                   </div>
                 </div>
               </div>
 
-              {/* Sample Planetary Table */}
-              <div className="p-4 rounded-2xl bg-white border border-amber-200/80 overflow-x-auto">
+              {/* Sample Planetary Table on White */}
+              <div className="p-5 rounded-3xl bg-white border border-slate-200/80 overflow-x-auto shadow-xs">
                 <div className="flex items-center justify-between mb-3 text-xs font-bold text-slate-800">
-                  <span>Sample Astrological Chart Breakdown</span>
-                  <span className="text-[10px] text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
-                    High Accuracy Ephemeris
+                  <span className="font-serif text-sm">Sample Astrological Chart Breakdown</span>
+                  <span className="text-[10px] text-amber-900 bg-amber-100/70 px-2.5 py-0.5 rounded-full border border-amber-300 font-bold">
+                    Lahiri Ephemeris
                   </span>
                 </div>
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
-                    <tr className="bg-amber-100/50 text-slate-700 border-b border-amber-200">
-                      <th className="p-2 font-bold">Planet</th>
-                      <th className="p-2 font-bold">Sign (Rashi)</th>
-                      <th className="p-2 font-bold">Degree</th>
-                      <th className="p-2 font-bold">Nakshatra</th>
-                      <th className="p-2 font-bold">House</th>
-                      <th className="p-2 font-bold">Status</th>
+                    <tr className="bg-slate-50 text-slate-700 border-b border-slate-200">
+                      <th className="p-2.5 font-bold">Planet</th>
+                      <th className="p-2.5 font-bold">Sign (Rashi)</th>
+                      <th className="p-2.5 font-bold">Degree</th>
+                      <th className="p-2.5 font-bold">Nakshatra</th>
+                      <th className="p-2.5 font-bold">House</th>
+                      <th className="p-2.5 font-bold">Status</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     <tr>
-                      <td className="p-2 font-semibold">Sun (सूर्य)</td>
-                      <td className="p-2">Leo (सिंह)</td>
-                      <td className="p-2">12° 24&apos;</td>
-                      <td className="p-2">Magha (1)</td>
-                      <td className="p-2">1st House</td>
-                      <td className="p-2 text-emerald-700 font-bold">Own Sign</td>
+                      <td className="p-2.5 font-bold text-[#801c10]">Sun (सूर्य)</td>
+                      <td className="p-2.5">Leo (सिंह)</td>
+                      <td className="p-2.5">12&deg; 24&apos;</td>
+                      <td className="p-2.5">Magha (1)</td>
+                      <td className="p-2.5">1st House</td>
+                      <td className="p-2.5 text-emerald-700 font-bold">Own Sign</td>
                     </tr>
                     <tr>
-                      <td className="p-2 font-semibold">Moon (चन्द्र)</td>
-                      <td className="p-2">Taurus (वृषभ)</td>
-                      <td className="p-2">03° 10&apos;</td>
-                      <td className="p-2">Krittika (2)</td>
-                      <td className="p-2">10th House</td>
-                      <td className="p-2 text-emerald-700 font-bold">Exalted</td>
+                      <td className="p-2.5 font-bold text-[#801c10]">Moon (चन्द्र)</td>
+                      <td className="p-2.5">Taurus (वृषभ)</td>
+                      <td className="p-2.5">03&deg; 10&apos;</td>
+                      <td className="p-2.5">Krittika (2)</td>
+                      <td className="p-2.5">10th House</td>
+                      <td className="p-2.5 text-emerald-700 font-bold">Exalted</td>
                     </tr>
                     <tr>
-                      <td className="p-2 font-semibold">Jupiter (गुरु)</td>
-                      <td className="p-2">Pisces (मीन)</td>
-                      <td className="p-2">24° 50&apos;</td>
-                      <td className="p-2">Revati (3)</td>
-                      <td className="p-2">8th House</td>
-                      <td className="p-2 text-emerald-700 font-bold">Own House</td>
+                      <td className="p-2.5 font-bold text-[#801c10]">Jupiter (गुरु)</td>
+                      <td className="p-2.5">Pisces (मीन)</td>
+                      <td className="p-2.5">24&deg; 50&apos;</td>
+                      <td className="p-2.5">Revati (3)</td>
+                      <td className="p-2.5">8th House</td>
+                      <td className="p-2.5 text-emerald-700 font-bold">Own House</td>
                     </tr>
                   </tbody>
                 </table>
+              </div>
+
+              {/* Trust Strip */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center text-xs">
+                <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200/70">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600 mx-auto mb-1" />
+                  <span className="font-bold text-slate-900 block">100% Confidential</span>
+                  <span className="text-[10px] text-slate-500">Your birth info is private</span>
+                </div>
+                <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200/70">
+                  <Zap className="w-4 h-4 text-amber-600 mx-auto mb-1" />
+                  <span className="font-bold text-slate-900 block">Instant Generation</span>
+                  <span className="text-[10px] text-slate-500">PDF delivered immediately</span>
+                </div>
+                <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200/70">
+                  <Sparkles className="w-4 h-4 text-[#801c10] mx-auto mb-1" />
+                  <span className="font-bold text-slate-900 block">Vedic Remedies</span>
+                  <span className="text-[10px] text-slate-500">Personalized gemstone advice</span>
+                </div>
               </div>
             </div>
           )}
@@ -516,40 +615,41 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
           {activeTab === "order" && (
             <form onSubmit={handleOrderSubmit} className="space-y-6">
               {orderSuccess ? (
-                <div className="p-6 rounded-3xl bg-emerald-50 border border-emerald-200 text-center space-y-4 animate-in zoom-in-95">
-                  <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto text-2xl font-bold">
+                <div className="p-8 rounded-3xl bg-emerald-50 border border-emerald-200 text-center space-y-4 animate-in zoom-in-95">
+                  <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto text-3xl font-bold shadow-sm">
                     ✓
                   </div>
-                  <h3 className="font-serif text-xl font-bold text-slate-900">
+                  <h3 className="font-serif text-2xl font-bold text-slate-900">
                     Report Order Created Successfully!
                   </h3>
-                  <p className="text-xs text-slate-600 max-w-md mx-auto">
+                  <p className="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">
                     Your report calculation request has been recorded. You can view progress and download the completed PDF in the &quot;My Purchased Reports&quot; tab.
                   </p>
                   <button
                     type="button"
                     onClick={() => setActiveTab("my-reports")}
-                    className="px-6 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold shadow-md transition-all cursor-pointer"
+                    className="px-8 py-3 rounded-full bg-[#1b4327] hover:bg-[#13321d] text-white text-xs font-bold shadow-md transition-all cursor-pointer inline-flex items-center gap-2"
                   >
-                    View My Reports
+                    <span>View My Reports</span>
+                    <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
               ) : (
                 <>
-                  {/* Language & Payment Header */}
-                  <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-2xl bg-white border border-amber-200/80">
+                  {/* Language Selection Header */}
+                  <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-3xl bg-slate-50/70 border border-slate-200 shadow-2xs">
                     <div>
-                      <span className="text-xs font-bold text-slate-800 block">Report Language</span>
-                      <span className="text-[11px] text-slate-500">Choose PDF output language</span>
+                      <span className="text-xs font-bold text-slate-900 block">Report Output Language</span>
+                      <span className="text-[11px] text-slate-500">Select your preferred PDF language</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
                         onClick={() => setLanguage("en")}
-                        className={`px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                        className={`px-4 py-2 rounded-full text-xs font-bold border transition-all cursor-pointer ${
                           language === "en"
-                            ? "bg-[#c85a17] text-white border-[#c85a17]"
-                            : "bg-slate-50 text-slate-700 border-slate-200"
+                            ? "bg-[#1b4327] text-white border-[#1b4327] shadow-sm"
+                            : "bg-white text-slate-700 border-slate-200 hover:border-[#1b4327]"
                         }`}
                       >
                         English
@@ -557,10 +657,10 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                       <button
                         type="button"
                         onClick={() => setLanguage("hi")}
-                        className={`px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                        className={`px-4 py-2 rounded-full text-xs font-bold border transition-all cursor-pointer ${
                           language === "hi"
-                            ? "bg-[#c85a17] text-white border-[#c85a17]"
-                            : "bg-slate-50 text-slate-700 border-slate-200"
+                            ? "bg-[#1b4327] text-white border-[#1b4327] shadow-sm"
+                            : "bg-white text-slate-700 border-slate-200 hover:border-[#1b4327]"
                         }`}
                       >
                         हिन्दी (Hindi)
@@ -570,11 +670,11 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
 
                   {/* Variant Selection in Order Tab (if variants exist) */}
                   {variants.length > 0 && (
-                    <div className="p-4 rounded-2xl bg-white border border-[#e6c896] space-y-2.5 shadow-2xs">
+                    <div className="p-5 rounded-3xl bg-white border border-slate-200 space-y-3 shadow-2xs">
                       <div className="flex items-center justify-between">
-                        <h4 className="font-serif font-bold text-xs sm:text-sm text-[#2b1810] flex items-center gap-1.5">
-                          <Layers className="w-4 h-4 text-[#1b4327]" />
-                          <span>Select Package Variant / Duration:</span>
+                        <h4 className="font-serif font-bold text-xs sm:text-sm text-slate-900 flex items-center gap-1.5">
+                          <Layers className="w-4 h-4 text-[#801c10]" />
+                          <span>Select Edition / Duration:</span>
                         </h4>
                         <span className="text-[11px] font-bold text-[#1b4327] bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-300">
                           {selectedVariant?.variantName || "Standard"}
@@ -588,10 +688,10 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                               key={v._id}
                               type="button"
                               onClick={() => handleSelectVariant(v)}
-                              className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                              className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer ${
                                 isSelected
                                   ? "bg-emerald-50/70 border-[#1b4327] shadow-xs ring-2 ring-[#1b4327]/20"
-                                  : "bg-slate-50/70 border-slate-200 hover:border-[#1b4327]/60"
+                                  : "bg-slate-50/50 border-slate-200 hover:border-[#1b4327]/60"
                               }`}
                             >
                               <div className="flex items-center justify-between">
@@ -601,7 +701,7 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                                 {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-[#1b4327]" />}
                               </div>
                               <div className="flex items-baseline gap-1 mt-1">
-                                <span className="text-sm font-extrabold text-[#1b4327]">
+                                <span className="text-sm font-extrabold text-[#801c10]">
                                   ₹{v.sellPrice}
                                 </span>
                                 {v.price > v.sellPrice && (
@@ -623,9 +723,9 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                   )}
 
                   {/* Person 1 Details */}
-                  <div className="p-5 rounded-2xl bg-white border border-amber-200/80 space-y-4">
-                    <h4 className="font-serif font-bold text-sm text-[#2d1a0e] flex items-center gap-1.5">
-                      <User className="w-4 h-4 text-[#c85a17]" />
+                  <div className="p-5 sm:p-6 rounded-3xl bg-white border border-slate-200 space-y-4 shadow-2xs">
+                    <h4 className="font-serif font-bold text-sm text-[#801c10] flex items-center gap-1.5">
+                      <User className="w-4 h-4 text-[#801c10]" />
                       <span>{isCoupleReport ? "Person 1 (Primary Details):" : "Birth & Identity Details:"}</span>
                     </h4>
 
@@ -639,8 +739,8 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                           required
                           value={person1.fullName}
                           onChange={(e) => setPerson1({ ...person1, fullName: e.target.value })}
-                          placeholder="Enter your full name"
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-900 focus:outline-none focus:border-[#c85a17]"
+                          placeholder="e.g. Rahul Sharma"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-900 focus:outline-none focus:border-[#1b4327]"
                         />
                       </div>
 
@@ -653,7 +753,7 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                           onChange={(e) =>
                             setPerson1({ ...person1, gender: e.target.value as "male" | "female" | "other" })
                           }
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-900 focus:outline-none focus:border-[#c85a17]"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-900 focus:outline-none focus:border-[#1b4327]"
                         >
                           <option value="male">Male</option>
                           <option value="female">Female</option>
@@ -672,7 +772,7 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                             max={31}
                             value={person1.day}
                             onChange={(e) => setPerson1({ ...person1, day: Number(e.target.value) })}
-                            className="px-2 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-center"
+                            className="px-2 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-center text-slate-900"
                           />
                           <input
                             type="number"
@@ -680,7 +780,7 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                             max={12}
                             value={person1.month}
                             onChange={(e) => setPerson1({ ...person1, month: Number(e.target.value) })}
-                            className="px-2 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-center"
+                            className="px-2 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-center text-slate-900"
                           />
                           <input
                             type="number"
@@ -688,7 +788,7 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                             max={2030}
                             value={person1.year}
                             onChange={(e) => setPerson1({ ...person1, year: Number(e.target.value) })}
-                            className="px-2 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-center"
+                            className="px-2 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-center text-slate-900"
                           />
                         </div>
                       </div>
@@ -705,7 +805,7 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                             placeholder="Hour (0-23)"
                             value={person1.hour}
                             onChange={(e) => setPerson1({ ...person1, hour: Number(e.target.value) })}
-                            className="px-2 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-center"
+                            className="px-2 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-center text-slate-900"
                           />
                           <input
                             type="number"
@@ -714,7 +814,7 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                             placeholder="Min (0-59)"
                             value={person1.min}
                             onChange={(e) => setPerson1({ ...person1, min: Number(e.target.value) })}
-                            className="px-2 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-center"
+                            className="px-2 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-center text-slate-900"
                           />
                         </div>
                       </div>
@@ -729,7 +829,7 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                           value={person1.place}
                           onChange={(e) => setPerson1({ ...person1, place: e.target.value })}
                           placeholder="e.g. New Delhi, Delhi, India"
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-900 focus:outline-none focus:border-[#c85a17]"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-900 focus:outline-none focus:border-[#1b4327]"
                         />
                       </div>
                     </div>
@@ -737,7 +837,7 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
 
                   {/* Person 2 Details (If Couple Report) */}
                   {isCoupleReport && (
-                    <div className="p-5 rounded-2xl bg-white border border-rose-200/80 space-y-4">
+                    <div className="p-5 sm:p-6 rounded-3xl bg-white border border-rose-200 space-y-4 shadow-2xs">
                       <h4 className="font-serif font-bold text-sm text-rose-900 flex items-center gap-1.5">
                         <User className="w-4 h-4 text-rose-600" />
                         <span>Person 2 (Partner Details for Kundli Milan):</span>
@@ -745,7 +845,7 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                         <div>
-                          <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                          <label className="block text-[11px] font-bold uppercase tracking-wider text-rose-900/70 mb-1">
                             Partner&apos;s Full Name *
                           </label>
                           <input
@@ -753,13 +853,13 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                             required
                             value={person2.fullName}
                             onChange={(e) => setPerson2({ ...person2, fullName: e.target.value })}
-                            placeholder="Enter partner's full name"
-                            className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-900 focus:outline-none focus:border-rose-600"
+                            placeholder="e.g. Priya Patel"
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-rose-200 text-xs font-semibold text-slate-900 focus:outline-none focus:border-rose-600"
                           />
                         </div>
 
                         <div>
-                          <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                          <label className="block text-[11px] font-bold uppercase tracking-wider text-rose-900/70 mb-1">
                             Partner&apos;s Gender
                           </label>
                           <select
@@ -767,7 +867,7 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                             onChange={(e) =>
                               setPerson2({ ...person2, gender: e.target.value as "male" | "female" | "other" })
                             }
-                            className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-900"
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-rose-200 text-xs font-semibold text-slate-900"
                           >
                             <option value="female">Female</option>
                             <option value="male">Male</option>
@@ -776,7 +876,7 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                         </div>
 
                         <div className="sm:col-span-2">
-                          <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                          <label className="block text-[11px] font-bold uppercase tracking-wider text-rose-900/70 mb-1">
                             Partner&apos;s Place of Birth
                           </label>
                           <input
@@ -785,7 +885,7 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                             value={person2.place}
                             onChange={(e) => setPerson2({ ...person2, place: e.target.value })}
                             placeholder="e.g. Mumbai, Maharashtra, India"
-                            className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-900"
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-rose-200 text-xs font-semibold text-slate-900"
                           />
                         </div>
                       </div>
@@ -794,17 +894,17 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
 
                   {/* Error Alert */}
                   {orderError && (
-                    <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-medium flex items-center gap-2">
+                    <div className="p-3.5 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs font-medium flex items-center gap-2">
                       <AlertCircle className="w-4 h-4 shrink-0 text-red-500" />
                       <span>{orderError}</span>
                     </div>
                   )}
 
                   {/* Order Summary & Submit Button */}
-                  <div className="p-4 rounded-2xl bg-amber-50/80 border border-amber-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div className="p-5 rounded-3xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
                     <div>
-                      <span className="text-xs text-slate-600 block">Total Payable:</span>
-                      <span className="text-xl font-black text-[#c85a17]">
+                      <span className="text-xs text-slate-500 block">Total Payable:</span>
+                      <span className="text-2xl font-black text-[#801c10]">
                         ₹{currentPrice}
                       </span>
                     </div>
@@ -812,16 +912,16 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                     <button
                       type="submit"
                       disabled={submittingOrder}
-                      className="w-full sm:w-auto px-8 py-3 rounded-2xl bg-[#c85a17] hover:bg-[#a9480e] text-white text-xs sm:text-sm font-extrabold shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                      className="w-full sm:w-auto px-8 py-3 rounded-full bg-[#1b4327] hover:bg-[#13321d] text-white text-xs sm:text-sm font-extrabold shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 hover:scale-[1.02]"
                     >
                       {submittingOrder ? (
                         <>
                           <Loader2 className="w-4 h-4 animate-spin" />
-                          <span>Generating Report...</span>
+                          <span>Generating PDF Report...</span>
                         </>
                       ) : (
                         <>
-                          <span>Confirm & Generate Report</span>
+                          <span>Confirm &amp; Generate Report</span>
                           <ArrowRight className="w-4 h-4" />
                         </>
                       )}
@@ -836,7 +936,7 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
           {activeTab === "my-reports" && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h4 className="font-serif font-bold text-sm text-[#2d1a0e]">
+                <h4 className="font-serif font-bold text-sm text-slate-900">
                   Your Generated Astrology Reports
                 </h4>
                 <button
@@ -851,7 +951,7 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                       })
                       .finally(() => setLoadingMyReports(false));
                   }}
-                  className="text-xs font-bold text-[#c85a17] hover:underline cursor-pointer"
+                  className="text-xs font-bold text-[#801c10] hover:underline cursor-pointer"
                 >
                   Refresh
                 </button>
@@ -859,7 +959,7 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
 
               {loadingMyReports ? (
                 <div className="py-12 text-center text-xs text-slate-500 flex items-center justify-center gap-2">
-                  <Loader2 className="w-4 h-4 animate-spin text-[#c85a17]" />
+                  <Loader2 className="w-4 h-4 animate-spin text-[#1b4327]" />
                   <span>Loading your reports...</span>
                 </div>
               ) : myTransactions.length > 0 ? (
@@ -867,7 +967,7 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                   {myTransactions.map((item) => (
                     <div
                       key={item._id}
-                      className="p-4 rounded-2xl bg-white border border-amber-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                      className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                     >
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
@@ -875,7 +975,7 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                             {item.reportPackage?.title || "Astrology Report"}
                           </span>
                           <span
-                            className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                            className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
                               item.reportStatus === "generated"
                                 ? "bg-emerald-100 text-emerald-800"
                                 : item.reportStatus === "processing"
@@ -897,7 +997,7 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                           href={item.reportUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs"
+                          className="px-4 py-2 rounded-full bg-[#1b4327] hover:bg-[#13321d] text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs transition-colors"
                         >
                           <Download className="w-3.5 h-3.5" />
                           <span>Download PDF</span>
@@ -909,11 +1009,11 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
                   ))}
                 </div>
               ) : (
-                <div className="py-12 bg-white rounded-2xl border border-amber-200/70 p-6 text-center space-y-2">
-                  <FileText className="w-8 h-8 text-amber-500 mx-auto" />
-                  <p className="text-xs font-bold text-slate-800">No reports ordered yet</p>
+                <div className="py-12 bg-slate-50 rounded-3xl border border-slate-200 p-6 text-center space-y-2">
+                  <FileText className="w-8 h-8 text-amber-600 mx-auto" />
+                  <p className="text-xs font-bold text-slate-900">No reports ordered yet</p>
                   <p className="text-[11px] text-slate-500">
-                    Switch to &quot;Generate & Order Report&quot; to order your first report.
+                    Switch to &quot;Generate &amp; Order Report&quot; to order your first report.
                   </p>
                 </div>
               )}
@@ -921,11 +1021,11 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
           )}
         </div>
 
-        {/* Modal Footer Controls */}
-        <div className="flex items-center justify-between p-4 sm:p-5 bg-white border-t border-amber-200/80">
+        {/* 4. Modal Footer Controls on White */}
+        <div className="flex items-center justify-between p-4 sm:p-5 bg-white border-t border-slate-100 shadow-xs">
           <button
             onClick={onClose}
-            className="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 transition-colors cursor-pointer"
+            className="px-5 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 transition-colors cursor-pointer"
           >
             Close
           </button>
@@ -933,7 +1033,7 @@ export function ReportPreviewModal({ report: initialReport, onClose }: ReportPre
           {activeTab === "preview" && (
             <button
               onClick={() => setActiveTab("order")}
-              className="px-6 py-2.5 rounded-xl bg-[#c85a17] hover:bg-[#a9480e] text-white text-xs font-extrabold shadow-md transition-all flex items-center gap-2 cursor-pointer"
+              className="px-6 py-2.5 rounded-full bg-[#1b4327] hover:bg-[#13321d] text-white text-xs font-extrabold shadow-md transition-all flex items-center gap-2 cursor-pointer hover:scale-[1.02]"
             >
               <span>Proceed to Order (₹{currentPrice})</span>
               <ArrowRight className="w-4 h-4" />

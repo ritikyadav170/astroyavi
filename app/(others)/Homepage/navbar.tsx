@@ -316,6 +316,16 @@ export function AstroNavbar() {
             <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-[#c85a17] via-amber-400 to-[#c85a17] group-hover:w-3/4 transition-all duration-300 rounded-full shadow-[0_0_8px_#c85a17]"></span>
           </Link>
 
+          {/* Reports */}
+          <Link
+            href="/reports"
+            className="relative group py-1.5 px-3 rounded-full transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/10 hover:via-orange-500/15 hover:to-amber-500/10 overflow-hidden text-[#2d1a0e] hover:text-[#c85a17]"
+          >
+            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
+            <span>Reports</span>
+            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-[#c85a17] via-amber-400 to-[#c85a17] group-hover:w-3/4 transition-all duration-300 rounded-full shadow-[0_0_8px_#c85a17]"></span>
+          </Link>
+
           {/* Remedies (After Login) */}
           {isLoggedIn && (
             <Link
@@ -598,6 +608,16 @@ export function AstroNavbar() {
             className="hover:text-[#c85a17] transition-colors"
           >
             Panchang
+          </Link>
+          <Link
+            href="/reports"
+            onClick={() => setMobileMenuOpen(false)}
+            className="hover:text-[#c85a17] transition-colors font-bold text-[#c85a17] flex items-center justify-between"
+          >
+            <span>Astrology Reports</span>
+            <span className="text-[10px] bg-amber-100 text-[#c85a17] px-2 py-0.5 rounded-full border border-amber-300">
+              New
+            </span>
           </Link>
           {isLoggedIn && (
             <Link

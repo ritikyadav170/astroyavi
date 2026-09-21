@@ -200,13 +200,19 @@ export function normalizeAstrologer(
   index: number = 0,
 ): Astrologer {
   const id = (item._id || item.id || `astro-${index}`) as string | number;
-  const name = (item.displayName || item.name || item.fullName || item.userName || `Astrologer ${index + 1}`) as string;
-  
+  const name = (item.displayName ||
+    item.name ||
+    item.fullName ||
+    item.userName ||
+    `Astrologer ${index + 1}`) as string;
+
   let specialty = "Vedic Astrology";
   if (Array.isArray(item.speciality) && item.speciality.length > 0) {
     specialty = item.speciality
       .map((speciality) =>
-        typeof speciality === "object" && speciality !== null && "name" in speciality
+        typeof speciality === "object" &&
+        speciality !== null &&
+        "name" in speciality
           ? String(speciality.name)
           : String(speciality),
       )
@@ -221,19 +227,52 @@ export function normalizeAstrologer(
     specialty = item.expertise;
   }
 
-  const category = (item.category || item.primarySkill || specialty.split(",")[0] || "Vedic Astrology") as string;
-  const rating = item.ratingAverage ? String(item.ratingAverage) : item.rating ? String(item.rating) : (4.8 + (index % 3) * 0.1).toFixed(1);
-  const reviewsCount = Number(item.ratingCount || item.reviewsCount || item.totalReviews || item.totalOrders || 850 + (index * 120));
-  const experienceYears = Number(item.experienceYears || item.experience || 5 + (index % 15));
-  const apiChatPrice = typeof item.consultPricing === "object" && item.consultPricing !== null && "chat" in item.consultPricing
-    ? Number(item.consultPricing.chat)
-    : 0;
-  const price = Number(item.price || item.chatRate || item.callRate || item.rate || apiChatPrice || 20);
+  const category = (item.category ||
+    item.primarySkill ||
+    specialty.split(",")[0] ||
+    "Vedic Astrology") as string;
+  const rating = item.ratingAverage
+    ? String(item.ratingAverage)
+    : item.rating
+      ? String(item.rating)
+      : (4.8 + (index % 3) * 0.1).toFixed(1);
+  const reviewsCount = Number(
+    item.ratingCount ||
+      item.reviewsCount ||
+      item.totalReviews ||
+      item.totalOrders ||
+      850 + index * 120,
+  );
+  const experienceYears = Number(
+    item.experienceYears || item.experience || 5 + (index % 15),
+  );
+  const apiChatPrice =
+    typeof item.consultPricing === "object" &&
+    item.consultPricing !== null &&
+    "chat" in item.consultPricing
+      ? Number(item.consultPricing.chat)
+      : 0;
+  const price = Number(
+    item.price ||
+      item.chatRate ||
+      item.callRate ||
+      item.rate ||
+      apiChatPrice ||
+      20,
+  );
   const originalPrice = Number(item.originalPrice || price + 10);
   const initials = getInitials(name);
   const bgColor = bgColors[index % bgColors.length];
-  const isOnline = item.isOnline !== undefined ? Boolean(item.isOnline) : item.status === "online";
-  const rawImage = (item.profileImage || item.image || item.avatar || item.photo || item.profilePic || "") as string;
+  const isOnline =
+    item.isOnline !== undefined
+      ? Boolean(item.isOnline)
+      : item.status === "online";
+  const rawImage = (item.profileImage ||
+    item.image ||
+    item.avatar ||
+    item.photo ||
+    item.profilePic ||
+    "") as string;
   const image = formatImageUrl(rawImage);
   const bio = (item.bio || item.about || item.description || "") as string;
 
@@ -245,7 +284,9 @@ export function normalizeAstrologer(
     category,
     skills: Array.isArray(item.speciality)
       ? item.speciality.map((speciality) =>
-          typeof speciality === "object" && speciality !== null && "name" in speciality
+          typeof speciality === "object" &&
+          speciality !== null &&
+          "name" in speciality
             ? String(speciality.name)
             : String(speciality),
         )
@@ -281,7 +322,7 @@ export function normalizeAstrologer(
 export async function getAstrologers(
   activeCategory: string = "All Astrologers",
   searchQuery: string = "",
-  sortBy: string = "popular"
+  sortBy: string = "popular",
 ): Promise<Astrologer[]> {
   try {
     let res;
@@ -289,7 +330,9 @@ export async function getAstrologers(
       res = await axios.get<AstrologerListResponse>("/asterologer");
     } catch {
       // Fallback in case endpoint is spelled /astrologer
-      res = await axios.get<AstrologerListResponse>("/astrologer").catch(() => null);
+      res = await axios
+        .get<AstrologerListResponse>("/astrologer")
+        .catch(() => null);
     }
 
     let rawList: Record<string, unknown>[] = [];
@@ -328,7 +371,8 @@ export async function getAstrologers(
         if (sortBy === "price_high") return b.price - a.price;
         if (sortBy === "rating")
           return parseFloat(String(b.rating)) - parseFloat(String(a.rating));
-        if (sortBy === "experience") return b.experienceYears - a.experienceYears;
+        if (sortBy === "experience")
+          return b.experienceYears - a.experienceYears;
         return b.reviewsCount - a.reviewsCount; // popular
       });
   } catch (error) {
@@ -340,7 +384,9 @@ export async function getAstrologers(
 // ==========================================
 // 2. GET ASTROLOGER BY ID (/asterologer/:id)
 // ==========================================
-export async function getAstrologerById(id: string | number): Promise<Astrologer | null> {
+export async function getAstrologerById(
+  id: string | number,
+): Promise<Astrologer | null> {
   try {
     let res;
     try {
@@ -351,7 +397,12 @@ export async function getAstrologerById(id: string | number): Promise<Astrologer
 
     if (res && res.data) {
       const data = res.data;
-      const raw = data.data?.astrologer || data.data?.asterologer || data.data || data.astrologer || data;
+      const raw =
+        data.data?.astrologer ||
+        data.data?.asterologer ||
+        data.data ||
+        data.astrologer ||
+        data;
       if (raw && typeof raw === "object") {
         return normalizeAstrologer(raw as Record<string, unknown>, 0);
       }
@@ -359,7 +410,9 @@ export async function getAstrologerById(id: string | number): Promise<Astrologer
 
     // Fallback search in list
     const all = getFallbackAstrologers();
-    const found = all.find((a) => String(a.id) === String(id) || String(a._id) === String(id));
+    const found = all.find(
+      (a) => String(a.id) === String(id) || String(a._id) === String(id),
+    );
     return found || null;
   } catch (error) {
     console.error(`Error fetching astrologer with id ${id}:`, error);
@@ -383,8 +436,10 @@ export function getFallbackAstrologers(): Astrologer[] {
       originalPrice: 50,
       initials: "RP",
       bgColor: "bg-red-900",
-      image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
-      profileImage: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
+      image:
+        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
+      profileImage:
+        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
       isOnline: true,
       bio: "Renowned Vedic Astrologer and Vastu expert with over 22 years of experience assisting thousands of devotees with Kundli doshas, career, marriage and gemstone consultations.",
       languages: ["Hindi", "Sanskrit", "English"],
@@ -403,8 +458,10 @@ export function getFallbackAstrologers(): Astrologer[] {
       originalPrice: 30,
       initials: "RS",
       bgColor: "bg-emerald-800",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
-      profileImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
+      image:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
+      profileImage:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
       isOnline: true,
       bio: "Expert in Lal Kitab remedies and Nadi Astrology. Specializes in solving relationship, financial, and business hurdles with precise timing and effective remedies.",
       languages: ["Hindi", "English"],
@@ -423,8 +480,10 @@ export function getFallbackAstrologers(): Astrologer[] {
       originalPrice: 30,
       initials: "VS",
       bgColor: "bg-[#1b4327]",
-      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80",
-      profileImage: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80",
+      image:
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80",
+      profileImage:
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80",
       isOnline: true,
       bio: "Specializes in planetary transits, Mahadasha analysis, and accurate horoscope predictions for career progression and family prosperity.",
       languages: ["Hindi", "English", "Punjabi"],
@@ -443,8 +502,10 @@ export function getFallbackAstrologers(): Astrologer[] {
       originalPrice: 30,
       initials: "RS",
       bgColor: "bg-amber-700",
-      image: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=300&q=80",
-      profileImage: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=300&q=80",
+      image:
+        "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=300&q=80",
+      profileImage:
+        "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=300&q=80",
       isOnline: true,
       bio: "Intuitive Tarot Card reader offering clarity on love, relationship compatibility, career decisions, and spiritual growth.",
       languages: ["Hindi", "English"],
@@ -463,8 +524,10 @@ export function getFallbackAstrologers(): Astrologer[] {
       originalPrice: 30,
       initials: "SS",
       bgColor: "bg-orange-600",
-      image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80",
-      profileImage: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80",
+      image:
+        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80",
+      profileImage:
+        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80",
       isOnline: true,
       bio: "Professional Vastu Consultant and Tarot Reader helping balance cosmic energies in homes and commercial workplaces.",
       languages: ["Hindi", "English"],
@@ -483,8 +546,10 @@ export function getFallbackAstrologers(): Astrologer[] {
       originalPrice: 30,
       initials: "PC",
       bgColor: "bg-[#801c10]",
-      image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80",
-      profileImage: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80",
+      image:
+        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80",
+      profileImage:
+        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80",
       isOnline: true,
       bio: "Celebrated Numerologist and Samudrik Shastra (Face Reading) expert providing accurate personality insights and destiny numbers.",
       languages: ["Hindi", "English"],
@@ -503,8 +568,10 @@ export function getFallbackAstrologers(): Astrologer[] {
       originalPrice: 40,
       initials: "AA",
       bgColor: "bg-indigo-800",
-      image: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=300&q=80",
-      profileImage: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=300&q=80",
+      image:
+        "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=300&q=80",
+      profileImage:
+        "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=300&q=80",
       isOnline: true,
       bio: "Renowned KP Astrologer applying Krishnamurti Paddhati stellar astrology for sub-lord calculations and pin-point event predictions.",
       languages: ["Hindi", "English"],
@@ -523,8 +590,10 @@ export function getFallbackAstrologers(): Astrologer[] {
       originalPrice: 40,
       initials: "GK",
       bgColor: "bg-yellow-900",
-      image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=300&q=80",
-      profileImage: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=300&q=80",
+      image:
+        "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=300&q=80",
+      profileImage:
+        "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=300&q=80",
       isOnline: true,
       bio: "Expert Vedic astrologer providing guidance on Shubh Muhurat for marriage, Griha Pravesh, and business inaugurations.",
       languages: ["Hindi", "English"],
@@ -543,8 +612,10 @@ export function getFallbackAstrologers(): Astrologer[] {
       originalPrice: 45,
       initials: "GD",
       bgColor: "bg-blue-900",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=300&q=80",
-      profileImage: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=300&q=80",
+      image:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=300&q=80",
+      profileImage:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=300&q=80",
       isOnline: true,
       bio: "Prashna Kundli expert delivering instantaneous answers to life's immediate dilemmas with high accuracy.",
       languages: ["Hindi", "English", "Gujarati"],
@@ -563,8 +634,10 @@ export function getFallbackAstrologers(): Astrologer[] {
       originalPrice: 28,
       initials: "MD",
       bgColor: "bg-purple-800",
-      image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
-      profileImage: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
+      image:
+        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
+      profileImage:
+        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
       isOnline: true,
       bio: "Specialist in Angel card and Tarot card consultations with a compassionate approach to emotional and relationship healing.",
       languages: ["Hindi", "English"],

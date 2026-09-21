@@ -93,8 +93,10 @@ export function AstroNavbar() {
         if (cachedUser) {
           try {
             const parsed = JSON.parse(cachedUser);
-            setUserProfile(parsed);
-            setImgError(false);
+            if (parsed && typeof parsed === "object") {
+              setUserProfile(parsed);
+              setImgError(false);
+            }
           } catch {
             setUserProfile(null);
           }
@@ -117,7 +119,7 @@ export function AstroNavbar() {
               if (res?.data) {
                 const userObj =
                   res.data.data?.user || res.data.user || res.data.data || res.data;
-                if (userObj) {
+                if (userObj && typeof userObj === "object") {
                   setUserProfile(userObj);
                   localStorage.setItem("astroyavi_user", JSON.stringify(userObj));
                   setImgError(false);
@@ -163,9 +165,14 @@ export function AstroNavbar() {
   const handleLogout = () => {
     if (typeof window !== "undefined") {
       localStorage.removeItem("astroyavi_logged_in");
+      localStorage.removeItem("astroyavi_token");
+      localStorage.removeItem("token");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("astroyavi_user");
       window.dispatchEvent(new Event("astroyavi_auth_change"));
     }
     setIsLoggedIn(false);
+    setUserProfile(null);
     setProfileDropdownOpen(false);
     setMobileMenuOpen(false);
   };
@@ -344,37 +351,27 @@ export function AstroNavbar() {
           {!mounted ? (
             <div className="h-9 w-20 rounded-xl bg-transparent" />
           ) : isLoggedIn ? (
-            /* User Profile Avatar Dropdown */
+            /* User Profile Icon Dropdown */
             <div className="relative" ref={profileDropdownRef}>
               <button
                 type="button"
                 onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
                 aria-label="User Profile"
-                className="group relative flex items-center gap-2 rounded-full border border-amber-400/80 bg-gradient-to-r from-amber-50 via-white to-amber-50/80 py-1.5 pl-2 pr-3.5 shadow-sm transition-all duration-300 hover:border-[#c85a17] hover:shadow-md cursor-pointer"
+                className="group relative flex h-10 w-10 items-center justify-center rounded-full border-2 border-amber-400/90 bg-[#163014] p-0.5 shadow-sm transition-all duration-300 hover:border-[#c85a17] hover:shadow-md hover:scale-105 active:scale-95 cursor-pointer"
               >
-                <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-[#163014] text-white shadow-xs group-hover:scale-105 transition-transform overflow-hidden border border-amber-300/60">
+                <div className="relative h-full w-full rounded-full overflow-hidden flex items-center justify-center">
                   {userProfile?.profileImage && !imgError ? (
                     <img
                       src={formatImageUrl(userProfile.profileImage)}
-                      alt={userProfile?.name || "Profile"}
+                      alt={typeof userProfile?.name === "string" && userProfile.name ? userProfile.name : "Profile"}
                       onError={() => setImgError(true)}
                       className="h-full w-full object-cover rounded-full"
                     />
                   ) : (
-                    <User className="h-4 w-4 text-amber-200" />
+                    <User className="h-5 w-5 text-amber-200" />
                   )}
-                  <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-500" />
                 </div>
-                <div className="flex flex-col text-left">
-                  <span className="text-xs font-bold text-slate-800 group-hover:text-[#c85a17] transition-colors line-clamp-1 max-w-[90px]">
-                    {userProfile?.name ? userProfile.name.split(" ")[0] : "My Profile"}
-                  </span>
-                </div>
-                <ChevronDown
-                  className={`h-3.5 w-3.5 text-slate-400 transition-transform duration-200 ${
-                    profileDropdownOpen ? "rotate-180 text-[#c85a17]" : ""
-                  }`}
-                />
+                <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-500 shadow-xs" />
               </button>
 
               {/* Profile Dropdown Menu */}
@@ -390,7 +387,7 @@ export function AstroNavbar() {
                       {userProfile?.profileImage && !imgError ? (
                         <img
                           src={formatImageUrl(userProfile.profileImage)}
-                          alt={userProfile?.name || "Profile"}
+                          alt={typeof userProfile?.name === "string" && userProfile.name ? userProfile.name : "Profile"}
                           onError={() => setImgError(true)}
                           className="h-full w-full object-cover rounded-full"
                         />
@@ -401,7 +398,9 @@ export function AstroNavbar() {
                     <div className="flex flex-col truncate flex-1">
                       <div className="flex items-center gap-1.5">
                         <span className="text-xs font-bold text-slate-900 group-hover/acc:text-[#c85a17] transition-colors truncate">
-                          {userProfile?.name || "Astroyavi User"}
+                          {typeof userProfile?.name === "string" && userProfile.name.trim()
+                            ? userProfile.name.trim()
+                            : "Astroyavi User"}
                         </span>
                         <Sparkles className="h-3 w-3 text-[#c85a17] shrink-0" />
                       </div>
@@ -523,7 +522,7 @@ export function AstroNavbar() {
                   {userProfile?.profileImage && !imgError ? (
                     <img
                       src={formatImageUrl(userProfile.profileImage)}
-                      alt={userProfile?.name || "Profile"}
+                      alt={typeof userProfile?.name === "string" && userProfile.name ? userProfile.name : "Profile"}
                       onError={() => setImgError(true)}
                       className="h-full w-full object-cover rounded-full"
                     />

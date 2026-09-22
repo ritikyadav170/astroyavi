@@ -24,33 +24,43 @@ export function useChatSocket(userId: string | null) {
     });
 
     socketInstance.on("connect", () => {
-      console.log("Socket connected successfully:", socketInstance.id);
+      console.log("%c🚀 [Socket] Connected successfully, Socket ID:", "color: #10b981; font-weight: bold;", socketInstance.id);
+      console.log("➡️ [Socket] Emitting 'join' as user:", userId);
       socketInstance.emit("join", { id: userId, type: "user" });
     });
 
+    socketInstance.on("joinSuccess", (data) => {
+      console.log("%c✅ [Socket] Join Success:", "color: #10b981; font-weight: bold;", data);
+    });
+
     // Request sent confirmation
-    socketInstance.on("chatRequestSent", () => {
+    socketInstance.on("chatRequestSent", (data) => {
+      console.log("%c📤 [Socket] Request Delivered to Backend & Astrologer:", "color: #3b82f6; font-weight: bold;", data);
       setIsWaiting(true);
       toast.info("Chat request bhej di gayi hai. Astrologer ke accept karne ka intezaar karein...");
     });
 
     socketInstance.on("chatRequestFailed", (data: any) => {
+      console.warn("⚠️ [Socket] chatRequestFailed:", data);
       setIsWaiting(false);
       toast.error(data?.message || "Chat request fail ho gayi.");
     });
 
     socketInstance.on("chatRequestRejected", (data: any) => {
+      console.warn("❌ [Socket] chatRequestRejected:", data);
       setIsWaiting(false);
       toast.error(data?.message || "Astrologer ne chat request decline kar di.");
     });
 
     socketInstance.on("chatRequestDisconnected", () => {
+      console.warn("🔌 [Socket] chatRequestDisconnected");
       setIsWaiting(false);
       toast.error("Astrologer ne respond nahi kiya. Kripya thodi der baad koshish karein.");
     });
 
     // ✅ FIXED: Backend emits 'chatRequestAccepted' to the USER
     const handleSessionStart = (data: any) => {
+      console.log("%c🎉 [Socket] Chat Accepted / Session Started:", "color: #10b981; font-weight: bold;", data);
       setIsWaiting(false);
       setActiveSession(data);
       toast.success("Astrologer ne request accept kar li! Chat shuru ho rahi hai.");
@@ -61,12 +71,14 @@ export function useChatSocket(userId: string | null) {
 
     // End session listener
     socketInstance.on("chatSessionEnded", (data: any) => {
+      console.log("🛑 [Socket] Chat Session Ended:", data);
       setActiveSession(null);
       setIsWaiting(false);
       toast.info(data?.reason || "Chat session samapt ho gaya hai.");
     });
 
     socketInstance.on("error", (err: any) => {
+      console.error("❌ [Socket] Error received from server:", err);
       toast.error(err?.message || "Socket error aaya hai.");
       setIsWaiting(false);
     });
@@ -78,38 +90,39 @@ export function useChatSocket(userId: string | null) {
     };
   }, [userId]);
 
-  const sendChatRequest = (astrologerId: string, customUserId?: string) => {
+  const sendChatRequest = (astrologerId: string, customUserId?: string, customUserName?: string) => {
     const activeUid = customUserId || userId;
     if (!activeUid) {
       toast.error("Kripya pehle login karein chat shuru karne ke liye.");
       return;
     }
+    const userName = customUserName || "Client";
     setIsWaiting(true);
+
+    const payload = {
+      userId: activeUid,
+      astrologerId,
+      memberData: [{ name: userName }],
+      palmDocumentId: null,
+    };
+
+    console.log("📤 [Socket] Emitting 'sendChatRequest' with payload:", payload);
+
     if (!socket) {
-      // Connect on demand if not connected yet
       const socketInstance = io(SOCKET_URL, {
         transports: ["websocket", "polling"],
         withCredentials: true,
       });
       socketInstance.on("connect", () => {
+        console.log("🚀 [Socket] Connected on-demand. Emitting join & sendChatRequest...");
         socketInstance.emit("join", { id: activeUid, type: "user" });
-        socketInstance.emit("sendChatRequest", {
-          userId: activeUid,
-          astrologerId,
-          memberData: [],
-          palmDocumentId: null,
-        });
+        socketInstance.emit("sendChatRequest", payload);
       });
       setSocket(socketInstance);
       return;
     }
 
-    socket.emit("sendChatRequest", {
-      userId: activeUid,
-      astrologerId,
-      memberData: [],
-      palmDocumentId: null,
-    });
+    socket.emit("sendChatRequest", payload);
   };
 
   const cancelWaiting = () => {

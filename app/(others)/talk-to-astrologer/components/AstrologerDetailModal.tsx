@@ -20,6 +20,7 @@ import { formatImageUrl } from "@/lib/utils";
 // Import the new socket hook and chat window
 import { useChatSocket } from "@/hooks/useChatSocket";
 import { ChatWindow } from "./ChatWindow";
+import { SignupDialog } from "../../../auth/signup/SignupDialog";
 
 interface AstrologerDetailModalProps {
   astrologerId: string | number | null;
@@ -27,20 +28,24 @@ interface AstrologerDetailModalProps {
   initialAstrologer?: Astrologer | null;
 }
 
-function getStoredUserId(): string | null {
-  if (typeof window === "undefined") return null;
+function getStoredUser(): { id: string | null; name: string } {
+  if (typeof window === "undefined") return { id: null, name: "Client" };
   const directId = localStorage.getItem("user_id") || localStorage.getItem("userId");
-  if (directId) return directId;
   try {
     const rawUser = localStorage.getItem("astroyavi_user");
     if (rawUser) {
       const parsed = JSON.parse(rawUser);
-      return parsed?._id || parsed?.id || null;
+      const uid = parsed?._id || parsed?.id || parsed?.data?._id || parsed?.data?.id || (directId && directId.length === 24 ? directId : null);
+      let userName = "Client";
+      if (typeof parsed?.name === "string" && parsed.name) userName = parsed.name;
+      else if (parsed?.name?.en) userName = parsed.name.en;
+      else if (parsed?.name?.hi) userName = parsed.name.hi;
+      return { id: uid, name: userName };
     }
   } catch {
-    // ignore json parse error
+    // ignore
   }
-  return null;
+  return { id: directId && directId.length === 24 ? directId : null, name: "Client" };
 }
 
 export function AstrologerDetailModal({
@@ -53,12 +58,13 @@ export function AstrologerDetailModal({
   );
   const [loading, setLoading] = useState(false);
   const [modalImgError, setModalImgError] = useState(false);
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
 
   // Retrieve user ID from localStorage (or parsed user object)
   const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    setUserId(getStoredUserId());
+    setUserId(getStoredUser().id);
   }, []);
 
   // Initialize the chat socket connection
@@ -167,29 +173,28 @@ export function AstrologerDetailModal({
   }
 
   const handleStartConsultation = (type: "chat" | "call" | "video") => {
-    let effectiveUid = userId || getStoredUserId();
+    const user = getStoredUser();
 
-    // If still no user id found, generate or retrieve a session user id
-    if (!effectiveUid) {
-      if (typeof window !== "undefined") {
-        const cached = localStorage.getItem("token") || localStorage.getItem("astroyavi_token");
-        if (cached) {
-          effectiveUid = "user_" + Date.now().toString(36);
-          localStorage.setItem("user_id", effectiveUid);
-          setUserId(effectiveUid);
-        }
-      }
-    }
-
-    if (!effectiveUid) {
-      toast.error(`Please login to connect with ${astrologer?.name || "Astrologer"} via ${type}.`);
+    if (!user.id) {
+      toast.error(`Please login first to chat with ${astrologer?.name || "Astrologer"}.`);
+      setShowLoginDialog(true);
       return;
     }
 
     if (type === "chat") {
-      sendChatRequest(astrologerId.toString(), effectiveUid);
+      setUserId(user.id);
+      sendChatRequest(astrologerId.toString(), user.id, user.name);
     } else {
       toast.info(`${type.charAt(0).toUpperCase() + type.slice(1)} consultation is not yet implemented.`);
+    }
+  };
+
+  const handleLoginSuccess = () => {
+    setShowLoginDialog(false);
+    const user = getStoredUser();
+    if (user.id) {
+      setUserId(user.id);
+      sendChatRequest(astrologerId.toString(), user.id, user.name);
     }
   };
 
@@ -377,6 +382,12 @@ export function AstrologerDetailModal({
           </div>
         )}
       </div>
+
+      <SignupDialog
+        isOpen={showLoginDialog}
+        onClose={() => setShowLoginDialog(false)}
+        onSuccess={handleLoginSuccess}
+      />
     </div>
   );
 }

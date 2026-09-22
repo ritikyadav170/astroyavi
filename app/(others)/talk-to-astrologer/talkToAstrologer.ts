@@ -365,8 +365,6 @@ export async function getAstrologers(
     let list: Astrologer[] = [];
     if (rawList && rawList.length > 0) {
       list = rawList.map((item, idx) => normalizeAstrologer(item, idx));
-    } else {
-      list = getFallbackAstrologers();
     }
 
     // Apply client-side filters
@@ -394,7 +392,7 @@ export async function getAstrologers(
       });
   } catch (error) {
     console.error("Error fetching astrologers:", error);
-    return getFallbackAstrologers();
+    return [];
   }
 }
 
@@ -425,240 +423,10 @@ export async function getAstrologerById(
       }
     }
 
-    // Fallback search in list
-    const all = getFallbackAstrologers();
-    const found = all.find(
-      (a) => String(a.id) === String(id) || String(a._id) === String(id),
-    );
-    return found || null;
+    return null;
   } catch (error) {
     console.error(`Error fetching astrologer with id ${id}:`, error);
     return null;
   }
 }
 
-// Fallback Mock Data
-export function getFallbackAstrologers(): Astrologer[] {
-  return [
-    {
-      id: "1",
-      _id: "1",
-      name: "Pt. Rameshwar Prasad",
-      specialty: "Vedic Astrology, Vastu",
-      category: "Vedic Astrology",
-      rating: "4.9",
-      reviewsCount: 3200,
-      experienceYears: 22,
-      price: 35,
-      originalPrice: 50,
-      initials: "RP",
-      bgColor: "bg-red-900",
-      image:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
-      profileImage:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
-      isOnline: true,
-      bio: "Renowned Vedic Astrologer and Vastu expert with over 22 years of experience assisting thousands of devotees with Kundli doshas, career, marriage and gemstone consultations.",
-      languages: ["Hindi", "Sanskrit", "English"],
-      skills: ["Vedic Astrology", "Vastu Shastra", "Gemology", "Kundli Milan"],
-    },
-    {
-      id: "2",
-      _id: "2",
-      name: "Raju Srivastav",
-      specialty: "Lal Kitab, Nadi, Numerology",
-      category: "Nadi Astrology",
-      rating: "5.0",
-      reviewsCount: 2100,
-      experienceYears: 15,
-      price: 20,
-      originalPrice: 30,
-      initials: "RS",
-      bgColor: "bg-emerald-800",
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
-      profileImage:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
-      isOnline: true,
-      bio: "Expert in Lal Kitab remedies and Nadi Astrology. Specializes in solving relationship, financial, and business hurdles with precise timing and effective remedies.",
-      languages: ["Hindi", "English"],
-      skills: ["Lal Kitab", "Nadi Astrology", "Numerology", "Remedies"],
-    },
-    {
-      id: "3",
-      _id: "3",
-      name: "Vikram Singh",
-      specialty: "Vedic Astrology, Kundli",
-      category: "Vedic Astrology",
-      rating: "5.0",
-      reviewsCount: 1420,
-      experienceYears: 12,
-      price: 20,
-      originalPrice: 30,
-      initials: "VS",
-      bgColor: "bg-[#1b4327]",
-      image:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80",
-      profileImage:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80",
-      isOnline: true,
-      bio: "Specializes in planetary transits, Mahadasha analysis, and accurate horoscope predictions for career progression and family prosperity.",
-      languages: ["Hindi", "English", "Punjabi"],
-      skills: ["Vedic Astrology", "Kundli Reading", "Prashna Kundli"],
-    },
-    {
-      id: "4",
-      _id: "4",
-      name: "Ravindra Sharma",
-      specialty: "Tarot Reading, Psychic",
-      category: "Tarot Reading",
-      rating: "5.0",
-      reviewsCount: 980,
-      experienceYears: 8,
-      price: 20,
-      originalPrice: 30,
-      initials: "RS",
-      bgColor: "bg-amber-700",
-      image:
-        "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=300&q=80",
-      profileImage:
-        "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=300&q=80",
-      isOnline: true,
-      bio: "Intuitive Tarot Card reader offering clarity on love, relationship compatibility, career decisions, and spiritual growth.",
-      languages: ["Hindi", "English"],
-      skills: ["Tarot Reading", "Aura Healing", "Psychic Reading"],
-    },
-    {
-      id: "5",
-      _id: "5",
-      name: "Sandeep Sharma",
-      specialty: "Vastu, Tarot Reading",
-      category: "Vastu",
-      rating: "5.0",
-      reviewsCount: 1150,
-      experienceYears: 10,
-      price: 20,
-      originalPrice: 30,
-      initials: "SS",
-      bgColor: "bg-orange-600",
-      image:
-        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80",
-      profileImage:
-        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80",
-      isOnline: true,
-      bio: "Professional Vastu Consultant and Tarot Reader helping balance cosmic energies in homes and commercial workplaces.",
-      languages: ["Hindi", "English"],
-      skills: ["Vastu Shastra", "Tarot Reading", "Spiritual Counseling"],
-    },
-    {
-      id: "6",
-      _id: "6",
-      name: "Pinki Choudhary",
-      specialty: "Face Reading, Numerology",
-      category: "Numerology",
-      rating: "5.0",
-      reviewsCount: 890,
-      experienceYears: 7,
-      price: 20,
-      originalPrice: 30,
-      initials: "PC",
-      bgColor: "bg-[#801c10]",
-      image:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80",
-      profileImage:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80",
-      isOnline: true,
-      bio: "Celebrated Numerologist and Samudrik Shastra (Face Reading) expert providing accurate personality insights and destiny numbers.",
-      languages: ["Hindi", "English"],
-      skills: ["Face Reading", "Numerology", "Name Correction"],
-    },
-    {
-      id: "7",
-      _id: "7",
-      name: "Acharya Ankit",
-      specialty: "KP Astrology, Vedic",
-      category: "KP Astrology",
-      rating: "4.9",
-      reviewsCount: 1640,
-      experienceYears: 11,
-      price: 25,
-      originalPrice: 40,
-      initials: "AA",
-      bgColor: "bg-indigo-800",
-      image:
-        "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=300&q=80",
-      profileImage:
-        "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=300&q=80",
-      isOnline: true,
-      bio: "Renowned KP Astrologer applying Krishnamurti Paddhati stellar astrology for sub-lord calculations and pin-point event predictions.",
-      languages: ["Hindi", "English"],
-      skills: ["KP Astrology", "Vedic Astrology", "Horary Astrology"],
-    },
-    {
-      id: "8",
-      _id: "8",
-      name: "Pt. Gopal Krishan",
-      specialty: "Vastu Specialist, Muhurat",
-      category: "Vastu",
-      rating: "4.8",
-      reviewsCount: 1940,
-      experienceYears: 18,
-      price: 28,
-      originalPrice: 40,
-      initials: "GK",
-      bgColor: "bg-yellow-900",
-      image:
-        "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=300&q=80",
-      profileImage:
-        "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=300&q=80",
-      isOnline: true,
-      bio: "Expert Vedic astrologer providing guidance on Shubh Muhurat for marriage, Griha Pravesh, and business inaugurations.",
-      languages: ["Hindi", "English"],
-      skills: ["Vastu", "Muhurat Calculation", "Puja Rituals"],
-    },
-    {
-      id: "9",
-      _id: "9",
-      name: "Guruji Devendra",
-      specialty: "Nadi Astrology, Prashna Kundli",
-      category: "Nadi Astrology",
-      rating: "5.0",
-      reviewsCount: 1890,
-      experienceYears: 14,
-      price: 30,
-      originalPrice: 45,
-      initials: "GD",
-      bgColor: "bg-blue-900",
-      image:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=300&q=80",
-      profileImage:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=300&q=80",
-      isOnline: true,
-      bio: "Prashna Kundli expert delivering instantaneous answers to life's immediate dilemmas with high accuracy.",
-      languages: ["Hindi", "English", "Gujarati"],
-      skills: ["Prashna Kundli", "Nadi Astrology", "Remedial Astrology"],
-    },
-    {
-      id: "10",
-      _id: "10",
-      name: "Meenakshi Devi",
-      specialty: "Tarot Reading, Numerology",
-      category: "Tarot Reading",
-      rating: "5.0",
-      reviewsCount: 750,
-      experienceYears: 6,
-      price: 18,
-      originalPrice: 28,
-      initials: "MD",
-      bgColor: "bg-purple-800",
-      image:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
-      profileImage:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
-      isOnline: true,
-      bio: "Specialist in Angel card and Tarot card consultations with a compassionate approach to emotional and relationship healing.",
-      languages: ["Hindi", "English"],
-      skills: ["Tarot Reading", "Numerology", "Chakra Balancing"],
-    },
-  ];
-}

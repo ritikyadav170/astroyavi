@@ -207,7 +207,7 @@ export function ChatWindow({
                     {messages.length === 0 ? (
                         <div className="flex h-full flex-col items-center justify-center gap-2 text-center text-slate-400">
                             <UserIcon className="h-8 w-8 stroke-1 text-slate-300" />
-                            <p className="text-xs">Consultation shuru ho chuki hai. Message bhej kar baat karein!</p>
+                            <p className="text-xs">Consultation session is live. Send a message to start your conversation!</p>
                         </div>
                     ) : (
                         messages.map((msg, index) => {
@@ -233,7 +233,7 @@ export function ChatWindow({
                     {isTyping && (
                         <div className="flex justify-start">
                             <div className="rounded-2xl rounded-bl-2xs border border-amber-200/80 bg-white px-3.5 py-2 text-xs text-slate-500 shadow-xs flex items-center gap-1.5">
-                                <span className="font-semibold text-slate-600">{astroName}</span> type kar rahe hain
+                                <span className="font-semibold text-slate-600">{astroName}</span> is typing
                                 <span className="flex gap-0.5">
                                     <span className="h-1 w-1 rounded-full bg-slate-400 animate-bounce" />
                                     <span className="h-1 w-1 rounded-full bg-slate-400 animate-bounce [animation-delay:0.2s]" />
@@ -252,7 +252,7 @@ export function ChatWindow({
                         type="text"
                         value={inputText}
                         onChange={handleInputChange}
-                        placeholder="Apna sawaal likhein..."
+                        placeholder="Type your message here..."
                         className="flex-1 rounded-full border border-amber-200/90 bg-slate-50 px-4 py-2.5 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:border-[#1b4327] focus:outline-none focus:bg-white transition"
                     />
                     <button

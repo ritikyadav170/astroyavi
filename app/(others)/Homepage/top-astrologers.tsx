@@ -4,9 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import {
   Star,
-  Phone,
   MessageSquare,
-  Video,
   ChevronLeft,
   ChevronRight,
   Loader2,
@@ -85,38 +83,17 @@ function TopAstrologerCard({
         )}
       </div>
 
-      <div className="flex items-center justify-center gap-3 w-full">
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onSelect(astrologer);
-          }}
-          className="w-11 h-11 rounded-full border border-slate-200 hover:border-[#1b4327] flex items-center justify-center text-[#1b4327] hover:bg-[#1b4327] hover:text-white hover:scale-110 hover:shadow-lg transition-all duration-300 cursor-pointer"
-        >
-          <Phone className="w-4 h-4" />
-        </button>
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onSelect(astrologer);
-          }}
-          className="w-11 h-11 rounded-full bg-amber-400 hover:bg-amber-500 flex items-center justify-center text-slate-900 hover:scale-110 hover:shadow-lg transition-all duration-300 cursor-pointer"
-        >
-          <MessageSquare className="w-4 h-4 fill-slate-900/10" />
-        </button>
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onSelect(astrologer);
-          }}
-          className="w-11 h-11 rounded-full border border-slate-200 hover:border-[#1b4327] flex items-center justify-center text-[#1b4327] hover:bg-[#1b4327] hover:text-white hover:scale-110 hover:shadow-lg transition-all duration-300 cursor-pointer"
-        >
-          <Video className="w-4 h-4" />
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          onSelect(astrologer);
+        }}
+        className="w-full py-2.5 px-4 rounded-full bg-[#1b4327] hover:bg-[#122e1a] text-amber-200 hover:text-white font-semibold text-xs transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg cursor-pointer mt-auto"
+      >
+        <MessageSquare className="w-4 h-4 text-amber-300" />
+        <span>Chat Now</span>
+      </button>
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowRight, Share2, Star, Phone, MessageSquare } from "lucide-react";
+import { ArrowRight, Share2, Star, MessageSquare } from "lucide-react";
 import { Astrologer, getAstrologers } from "../../talk-to-astrologer/talkToAstrologer";
 import { AstrologerDetailModal } from "../../talk-to-astrologer/components/AstrologerDetailModal";
 import { formatImageUrl } from "@/lib/utils";
@@ -65,30 +65,18 @@ function RecommendedCard({
           )}
         </div>
 
-        <div className="mt-4 flex items-center justify-center gap-3">
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onSelect(astro);
-            }}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-[#1f5b4c] bg-white text-[#1f5b4c] hover:bg-[#1f5b4c] hover:text-white transition-colors"
-            aria-label={`Call ${astro.name}`}
-          >
-            <Phone className="h-4 w-4" />
-          </button>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onSelect(astro);
-            }}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-[#1f5b4c] bg-[#1f5b4c] text-white hover:bg-[#194e42] transition-colors"
-            aria-label={`Chat with ${astro.name}`}
-          >
-            <MessageSquare className="h-4 w-4" />
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelect(astro);
+          }}
+          className="mt-4 w-full py-2 px-3 rounded-full bg-[#1f5b4c] text-white hover:bg-[#154237] text-xs font-semibold flex items-center justify-center gap-1.5 transition-all shadow-2xs cursor-pointer"
+          aria-label={`Chat with ${astro.name}`}
+        >
+          <MessageSquare className="h-3.5 w-3.5 text-amber-300" />
+          <span>Chat Now</span>
+        </button>
       </div>
     </div>
   );

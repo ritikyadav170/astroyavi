@@ -4,9 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Star,
-  Phone,
   MessageSquare,
-  Video,
 } from "lucide-react";
 import { Astrologer, getAstrologers } from "../../talk-to-astrologer/talkToAstrologer";
 import { AstrologerDetailModal } from "../../talk-to-astrologer/components/AstrologerDetailModal";
@@ -74,41 +72,18 @@ function KundliAstrologerCard({
         )}
       </div>
 
-      <div className="flex items-center justify-center gap-2 w-full mt-auto">
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onSelect(astrologer);
-          }}
-          aria-label={`Call ${astrologer.name}`}
-          className="w-9 h-9 rounded-full border border-slate-300 hover:border-[#1b4327] flex items-center justify-center text-[#1b4327] hover:bg-[#1b4327] hover:text-white transition-all cursor-pointer"
-        >
-          <Phone className="w-4 h-4" />
-        </button>
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onSelect(astrologer);
-          }}
-          aria-label={`Message ${astrologer.name}`}
-          className="w-9 h-9 rounded-full bg-amber-400 hover:bg-amber-500 flex items-center justify-center text-slate-950 transition-all shadow-xs cursor-pointer"
-        >
-          <MessageSquare className="w-4 h-4" />
-        </button>
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onSelect(astrologer);
-          }}
-          aria-label={`Video call ${astrologer.name}`}
-          className="w-9 h-9 rounded-full border border-slate-300 hover:border-[#1b4327] flex items-center justify-center text-[#1b4327] hover:bg-[#1b4327] hover:text-white transition-all cursor-pointer"
-        >
-          <Video className="w-4 h-4" />
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          onSelect(astrologer);
+        }}
+        aria-label={`Chat with ${astrologer.name}`}
+        className="w-full py-2 px-3 rounded-full bg-[#1b4327] hover:bg-[#122e1a] text-amber-200 hover:text-white font-semibold text-xs transition-all flex items-center justify-center gap-1.5 shadow-2xs mt-auto cursor-pointer"
+      >
+        <MessageSquare className="w-3.5 h-3.5 text-amber-300" />
+        <span>Chat Now</span>
+      </button>
     </div>
   );
 }

@@ -4,9 +4,7 @@ import { useEffect, useState } from "react";
 import {
   X,
   Star,
-  Phone,
   MessageSquare,
-  Video,
   ShieldCheck,
   Sparkles,
   Globe,
@@ -172,7 +170,7 @@ export function AstrologerDetailModal({
     );
   }
 
-  const handleStartConsultation = (type: "chat" | "call" | "video") => {
+  const handleStartChat = () => {
     const user = getStoredUser();
 
     if (!user.id) {
@@ -181,12 +179,8 @@ export function AstrologerDetailModal({
       return;
     }
 
-    if (type === "chat") {
-      setUserId(user.id);
-      sendChatRequest(astrologerId.toString(), user.id, user);
-    } else {
-      toast.info(`${type.charAt(0).toUpperCase() + type.slice(1)} consultation is not yet implemented.`);
-    }
+    setUserId(user.id);
+    sendChatRequest(astrologerId.toString(), user.id, user);
   };
 
   const handleLoginSuccess = () => {
@@ -338,45 +332,51 @@ export function AstrologerDetailModal({
             </div>
 
             {/* Direct Connect Action CTA Strip */}
-            <div className="space-y-2.5 pt-2">
-              <span className="text-xs font-bold text-slate-800">
-                Connect Now with {displayName}:
-              </span>
+            <div className="rounded-3xl border border-emerald-200 bg-emerald-50/60 p-5 shadow-xs">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="relative flex h-2.5 w-2.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-600"></span>
+                    </span>
+                    <span className="text-xs font-bold uppercase tracking-wider text-emerald-800">
+                      Live Chat Consultation
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-600 mt-1">
+                    Connect instantly with {displayName} &bull; ₹{displayPrice}/min
+                  </p>
+                </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <button
                   type="button"
                   disabled={isWaiting}
-                  onClick={() => handleStartConsultation("chat")}
-                  className="flex items-center justify-center gap-2 rounded-2xl bg-[#163014] py-3 px-4 text-xs font-bold text-white shadow-md transition hover:bg-[#0e210d] hover:scale-102 active:scale-98 cursor-pointer disabled:opacity-70 disabled:hover:scale-100 disabled:cursor-not-allowed"
+                  onClick={handleStartChat}
+                  className="w-full sm:w-auto min-w-[200px] flex items-center justify-center gap-2.5 rounded-2xl bg-[#163014] py-3.5 px-6 text-sm font-bold text-white shadow-md hover:bg-[#0e210d] hover:shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
                 >
                   {isWaiting ? (
-                    <Loader2 className="h-4 w-4 animate-spin text-amber-300" />
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin text-amber-300" />
+                      <span>Requesting Session...</span>
+                    </>
                   ) : (
-                    <MessageSquare className="h-4 w-4 text-amber-300" />
+                    <>
+                      <MessageSquare className="h-4 w-4 text-amber-300" />
+                      <span>Start Chat Consultation</span>
+                    </>
                   )}
-                  <span>{isWaiting ? "Requesting..." : `Chat (₹${displayPrice}/min)`}</span>
                 </button>
+              </div>
 
-                <button
-                  type="button"
-                  disabled={isWaiting}
-                  onClick={() => handleStartConsultation("call")}
-                  className="flex items-center justify-center gap-2 rounded-2xl bg-[#c85a17] py-3 px-4 text-xs font-bold text-white shadow-md transition hover:bg-[#a0430d] hover:scale-102 active:scale-98 cursor-pointer disabled:opacity-70 disabled:hover:scale-100 disabled:cursor-not-allowed"
-                >
-                  <Phone className="h-4 w-4" />
-                  <span>Call (₹{displayPrice}/min)</span>
-                </button>
-
-                <button
-                  type="button"
-                  disabled={isWaiting}
-                  onClick={() => handleStartConsultation("video")}
-                  className="flex items-center justify-center gap-2 rounded-2xl bg-white border border-amber-300 py-3 px-4 text-xs font-bold text-[#c85a17] shadow-xs transition hover:bg-amber-50 hover:scale-102 active:scale-98 cursor-pointer disabled:opacity-70 disabled:hover:scale-100 disabled:cursor-not-allowed"
-                >
-                  <Video className="h-4 w-4 text-[#c85a17]" />
-                  <span>Video Call</span>
-                </button>
+              {/* Trust Badges */}
+              <div className="mt-4 pt-3 border-t border-emerald-100 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500 font-medium">
+                <span className="flex items-center gap-1 text-emerald-700">
+                  <ShieldCheck className="h-3.5 w-3.5" /> 100% Private & Verified
+                </span>
+                <span className="flex items-center gap-1">
+                  ⚡ Avg Response Time: &lt; 1 min
+                </span>
               </div>
             </div>
           </div>

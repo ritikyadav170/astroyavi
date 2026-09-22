@@ -17,10 +17,30 @@ import { Astrologer, getAstrologerById } from "../talkToAstrologer";
 import { toast } from "@components/ui/toaster";
 import { formatImageUrl } from "@/lib/utils";
 
+// Import the new socket hook and chat window
+import { useChatSocket } from "@/hooks/useChatSocket";
+import { ChatWindow } from "./ChatWindow";
+
 interface AstrologerDetailModalProps {
   astrologerId: string | number | null;
   onClose: () => void;
   initialAstrologer?: Astrologer | null;
+}
+
+function getStoredUserId(): string | null {
+  if (typeof window === "undefined") return null;
+  const directId = localStorage.getItem("user_id") || localStorage.getItem("userId");
+  if (directId) return directId;
+  try {
+    const rawUser = localStorage.getItem("astroyavi_user");
+    if (rawUser) {
+      const parsed = JSON.parse(rawUser);
+      return parsed?._id || parsed?.id || null;
+    }
+  } catch {
+    // ignore json parse error
+  }
+  return null;
 }
 
 export function AstrologerDetailModal({
@@ -33,6 +53,16 @@ export function AstrologerDetailModal({
   );
   const [loading, setLoading] = useState(false);
   const [modalImgError, setModalImgError] = useState(false);
+
+  // Retrieve user ID from localStorage (or parsed user object)
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    setUserId(getStoredUserId());
+  }, []);
+
+  // Initialize the chat socket connection
+  const { socket, activeSession, isWaiting, sendChatRequest, cancelWaiting, endChat } = useChatSocket(userId);
 
   useEffect(() => {
     if (!astrologerId) return;
@@ -66,23 +96,6 @@ export function AstrologerDetailModal({
 
   if (!astrologerId) return null;
 
-  const handleStartConsultation = (type: "chat" | "call" | "video") => {
-    const isLoggedIn =
-      typeof window !== "undefined" &&
-      localStorage.getItem("astroyavi_logged_in") === "true";
-
-    if (!isLoggedIn) {
-      toast.error("Login Required", {
-        description: `Please login to connect with ${astrologer?.name || "Astrologer"} via ${type}.`,
-      });
-      return;
-    }
-
-    toast.success("Connecting with Astrologer...", {
-      description: `Starting ${type} consultation with ${astrologer?.name}. Connecting line...`,
-    });
-  };
-
   const displayName = astrologer?.name || "Astrologer Profile";
   const displayRating = astrologer?.rating || "5.0";
   const displayReviews = astrologer?.reviewsCount || 1200;
@@ -96,6 +109,89 @@ export function AstrologerDetailModal({
     `${displayName} is a certified expert astrologer specializing in ${displaySpecialty}, offering deep spiritual insights, precise Vedic predictions, and effective remedies for life's challenges.`;
   const skillsList = astrologer?.skills || [displaySpecialty];
   const languagesList = astrologer?.languages || ["Hindi", "English"];
+  const astroImg = formatImageUrl(astrologer?.profileImage || astrologer?.image);
+
+  // Render the chat window directly if a session has been accepted and is active
+  if (activeSession && socket) {
+    return (
+      <ChatWindow
+        socket={socket}
+        session={activeSession}
+        astrologer={astrologer}
+        userId={userId || "guest_user"}
+        onClose={() => endChat(activeSession.chatSessionId)}
+      />
+    );
+  }
+
+  // Render dedicated Connecting / Waiting Dialog when request is sent
+  if (isWaiting) {
+    return (
+      <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/70 p-4 backdrop-blur-md animate-in fade-in duration-200">
+        <div className="relative w-full max-w-sm rounded-3xl border border-amber-300/80 bg-[#fdf8f0] p-7 text-center shadow-2xl animate-in zoom-in-95 duration-200">
+          {/* Pulsing Radar Ring Avatar */}
+          <div className="relative mx-auto mb-5 h-24 w-24">
+            <div className="absolute -inset-2 rounded-full bg-emerald-500/20 animate-ping pointer-events-none" />
+            <div className="relative h-full w-full rounded-full border-2 border-[#1b4327] overflow-hidden bg-[#1b4327] shadow-xl flex items-center justify-center p-0.5">
+              {astroImg && !modalImgError ? (
+                <img src={astroImg} alt={displayName} className="h-full w-full object-cover rounded-full" />
+              ) : (
+                <span className="text-2xl font-bold text-amber-200">{displayName.charAt(0)}</span>
+              )}
+            </div>
+            <span className="absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-white bg-emerald-500" />
+          </div>
+
+          <h3 className="font-serif text-xl font-bold text-slate-900 mb-1">
+            Connecting with {displayName}...
+          </h3>
+          <p className="text-xs text-[#c85a17] font-semibold mb-5">
+            Waiting for astrologer to accept your session
+          </p>
+
+          <div className="flex items-center justify-center gap-2.5 text-xs text-slate-700 bg-amber-100/70 py-3 px-4 rounded-2xl border border-amber-200 mb-6 shadow-2xs">
+            <Loader2 className="w-4 h-4 animate-spin text-[#1b4327]" />
+            <span className="font-medium">Sending request to Astrologer &bull; ₹{displayPrice}/min</span>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => cancelWaiting()}
+            className="w-full py-2.5 rounded-full border border-red-300 bg-red-50 text-red-700 hover:bg-red-100 font-bold text-xs transition cursor-pointer"
+          >
+            Cancel Request
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const handleStartConsultation = (type: "chat" | "call" | "video") => {
+    let effectiveUid = userId || getStoredUserId();
+
+    // If still no user id found, generate or retrieve a session user id
+    if (!effectiveUid) {
+      if (typeof window !== "undefined") {
+        const cached = localStorage.getItem("token") || localStorage.getItem("astroyavi_token");
+        if (cached) {
+          effectiveUid = "user_" + Date.now().toString(36);
+          localStorage.setItem("user_id", effectiveUid);
+          setUserId(effectiveUid);
+        }
+      }
+    }
+
+    if (!effectiveUid) {
+      toast.error(`Please login to connect with ${astrologer?.name || "Astrologer"} via ${type}.`);
+      return;
+    }
+
+    if (type === "chat") {
+      sendChatRequest(astrologerId.toString(), effectiveUid);
+    } else {
+      toast.info(`${type.charAt(0).toUpperCase() + type.slice(1)} consultation is not yet implemented.`);
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 p-4 backdrop-blur-md animate-in fade-in duration-200">
@@ -104,8 +200,9 @@ export function AstrologerDetailModal({
         <button
           type="button"
           onClick={onClose}
+          disabled={isWaiting}
           aria-label="Close dialog"
-          className="absolute right-5 top-5 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-slate-500 shadow-sm transition hover:bg-slate-100 hover:text-slate-900 cursor-pointer"
+          className="absolute right-5 top-5 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-slate-500 shadow-sm transition hover:bg-slate-100 hover:text-slate-900 cursor-pointer disabled:opacity-50"
         >
           <X className="h-4 w-4" />
         </button>
@@ -121,7 +218,6 @@ export function AstrologerDetailModal({
           <div className="space-y-6 text-left">
             {/* Header Profile Section */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              {/* Avatar Frame */}
               <div className="relative flex h-24 w-24 shrink-0 items-center justify-center rounded-3xl bg-[#163014] text-amber-200 shadow-xl overflow-hidden border-2 border-amber-400/80">
                 {(astrologer?.profileImage || astrologer?.image) && !modalImgError ? (
                   <img
@@ -245,17 +341,23 @@ export function AstrologerDetailModal({
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <button
                   type="button"
+                  disabled={isWaiting}
                   onClick={() => handleStartConsultation("chat")}
-                  className="flex items-center justify-center gap-2 rounded-2xl bg-[#163014] py-3 px-4 text-xs font-bold text-white shadow-md transition hover:bg-[#0e210d] hover:scale-102 active:scale-98 cursor-pointer"
+                  className="flex items-center justify-center gap-2 rounded-2xl bg-[#163014] py-3 px-4 text-xs font-bold text-white shadow-md transition hover:bg-[#0e210d] hover:scale-102 active:scale-98 cursor-pointer disabled:opacity-70 disabled:hover:scale-100 disabled:cursor-not-allowed"
                 >
-                  <MessageSquare className="h-4 w-4 text-amber-300" />
-                  <span>Chat (₹{displayPrice}/min)</span>
+                  {isWaiting ? (
+                    <Loader2 className="h-4 w-4 animate-spin text-amber-300" />
+                  ) : (
+                    <MessageSquare className="h-4 w-4 text-amber-300" />
+                  )}
+                  <span>{isWaiting ? "Requesting..." : `Chat (₹${displayPrice}/min)`}</span>
                 </button>
 
                 <button
                   type="button"
+                  disabled={isWaiting}
                   onClick={() => handleStartConsultation("call")}
-                  className="flex items-center justify-center gap-2 rounded-2xl bg-[#c85a17] py-3 px-4 text-xs font-bold text-white shadow-md transition hover:bg-[#a0430d] hover:scale-102 active:scale-98 cursor-pointer"
+                  className="flex items-center justify-center gap-2 rounded-2xl bg-[#c85a17] py-3 px-4 text-xs font-bold text-white shadow-md transition hover:bg-[#a0430d] hover:scale-102 active:scale-98 cursor-pointer disabled:opacity-70 disabled:hover:scale-100 disabled:cursor-not-allowed"
                 >
                   <Phone className="h-4 w-4" />
                   <span>Call (₹{displayPrice}/min)</span>
@@ -263,8 +365,9 @@ export function AstrologerDetailModal({
 
                 <button
                   type="button"
+                  disabled={isWaiting}
                   onClick={() => handleStartConsultation("video")}
-                  className="flex items-center justify-center gap-2 rounded-2xl bg-white border border-amber-300 py-3 px-4 text-xs font-bold text-[#c85a17] shadow-xs transition hover:bg-amber-50 hover:scale-102 active:scale-98 cursor-pointer"
+                  className="flex items-center justify-center gap-2 rounded-2xl bg-white border border-amber-300 py-3 px-4 text-xs font-bold text-[#c85a17] shadow-xs transition hover:bg-amber-50 hover:scale-102 active:scale-98 cursor-pointer disabled:opacity-70 disabled:hover:scale-100 disabled:cursor-not-allowed"
                 >
                   <Video className="h-4 w-4 text-[#c85a17]" />
                   <span>Video Call</span>

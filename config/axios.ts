@@ -3,7 +3,10 @@ import Axios from "axios";
 
 // Helper to get consistent API base URL pointing to /api/user
 const getBaseURL = () => {
-  const envUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:9859";
+  if (typeof window !== "undefined") {
+    return "/api/user";
+  }
+  const envUrl = process.env.NEXT_PUBLIC_API_URL || "http://160.187.87.138:9859";
   const cleanUrl = envUrl.replace(/\/+$/, "");
   if (cleanUrl.endsWith("/api/user")) {
     return cleanUrl;

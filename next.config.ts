@@ -30,7 +30,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
 
   async rewrites() {
-    const rawUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:9859";
+    const rawUrl = process.env.NEXT_PUBLIC_API_URL || "http://160.187.87.138:9859";
     const baseUrl = rawUrl.replace(/\/api\/user\/?$/, "").replace(/\/+$/, "");
     return [
       {

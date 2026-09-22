@@ -6,18 +6,19 @@ import { NextRequest, NextResponse } from "next/server";
 export const proxy = async (request: NextRequest) => {
     const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://160.187.87.138:9859";
+    const wsUrl = apiUrl.replace(/^http/, "ws");
 
     const cspHeader = `
     base-uri 'self';
     block-all-mixed-content;
-    connect-src 'self' blob: data: ${apiUrl || ""};
+    connect-src 'self' blob: data: ${apiUrl} ${wsUrl} ws: wss: http: https:;
     default-src 'self' blob: data:;
     font-src 'self' https://fonts.gstatic.com;
     form-action 'self';
     frame-ancestors 'self';
     frame-src 'self';
-    img-src 'self' blob: data:;
+    img-src 'self' blob: data: https: http:;
     object-src 'none';
     script-src-elem 'self' ${process.env.NODE_ENV === "development"
             ? "'unsafe-inline' 'unsafe-eval'"

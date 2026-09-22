@@ -37,25 +37,25 @@ export function useChatSocket(userId: string | null) {
         socketInstance.on("chatRequestSent", (data) => {
             console.log("%c📤 [Socket] Request Delivered to Backend & Astrologer:", "color: #3b82f6; font-weight: bold;", data);
             setIsWaiting(true);
-            toast.info("Chat request bhej di gayi hai. Astrologer ke accept karne ka intezaar karein...");
+            toast.info("Chat request sent. Please wait while the astrologer accepts your session...");
         });
 
         socketInstance.on("chatRequestFailed", (data: any) => {
             console.warn("⚠️ [Socket] chatRequestFailed:", data);
             setIsWaiting(false);
-            toast.error(data?.message || "Chat request fail ho gayi.");
+            toast.error(data?.message || "Unable to send chat request. Please try again.");
         });
 
         socketInstance.on("chatRequestRejected", (data: any) => {
             console.warn("❌ [Socket] chatRequestRejected:", data);
             setIsWaiting(false);
-            toast.error(data?.message || "Astrologer ne chat request decline kar di.");
+            toast.error(data?.message || "The astrologer has declined the chat request.");
         });
 
         socketInstance.on("chatRequestDisconnected", () => {
             console.warn("🔌 [Socket] chatRequestDisconnected");
             setIsWaiting(false);
-            toast.error("Astrologer ne respond nahi kiya. Kripya thodi der baad koshish karein.");
+            toast.error("The astrologer did not respond. Please try again in a moment.");
         });
 
         // ✅ FIXED: Backend emits 'chatRequestAccepted' to the USER
@@ -63,7 +63,7 @@ export function useChatSocket(userId: string | null) {
             console.log("%c🎉 [Socket] Chat Accepted / Session Started:", "color: #10b981; font-weight: bold;", data);
             setIsWaiting(false);
             setActiveSession(data);
-            toast.success("Astrologer ne request accept kar li! Chat shuru ho rahi hai.");
+            toast.success("Chat request accepted! Initializing session...");
         };
 
         socketInstance.on("chatRequestAccepted", handleSessionStart);
@@ -74,12 +74,12 @@ export function useChatSocket(userId: string | null) {
             console.log("🛑 [Socket] Chat Session Ended:", data);
             setActiveSession(null);
             setIsWaiting(false);
-            toast.info(data?.reason || "Chat session samapt ho gaya hai.");
+            toast.info(data?.reason || "The chat session has ended.");
         });
 
         socketInstance.on("error", (err: any) => {
             console.error("❌ [Socket] Error received from server:", err);
-            toast.error(err?.message || "Socket error aaya hai.");
+            toast.error(err?.message || "A connection error occurred.");
             setIsWaiting(false);
         });
 
@@ -97,7 +97,7 @@ export function useChatSocket(userId: string | null) {
     ) => {
         const activeUid = customUserId || userId;
         if (!activeUid) {
-            toast.error("Kripya pehle login karein chat shuru karne ke liye.");
+            toast.error("Please login first to initiate a chat consultation.");
             return;
         }
 
@@ -160,7 +160,7 @@ export function useChatSocket(userId: string | null) {
             chatSessionId,
             userId,
             userType: "user",
-            reason: "User ne chat band ki",
+            reason: "Session ended by user",
         });
         setActiveSession(null);
         setIsWaiting(false);

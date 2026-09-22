@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 import {
-  ArrowRight,
-  CreditCard,
   IndianRupee,
   Plus,
   Wallet,

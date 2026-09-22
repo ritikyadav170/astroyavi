@@ -183,7 +183,7 @@ export function AstrologerDetailModal({
 
     if (type === "chat") {
       setUserId(user.id);
-      sendChatRequest(astrologerId.toString(), user.id, user.name);
+      sendChatRequest(astrologerId.toString(), user.id, user);
     } else {
       toast.info(`${type.charAt(0).toUpperCase() + type.slice(1)} consultation is not yet implemented.`);
     }
@@ -194,7 +194,7 @@ export function AstrologerDetailModal({
     const user = getStoredUser();
     if (user.id) {
       setUserId(user.id);
-      sendChatRequest(astrologerId.toString(), user.id, user.name);
+      sendChatRequest(astrologerId.toString(), user.id, user);
     }
   };
 

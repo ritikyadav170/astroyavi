@@ -4,10 +4,12 @@ import { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { toast } from "@components/ui/toaster";
 
-const SOCKET_URL =
-    process.env.NEXT_PUBLIC_SOCKET_URL ||
-    process.env.NEXT_PUBLIC_BACKEND_URL ||
-    "http://localhost:9859";
+const getSocketUrl = () => {
+    const envUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:9859";
+    return envUrl.replace(/\/api\/user\/?$/, "").replace(/\/+$/, "");
+};
+
+const SOCKET_URL = getSocketUrl();
 
 export function useAstrologerSocket(astrologerId: string | null) {
     const [socket, setSocket] = useState<Socket | null>(null);

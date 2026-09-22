@@ -1,9 +1,19 @@
 // src/config/axios.ts
 import Axios from "axios";
 
+// Helper to get consistent API base URL pointing to /api/user
+const getBaseURL = () => {
+  const envUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:9859";
+  const cleanUrl = envUrl.replace(/\/+$/, "");
+  if (cleanUrl.endsWith("/api/user")) {
+    return cleanUrl;
+  }
+  return `${cleanUrl}/api/user`;
+};
+
 // Create an Axios instance with default settings.
 const axios = Axios.create({
-  baseURL: "/api/proxy",
+  baseURL: getBaseURL(),
   headers: { "Content-Type": "application/json" },
   withCredentials: false,
 });

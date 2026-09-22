@@ -6,7 +6,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Star, User, ShieldCheck } from "lucide-react";
-import { LoginDialog } from "./LoginDialog";
+import { SignupDialog } from "../../auth/signup/SignupDialog";
 
 interface ServiceItem {
   id: string;
@@ -229,7 +229,7 @@ export function ServicesSection() {
         </div>
       </div>
 
-      <LoginDialog isOpen={Boolean(selectedProtectedService)} onClose={() => setSelectedProtectedService(null)} onSuccess={handleLoginSuccess} targetServiceTitle={selectedProtectedService?.title} />
+      <SignupDialog isOpen={Boolean(selectedProtectedService)} onClose={() => setSelectedProtectedService(null)} onSuccess={handleLoginSuccess} />
     </section>
   );
 }

@@ -48,9 +48,10 @@ export function formatImageUrl(url?: string | null): string {
   ) {
     return trimmed;
   }
+  const base = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:9859";
   if (trimmed.startsWith("/")) {
-    return `http://160.187.87.138:9859${trimmed}`;
+    return `${base}${trimmed}`;
   }
-  return `http://160.187.87.138:9859/${trimmed}`;
+  return `${base}/${trimmed}`;
 }
 

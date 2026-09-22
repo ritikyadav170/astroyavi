@@ -14,7 +14,6 @@ import {
   ChevronsRight,
   X,
   Check,
-  CheckCircle2,
   ArrowRight,
   RotateCcw,
   Zap,
@@ -294,7 +293,7 @@ function ReportCard({
   return (
     <div
       onClick={() => onOpenPreview(report)}
-      className="bg-white rounded-3xl p-5 border border-[#eeddc8] hover:border-[#1b4327] flex flex-col justify-between shadow-xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 group relative cursor-pointer overflow-hidden"
+      className="bg-white rounded-2xl p-3.5 sm:p-4 border border-[#eeddc8] hover:border-[#1b4327] flex flex-col justify-between shadow-2xs hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group relative cursor-pointer overflow-hidden"
     >
       {/* Subtle Luxury Gradient Background Glow on Hover */}
       <div
@@ -302,8 +301,8 @@ function ReportCard({
       />
 
       {/* Top Badges Row */}
-      <div className="flex items-center justify-between w-full mb-3.5 z-10">
-        <span className="inline-flex items-center gap-1 bg-emerald-50 border border-emerald-200 text-emerald-800 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-tight shadow-2xs">
+      <div className="flex items-center justify-between w-full mb-2.5 z-10">
+        <span className="inline-flex items-center gap-1 bg-emerald-50 border border-emerald-200 text-emerald-800 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-tight shadow-2xs">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
           {isMultiVariant
             ? "Multi-Year"
@@ -326,8 +325,8 @@ function ReportCard({
       </div>
 
       {/* Central Visual Avatar / Image */}
-      <div className="relative flex flex-col items-center mb-3 z-10">
-        <div className="relative w-20 h-20 group-hover:scale-110 transition-transform duration-300">
+      <div className="relative flex flex-col items-center mb-2 z-10">
+        <div className="relative w-14 h-14 group-hover:scale-105 transition-transform duration-300">
           <div className="absolute -inset-1 rounded-full bg-amber-400/20 blur-xs group-hover:bg-amber-400/40 transition-colors" />
 
           {hasValidImage ? (
@@ -335,10 +334,10 @@ function ReportCard({
               src={validImageUrl}
               alt={report.title}
               onError={() => setImgError(true)}
-              className="relative w-20 h-20 rounded-full object-cover border-2 border-[#1b4327] shadow-md p-0.5 bg-amber-50/70"
+              className="relative w-14 h-14 rounded-full object-cover border-2 border-[#1b4327] shadow-xs p-0.5 bg-amber-50/70"
             />
           ) : (
-            <div className="relative w-20 h-20 rounded-full shadow-sm flex items-center justify-center">
+            <div className="relative w-14 h-14 rounded-full shadow-xs flex items-center justify-center">
               {renderCategoryEmblem(report.categoryKey)}
             </div>
           )}
@@ -346,54 +345,40 @@ function ReportCard({
       </div>
 
       {/* Title & Hindi Tag */}
-      <div className="flex flex-col items-center text-center mb-2 z-10">
-        <h3 className="font-serif font-bold text-base text-[#2b1810] line-clamp-2 leading-snug group-hover:text-[#1b4327] transition-colors min-h-[44px] flex items-center justify-center">
+      <div className="flex flex-col items-center text-center mb-2 z-10 min-h-[48px] justify-center">
+        <h3 className="font-serif font-bold text-sm text-[#2b1810] line-clamp-2 leading-snug group-hover:text-[#1b4327] transition-colors">
           {report.title}
         </h3>
 
         {report.hindiTitle && (
-          <span className="text-[11px] font-medium text-[#801c10] bg-amber-50/80 px-2.5 py-0.5 rounded-full mt-1 border border-amber-200/50">
+          <span className="text-[10px] font-medium text-[#801c10] bg-amber-50/90 px-2 py-0.5 rounded-full mt-1 border border-amber-200/60 truncate max-w-[90%]">
             {report.hindiTitle}
           </span>
         )}
       </div>
 
-      {/* Subtitle / Category Description */}
-      <p className="text-[11px] text-[#5c4033] text-center leading-tight mb-3 px-1 line-clamp-2 min-h-[28px] flex items-center justify-center z-10">
-        {meta.sub}
-      </p>
-
-      {/* Feature Highlights Strip */}
-      <div className="w-full bg-[#fdfbf7] rounded-xl p-2.5 mb-3 border border-[#f0e3d2] space-y-1 text-left z-10">
-        <div className="flex items-center gap-1.5 text-[10px] text-slate-700 font-medium">
-          <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
-          <span className="truncate">Planetary Dasha &amp; Charts</span>
+      {/* Rating & Price Row */}
+      <div className="flex items-center justify-between w-full pt-2 pb-2 border-t border-[#f4e8d8] z-10 mt-1">
+        {/* Rating */}
+        <div className="flex items-center gap-1 text-amber-500 text-xs font-bold">
+          <Star className="w-3.5 h-3.5 fill-amber-400 shrink-0" />
+          <span>{report.rating}</span>
+          <span className="text-[10px] text-[#8c6d58] font-normal">
+            ({report.reviewsCount >= 1000 ? `${(report.reviewsCount / 1000).toFixed(1)}k` : report.reviewsCount})
+          </span>
         </div>
-        <div className="flex items-center gap-1.5 text-[10px] text-slate-700 font-medium">
-          <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
-          <span className="truncate">Personalized Vedic Remedies</span>
+
+        {/* Pricing */}
+        <div className="flex items-baseline gap-1.5">
+          <span className="text-base font-extrabold text-[#801c10]">
+            ₹{report.sellPrice}
+          </span>
+          {report.price > report.sellPrice && (
+            <s className="text-[11px] text-slate-400 font-normal">
+              ₹{report.price}
+            </s>
+          )}
         </div>
-      </div>
-
-      {/* Rating & Review Counter */}
-      <div className="flex items-center justify-center gap-1 text-amber-500 text-xs font-bold mb-3 z-10">
-        <Star className="w-3.5 h-3.5 fill-amber-400" />
-        <span>{report.rating}</span>
-        <span className="text-[10px] text-[#8c6d58] font-normal">
-          ({report.reviewsCount.toLocaleString()}+ reviews)
-        </span>
-      </div>
-
-      {/* Pricing Block */}
-      <div className="flex items-baseline justify-center gap-2 mb-4 z-10">
-        <span className="text-lg font-extrabold text-[#801c10]">
-          ₹{report.sellPrice}
-        </span>
-        {report.price > report.sellPrice && (
-          <s className="text-xs text-slate-400 font-normal">
-            ₹{report.price}
-          </s>
-        )}
       </div>
 
       {/* Action CTA Button */}
@@ -403,11 +388,11 @@ function ReportCard({
           e.stopPropagation();
           onOpenPreview(report);
         }}
-        className="w-full py-2.5 px-4 rounded-full bg-[#1b4327] hover:bg-[#13321d] text-white font-semibold text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm hover:shadow-md group-hover:scale-[1.02] cursor-pointer mt-auto z-10"
+        className="w-full py-2 px-3 rounded-xl bg-[#1b4327] hover:bg-[#13321d] text-white font-semibold text-xs transition-all flex items-center justify-center gap-1.5 shadow-2xs hover:shadow-md cursor-pointer z-10 group/btn"
       >
         <FileText className="w-3.5 h-3.5 text-amber-300" />
         <span>Get Report</span>
-        <ArrowRight className="w-3.5 h-3.5 ml-0.5 opacity-80 group-hover:translate-x-1 transition-transform" />
+        <ArrowRight className="w-3.5 h-3.5 ml-0.5 opacity-80 group-hover/btn:translate-x-0.5 transition-transform" />
       </button>
     </div>
   );

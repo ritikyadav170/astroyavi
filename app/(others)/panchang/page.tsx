@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { AstroNavbar } from "../Homepage/navbar";
 import { Footer } from "../Homepage/footer";
 import {
-  PanchangMetricsData,
-  defaultMetrics,
+  FullPanchangData,
+  defaultPanchangData,
   getPanchangData,
 } from "./panchang";
 import { PanchangHeaderForm } from "./components/PanchangHeaderForm";
@@ -14,23 +14,35 @@ import { PanchangCalendarWidget } from "./components/PanchangCalendarWidget";
 import { ChoghadiyaEvents } from "./components/ChoghadiyaEvents";
 import { PanchangAstrologers } from "./components/PanchangAstrologers";
 
-export default function PanchangPage() {
-  const [selectedDate, setSelectedDate] = useState("2026-07-13");
-  const [place, setPlace] = useState("Noida, India");
-  const [metrics, setMetrics] = useState<PanchangMetricsData>(defaultMetrics);
+function getTodayIsoString(): string {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
 
-  const fetchPanchang = async () => {
+export default function PanchangPage() {
+  const [selectedDate, setSelectedDate] = useState<string>(getTodayIsoString);
+  const [place, setPlace] = useState<string>("Delhi, India");
+  const [panchangData, setPanchangData] = useState<FullPanchangData>(defaultPanchangData);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const fetchPanchang = useCallback(async () => {
+    setIsLoading(true);
     try {
       const data = await getPanchangData(selectedDate, place);
-      setMetrics(data.metrics);
+      setPanchangData(data);
     } catch (err) {
-      console.error("Error fetching panchang:", err);
+      console.error("Error fetching panchang data:", err);
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, [selectedDate, place]);
 
   useEffect(() => {
     fetchPanchang();
-  }, [selectedDate, place]);
+  }, [fetchPanchang]);
 
   return (
     <main className="min-h-screen bg-[#fdf8f0] selection:bg-amber-200 selection:text-amber-950 flex flex-col">
@@ -38,7 +50,7 @@ export default function PanchangPage() {
       <AstroNavbar />
 
       {/* Main Container */}
-      <div className="w-full flex-1 py-10 sm:py-14 px-4 sm:px-6 lg:px-8 max-w-[1350px] mx-auto flex  flex-col items-center">
+      <div className="w-full flex-1 py-10 sm:py-14 px-4 sm:px-6 lg:px-8 max-w-[1350px] mx-auto flex flex-col items-center">
         {/* Header & Date/Place Form */}
         <PanchangHeaderForm
           selectedDate={selectedDate}
@@ -46,25 +58,35 @@ export default function PanchangPage() {
           place={place}
           setPlace={setPlace}
           onFetchPanchang={fetchPanchang}
+          isLoading={isLoading}
         />
 
         {/* Main 2-Column Panchang Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full mb-10">
-          {/* Left Column: Panchang Metrics Card (7 cols) */}
+          {/* Left Column: Core Panchang Details Card (7 cols) */}
           <div className="lg:col-span-7">
-            <PanchangMetrics metrics={metrics} />
+            <PanchangMetrics data={panchangData} isLoading={isLoading} />
           </div>
 
-          {/* Right Column: Monthly Vedic Calendar Card Widget (5 cols) */}
+          {/* Right Column: Interactive Vedic Calendar Card Widget (5 cols) */}
           <div className="lg:col-span-5 flex flex-col">
-            <PanchangCalendarWidget />
+            <PanchangCalendarWidget
+              selectedDate={selectedDate}
+              onSelectDate={(newDate) => {
+                setSelectedDate(newDate);
+              }}
+            />
           </div>
         </div>
 
-        {/* Secondary 2-Column Information Grid */}
-        <ChoghadiyaEvents />
+        {/* Secondary Information Grid: Day/Night Choghadiya & Directional Guidance */}
+        <ChoghadiyaEvents
+          choghadiya={panchangData.choghadiya}
+          auspicious={panchangData.auspicious}
+          nivasShool={panchangData.nivasShool}
+        />
 
-        {/* Recommended Astrologers Section */}
+        {/* Recommended Astrologers Section (Live API Backend Connected) */}
         <PanchangAstrologers />
       </div>
 

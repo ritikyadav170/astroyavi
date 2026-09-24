@@ -159,6 +159,32 @@ export const reportTabs: readonly string[] = [
   "Remedies",
 ] as const;
 
+function extractString(val: any, fallback = "--"): string {
+  if (val === null || val === undefined) return fallback;
+  if (typeof val === "string") return val.trim() || fallback;
+  if (typeof val === "number" || typeof val === "boolean") return String(val);
+  if (typeof val === "object") {
+    if (typeof val.result === "string" && val.result.trim()) return val.result.trim();
+    if (typeof val.description === "string" && val.description.trim()) return val.description.trim();
+    if (typeof val.report === "string" && val.report.trim()) return val.report.trim();
+    if (typeof val.name === "string" && val.name.trim()) return val.name.trim();
+    if (typeof val.meaning === "string" && val.meaning.trim()) return val.meaning.trim();
+    if (typeof val.title === "string" && val.title.trim()) return val.title.trim();
+    if (typeof val.effects === "string" && val.effects.trim()) return val.effects.trim();
+    if (typeof val.consideration === "string" && val.consideration.trim()) return val.consideration.trim();
+    if (typeof val.recommendation === "string" && val.recommendation.trim()) return val.recommendation.trim();
+    if (typeof val.type === "string" && val.type.trim() && !val.result) return val.type.trim();
+    if (typeof val.text === "string" && val.text.trim()) return val.text.trim();
+    if (val.result && typeof val.result === "object") return extractString(val.result, fallback);
+    if (val.report && typeof val.report === "object") return extractString(val.report, fallback);
+    if (Array.isArray(val)) {
+      return val.map((item) => extractString(item, "")).filter(Boolean).join(", ") || fallback;
+    }
+    return fallback;
+  }
+  return fallback;
+}
+
 // =========================================================================
 // API INTEGRATION FUNCTION FOR KUNDLI REPORT (ALL REAL DATA FROM API)
 // =========================================================================
@@ -300,28 +326,28 @@ export async function getKundliReport(formData: KundliFormData): Promise<FullKun
     lat,
     lon,
     tzone: 5.5,
-    sunrise: basicRaw.sunrise || "--",
-    sunset: basicRaw.sunset || "--",
-    ascendant: basicRaw.ascendant || "--",
-    ascendantLord: basicRaw.ascendant_lord || basicRaw.sign_lord || "--",
-    sign: basicRaw.sign || basicRaw.moon_sign || "--",
-    signLord: basicRaw.sign_lord || "--",
-    nakshatra: basicRaw.nakshatra || "--",
-    nakshatraLord: basicRaw.nakshatra_lord || "--",
-    charan: basicRaw.charan || basicRaw.pada || "--",
-    yog: basicRaw.yog || basicRaw.yoga || "--",
-    karan: basicRaw.karan || basicRaw.karana || "--",
-    tithi: basicRaw.tithi || "--",
-    paksha: basicRaw.paksha || "--",
-    tatva: basicRaw.tatva || basicRaw.element || "--",
-    paya: basicRaw.paya || "--",
-    gan: basicRaw.gan || basicRaw.gana || "--",
-    varna: basicRaw.varna || "--",
-    nadi: basicRaw.nadi || "--",
-    vashya: basicRaw.vashya || "--",
-    yoni: basicRaw.yoni || "--",
-    yunja: basicRaw.yunja || "--",
-    nameAlphabet: basicRaw.name_alphabet || "--",
+    sunrise: extractString(basicRaw.sunrise),
+    sunset: extractString(basicRaw.sunset),
+    ascendant: extractString(basicRaw.ascendant?.name || basicRaw.ascendant),
+    ascendantLord: extractString(basicRaw.ascendant_lord?.name || basicRaw.ascendant_lord || basicRaw.sign_lord),
+    sign: extractString(basicRaw.sign?.name || basicRaw.sign || basicRaw.moon_sign),
+    signLord: extractString(basicRaw.sign_lord?.name || basicRaw.sign_lord),
+    nakshatra: extractString(basicRaw.nakshatra?.name || basicRaw.nakshatra),
+    nakshatraLord: extractString(basicRaw.nakshatra_lord?.name || basicRaw.nakshatra_lord),
+    charan: extractString(basicRaw.charan || basicRaw.pada, "1"),
+    yog: extractString(basicRaw.yog?.name || basicRaw.yog || basicRaw.yoga),
+    karan: extractString(basicRaw.karan?.name || basicRaw.karan || basicRaw.karana),
+    tithi: extractString(basicRaw.tithi?.name || basicRaw.tithi),
+    paksha: extractString(basicRaw.paksha),
+    tatva: extractString(basicRaw.tatva || basicRaw.element),
+    paya: extractString(basicRaw.paya),
+    gan: extractString(basicRaw.gan || basicRaw.gana),
+    varna: extractString(basicRaw.varna),
+    nadi: extractString(basicRaw.nadi),
+    vashya: extractString(basicRaw.vashya),
+    yoni: extractString(basicRaw.yoni),
+    yunja: extractString(basicRaw.yunja),
+    nameAlphabet: extractString(basicRaw.name_alphabet),
   };
 
   // 2. Process Planetary Positions from live API
@@ -329,33 +355,35 @@ export async function getKundliReport(formData: KundliFormData): Promise<FullKun
   if (Array.isArray(planetsRaw) && planetsRaw.length > 0) {
     planets = planetsRaw.map((p: any, idx: number) => ({
       id: idx + 1,
-      name: p.name || p.planet || `Planet ${idx + 1}`,
-      fullDegree: p.full_degree ? `${parseFloat(p.full_degree).toFixed(2)}°` : p.fullDegree || "--",
-      normDegree: p.norm_degree || p.degree || "--",
+      name: extractString(p.name || p.planet || `Planet ${idx + 1}`),
+      fullDegree: p.full_degree ? `${parseFloat(p.full_degree).toFixed(2)}°` : extractString(p.fullDegree),
+      normDegree: extractString(p.norm_degree || p.degree),
       speed: p.speed !== undefined ? String(p.speed) : "--",
       isRetro: Boolean(p.is_retro || p.isRetro || p.retrograde),
-      sign: p.sign || p.zodiac || "--",
-      signLord: p.sign_lord || p.signLord || "--",
+      sign: extractString(p.sign || p.zodiac),
+      signLord: extractString(p.sign_lord || p.signLord),
       house: p.house || p.house_number || idx + 1,
-      nakshatra: p.nakshatra || "--",
-      nakshatraLord: p.nakshatra_lord || p.nakshatraLord || "--",
+      nakshatra: extractString(p.nakshatra),
+      nakshatraLord: extractString(p.nakshatra_lord || p.nakshatraLord),
       nakshatraPad: p.charan || p.pada || 1,
     }));
-  } else if (typeof planetsRaw === "object" && Object.keys(planetsRaw).length > 0) {
-    planets = Object.entries(planetsRaw).map(([key, val]: [string, any], idx) => ({
-      id: idx + 1,
-      name: val.name || key,
-      fullDegree: val.full_degree ? `${parseFloat(val.full_degree).toFixed(2)}°` : "--",
-      normDegree: val.norm_degree || val.degree || "--",
-      speed: val.speed !== undefined ? String(val.speed) : "--",
-      isRetro: Boolean(val.is_retro || val.retrograde),
-      sign: val.sign || val.zodiac || "--",
-      signLord: val.sign_lord || "--",
-      house: val.house || idx + 1,
-      nakshatra: val.nakshatra || "--",
-      nakshatraLord: val.nakshatra_lord || "--",
-      nakshatraPad: val.charan || val.pada || 1,
-    }));
+  } else if (typeof planetsRaw === "object" && planetsRaw !== null && Object.keys(planetsRaw).length > 0) {
+    planets = Object.entries(planetsRaw)
+      .filter(([k]) => !["status", "success", "message", "statusCode"].includes(k))
+      .map(([key, val]: [string, any], idx) => ({
+        id: idx + 1,
+        name: extractString(val?.name || key),
+        fullDegree: val?.full_degree ? `${parseFloat(val.full_degree).toFixed(2)}°` : "--",
+        normDegree: extractString(val?.norm_degree || val?.degree),
+        speed: val?.speed !== undefined ? String(val.speed) : "--",
+        isRetro: Boolean(val?.is_retro || val?.retrograde),
+        sign: extractString(val?.sign || val?.zodiac),
+        signLord: extractString(val?.sign_lord),
+        house: val?.house || idx + 1,
+        nakshatra: extractString(val?.nakshatra),
+        nakshatraLord: extractString(val?.nakshatra_lord),
+        nakshatraPad: val?.charan || val?.pada || 1,
+      }));
   }
 
   // 3. Process Charts from live API
@@ -368,31 +396,35 @@ export async function getKundliReport(formData: KundliFormData): Promise<FullKun
   // 4. Process Doshas from live API
   const doshas: DoshaReport = {
     manglik: {
-      isManglik: Boolean(manglikRaw.is_manglik || manglikRaw.manglik_present || manglikRaw.status?.toLowerCase()?.includes("manglik")),
-      status: manglikRaw.manglik_status || (manglikRaw.is_manglik ? "Manglik" : "Non-Manglik"),
+      isManglik: Boolean(manglikRaw.is_manglik || manglikRaw.manglik_present || String(manglikRaw.status || "").toLowerCase().includes("manglik")),
+      status: extractString(manglikRaw.manglik_status || (manglikRaw.is_manglik ? "Manglik" : "Non-Manglik")),
       percentage: Number(manglikRaw.percentage || manglikRaw.manglik_percentage) || (manglikRaw.is_manglik ? 65 : 0),
-      description: manglikRaw.description || manglikRaw.report || "No severe Kuja dosha found in chart.",
-      exceptions: Array.isArray(manglikRaw.exceptions) ? manglikRaw.exceptions : [],
-      house: manglikRaw.house || "--",
+      description: extractString(manglikRaw.description || manglikRaw.report || manglikRaw.result, "No severe Kuja dosha found in chart."),
+      exceptions: Array.isArray(manglikRaw.exceptions)
+        ? manglikRaw.exceptions.map((e: any) => extractString(e, ""))
+        : [],
+      house: extractString(manglikRaw.house),
     },
     sadheSati: {
       isSadheSati: Boolean(sadheSatiRaw.is_sadhe_sati || sadheSatiRaw.is_present),
-      phase: sadheSatiRaw.phase || sadheSatiRaw.current_phase || "No Active Phase",
-      description: sadheSatiRaw.description || sadheSatiRaw.consideration || "Saturn is not currently transiting over natal Moon sign.",
-      startYear: sadheSatiRaw.start_year || "--",
-      endYear: sadheSatiRaw.end_year || "--",
-      saturnSign: sadheSatiRaw.saturn_sign || "--",
+      phase: extractString(sadheSatiRaw.phase || sadheSatiRaw.current_phase, "No Active Phase"),
+      description: extractString(sadheSatiRaw.description || sadheSatiRaw.consideration || sadheSatiRaw.result, "Saturn is not currently transiting over natal Moon sign."),
+      startYear: extractString(sadheSatiRaw.start_year),
+      endYear: extractString(sadheSatiRaw.end_year),
+      saturnSign: extractString(sadheSatiRaw.saturn_sign),
     },
     kaalSarp: {
       isKaalSarp: Boolean(kaalSarpRaw.is_kaal_sarp || kaalSarpRaw.is_present),
-      type: kaalSarpRaw.type || kaalSarpRaw.name || "None",
-      description: kaalSarpRaw.description || "Planetary energies flow without Kaal Sarp constriction.",
-      effects: kaalSarpRaw.effects || "--",
+      type: extractString(kaalSarpRaw.type || kaalSarpRaw.name, "None"),
+      description: extractString(kaalSarpRaw.description || kaalSarpRaw.result, "Planetary energies flow without Kaal Sarp constriction."),
+      effects: extractString(kaalSarpRaw.effects || kaalSarpRaw.result),
     },
     pitraDosha: {
       isPitraDosha: Boolean(pitraRaw.is_pitra_dosha || pitraRaw.is_present),
-      description: pitraRaw.description || pitraRaw.report || "No major Pitra Dosha detected in chart.",
-      remedies: Array.isArray(pitraRaw.remedies) ? pitraRaw.remedies : ["Perform regular Surya Namaskar and respect elders."],
+      description: extractString(pitraRaw.description || pitraRaw.report || pitraRaw.result, "No major Pitra Dosha detected in chart."),
+      remedies: Array.isArray(pitraRaw.remedies)
+        ? pitraRaw.remedies.map((r: any) => extractString(r, ""))
+        : ["Perform regular Surya Namaskar and respect elders."],
     },
   };
 
@@ -401,52 +433,65 @@ export async function getKundliReport(formData: KundliFormData): Promise<FullKun
   const dashaArray = dashaRaw.dasha_periods || dashaRaw.maha_dasha || dashaRaw.periods || (Array.isArray(dashaRaw) ? dashaRaw : []);
   if (Array.isArray(dashaArray) && dashaArray.length > 0) {
     dashas = dashaArray.map((d: any) => ({
-      planet: d.planet || d.name || "Dasha",
-      startDate: d.start_date || d.start || "--",
-      endDate: d.end_date || d.end || "--",
-      durationYears: d.duration || d.years || "--",
+      planet: extractString(d.planet || d.name, "Dasha"),
+      startDate: extractString(d.start_date || d.start),
+      endDate: extractString(d.end_date || d.end),
+      durationYears: extractString(d.duration || d.years),
       isActive: Boolean(d.is_active || d.active),
     }));
   }
 
   // 6. Process Predictions from live API
+  const ascReport = ascReportRaw.report || ascReportRaw;
   const predictions: PredictionsData = {
     ascendantReport: {
-      personality: ascReportRaw.personality || ascReportRaw.character || "--",
-      physical: ascReportRaw.physical_appearance || ascReportRaw.appearance || "--",
-      mental: ascReportRaw.mental_temperament || ascReportRaw.temperament || "--",
-      career: ascReportRaw.career_finance || ascReportRaw.career || "--",
-      loveMarriage: ascReportRaw.love_marriage || ascReportRaw.relationship || "--",
+      personality: extractString(ascReport.personality || ascReport.character || ascReportRaw.personality),
+      physical: extractString(ascReport.physical_appearance || ascReport.physical || ascReport.appearance || ascReportRaw.physical),
+      mental: extractString(ascReport.mental_temperament || ascReport.mental || ascReport.temperament || ascReportRaw.mental),
+      career: extractString(ascReport.career_finance || ascReport.career || ascReport.profession || ascReportRaw.career),
+      loveMarriage: extractString(ascReport.love_marriage || ascReport.relationship || ascReport.love || ascReportRaw.love_marriage),
     },
-    yogas: Array.isArray(yogasRaw.yogas || yogasRaw) && (yogasRaw.yogas || yogasRaw).length > 0
-      ? (yogasRaw.yogas || yogasRaw).map((y: any) => ({
-          name: y.name || y.yoga || "Vedic Yoga",
-          description: y.description || y.rule || "--",
-          effects: y.effects || y.result || "--",
-          planets: y.planets || "",
-        }))
-      : [],
+    yogas: [],
   };
+
+  const rawYogasData = yogasRaw.yogas || yogasRaw.yoga_list || yogasRaw;
+  if (Array.isArray(rawYogasData) && rawYogasData.length > 0) {
+    predictions.yogas = rawYogasData.map((y: any, idx: number) => ({
+      name: extractString(y.name || y.yoga || `Yoga ${idx + 1}`, "Vedic Yoga"),
+      description: extractString(y.description || y.rule || y.type, "--"),
+      effects: extractString(y.effects || y.result || y.description, "--"),
+      planets: extractString(y.planets, ""),
+    }));
+  } else if (typeof rawYogasData === "object" && rawYogasData !== null && Object.keys(rawYogasData).length > 0) {
+    predictions.yogas = Object.entries(rawYogasData)
+      .filter(([k]) => !["status", "success", "message", "statusCode"].includes(k))
+      .map(([key, val]: [string, any]) => ({
+        name: key,
+        description: extractString(val?.description || val?.type || val?.rule, "--"),
+        effects: extractString(val?.result || val?.effects || val?.description || val, "--"),
+        planets: extractString(val?.planets, ""),
+      }));
+  }
 
   // 7. Process Remedies from live API
   const remedies: RemediesData = {
     rudraksha: {
-      name: rudrakshaRaw.name || rudrakshaRaw.recommended_rudraksha || "--",
-      recommendation: rudrakshaRaw.recommendation || rudrakshaRaw.description || "--",
-      deity: rudrakshaRaw.ruling_deity || rudrakshaRaw.deity || "--",
-      planet: rudrakshaRaw.ruling_planet || rudrakshaRaw.planet || "--",
-      mantra: rudrakshaRaw.wearing_mantra || rudrakshaRaw.mantra || "--",
-      benefits: rudrakshaRaw.benefits || "--",
+      name: extractString(rudrakshaRaw.name || rudrakshaRaw.recommended_rudraksha),
+      recommendation: extractString(rudrakshaRaw.recommendation || rudrakshaRaw.description || rudrakshaRaw.result),
+      deity: extractString(rudrakshaRaw.ruling_deity || rudrakshaRaw.deity),
+      planet: extractString(rudrakshaRaw.ruling_planet || rudrakshaRaw.planet),
+      mantra: extractString(rudrakshaRaw.wearing_mantra || rudrakshaRaw.mantra),
+      benefits: extractString(rudrakshaRaw.benefits || rudrakshaRaw.result),
     },
     gemstones: {
       lifeStone: {
-        name: basic.ascendantLord ? `${basic.ascendantLord} Gemstone` : "--",
+        name: basic.ascendantLord && basic.ascendantLord !== "--" ? `${basic.ascendantLord} Gemstone` : "--",
         finger: "Middle Finger",
         metal: "Silver / Gold",
         planet: basic.ascendantLord || "--",
       },
       luckyStone: {
-        name: basic.signLord ? `${basic.signLord} Gemstone` : "--",
+        name: basic.signLord && basic.signLord !== "--" ? `${basic.signLord} Gemstone` : "--",
         finger: "Little Finger",
         metal: "Gold / Bronze",
         planet: basic.signLord || "--",

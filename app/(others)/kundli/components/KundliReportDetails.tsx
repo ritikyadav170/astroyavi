@@ -30,6 +30,26 @@ interface KundliReportDetailsProps {
   onReset: () => void;
 }
 
+function safeRender(val: any, fallback = "--"): string {
+  if (val === null || val === undefined) return fallback;
+  if (typeof val === "string") return val.trim() || fallback;
+  if (typeof val === "number" || typeof val === "boolean") return String(val);
+  if (typeof val === "object") {
+    if (typeof val.result === "string" && val.result.trim()) return val.result.trim();
+    if (typeof val.description === "string" && val.description.trim()) return val.description.trim();
+    if (typeof val.report === "string" && val.report.trim()) return val.report.trim();
+    if (typeof val.name === "string" && val.name.trim()) return val.name.trim();
+    if (typeof val.effects === "string" && val.effects.trim()) return val.effects.trim();
+    if (typeof val.type === "string" && val.type.trim() && !val.result) return val.type.trim();
+    if (typeof val.text === "string" && val.text.trim()) return val.text.trim();
+    if (Array.isArray(val)) {
+      return val.map((v) => safeRender(v, "")).filter(Boolean).join(", ") || fallback;
+    }
+    return fallback;
+  }
+  return fallback;
+}
+
 export function KundliReportDetails({
   formData,
   reportData,
@@ -258,7 +278,7 @@ export function KundliReportDetails({
                   <User className="w-4 h-4 text-[#c87638]" />
                   General Personality &amp; Temperament
                 </span>
-                <p className="text-[#5c4033] leading-relaxed">{predictions.ascendantReport.personality}</p>
+                <p className="text-[#5c4033] leading-relaxed">{safeRender(predictions.ascendantReport.personality)}</p>
               </div>
 
               <div className="p-4 rounded-2xl bg-blue-50/60 border border-blue-200 space-y-1.5">
@@ -266,7 +286,7 @@ export function KundliReportDetails({
                   <Briefcase className="w-4 h-4 text-blue-700" />
                   Career, Profession &amp; Wealth
                 </span>
-                <p className="text-[#5c4033] leading-relaxed">{predictions.ascendantReport.career}</p>
+                <p className="text-[#5c4033] leading-relaxed">{safeRender(predictions.ascendantReport.career)}</p>
               </div>
 
               <div className="p-4 rounded-2xl bg-rose-50/60 border border-rose-200 space-y-1.5">
@@ -274,7 +294,7 @@ export function KundliReportDetails({
                   <Heart className="w-4 h-4 text-rose-700" />
                   Love, Relationships &amp; Marriage
                 </span>
-                <p className="text-[#5c4033] leading-relaxed">{predictions.ascendantReport.loveMarriage}</p>
+                <p className="text-[#5c4033] leading-relaxed">{safeRender(predictions.ascendantReport.loveMarriage)}</p>
               </div>
 
               <div className="p-4 rounded-2xl bg-emerald-50/60 border border-emerald-200 space-y-1.5">
@@ -282,7 +302,7 @@ export function KundliReportDetails({
                   <Sparkles className="w-4 h-4 text-emerald-700" />
                   Mental Strength &amp; Intellect
                 </span>
-                <p className="text-[#5c4033] leading-relaxed">{predictions.ascendantReport.mental}</p>
+                <p className="text-[#5c4033] leading-relaxed">{safeRender(predictions.ascendantReport.mental)}</p>
               </div>
             </div>
           </div>
@@ -295,18 +315,24 @@ export function KundliReportDetails({
             </h3>
 
             <div className="space-y-3">
-              {predictions.yogas.map((yoga, idx) => (
-                <div key={idx} className="p-4 rounded-2xl bg-amber-50/50 border border-amber-200 space-y-1 text-xs">
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-sm text-[#801c10]">{yoga.name}</span>
-                    <span className="px-2.5 py-0.5 rounded-full bg-green-100 text-green-800 font-bold text-[10px] border border-green-300">
-                      Auspicious Yoga
-                    </span>
+              {predictions.yogas.length === 0 ? (
+                <p className="text-xs text-[#5c4033] p-4 bg-amber-50 rounded-2xl border border-amber-200">
+                  Standard planetary yogas are active in the chart.
+                </p>
+              ) : (
+                predictions.yogas.map((yoga, idx) => (
+                  <div key={idx} className="p-4 rounded-2xl bg-amber-50/50 border border-amber-200 space-y-1 text-xs">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-sm text-[#801c10]">{safeRender(yoga.name, "Vedic Yoga")}</span>
+                      <span className="px-2.5 py-0.5 rounded-full bg-green-100 text-green-800 font-bold text-[10px] border border-green-300">
+                        Auspicious Yoga
+                      </span>
+                    </div>
+                    <p className="text-[#5c4033]"><strong className="text-[#2b1810]">Formation:</strong> {safeRender(yoga.description)}</p>
+                    <p className="text-emerald-900 font-semibold"><strong className="text-[#2b1810]">Result:</strong> {safeRender(yoga.effects)}</p>
                   </div>
-                  <p className="text-[#5c4033]"><strong className="text-[#2b1810]">Formation:</strong> {yoga.description}</p>
-                  <p className="text-emerald-900 font-semibold"><strong className="text-[#2b1810]">Result:</strong> {yoga.effects}</p>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </div>
@@ -537,13 +563,13 @@ export function KundliReportDetails({
             </div>
 
             <div className="space-y-3 text-xs">
-              <p className="text-[#5c4033] leading-relaxed">{doshas.manglik.description}</p>
+              <p className="text-[#5c4033] leading-relaxed">{safeRender(doshas.manglik.description)}</p>
               {doshas.manglik.exceptions && doshas.manglik.exceptions.length > 0 && (
                 <div className="p-3 bg-amber-50 rounded-xl border border-amber-200">
                   <span className="font-bold text-[#801c10] block mb-1">Cancellations &amp; Exceptions:</span>
                   <ul className="list-disc pl-4 space-y-1 text-[#5c4033]">
                     {doshas.manglik.exceptions.map((ex, i) => (
-                      <li key={i}>{ex}</li>
+                      <li key={i}>{safeRender(ex)}</li>
                     ))}
                   </ul>
                 </div>
@@ -559,11 +585,11 @@ export function KundliReportDetails({
                 Shani Sadhe Sati Status
               </h3>
               <span className="px-3 py-1 rounded-full text-xs font-bold bg-indigo-100 text-indigo-800 border border-indigo-200">
-                {doshas.sadheSati.phase}
+                {safeRender(doshas.sadheSati.phase)}
               </span>
             </div>
 
-            <p className="text-xs text-[#5c4033] leading-relaxed">{doshas.sadheSati.description}</p>
+            <p className="text-xs text-[#5c4033] leading-relaxed">{safeRender(doshas.sadheSati.description)}</p>
           </div>
 
           {/* Kaal Sarp & Pitra Dosha Split Cards */}
@@ -572,10 +598,10 @@ export function KundliReportDetails({
               <div className="flex items-center justify-between border-b border-amber-100 pb-2">
                 <h4 className="font-bold text-sm text-[#801c10]">Kaal Sarp Dosha</h4>
                 <span className="text-xs font-bold text-green-700 bg-green-50 px-2 py-0.5 rounded border border-green-200">
-                  {doshas.kaalSarp.isKaalSarp ? doshas.kaalSarp.type : "Not Present"}
+                  {doshas.kaalSarp.isKaalSarp ? safeRender(doshas.kaalSarp.type) : "Not Present"}
                 </span>
               </div>
-              <p className="text-xs text-[#5c4033]">{doshas.kaalSarp.description}</p>
+              <p className="text-xs text-[#5c4033]">{safeRender(doshas.kaalSarp.description)}</p>
             </div>
 
             <div className="bg-white rounded-3xl p-6 border border-[#e6c896] shadow-sm space-y-3">
@@ -585,7 +611,7 @@ export function KundliReportDetails({
                   {doshas.pitraDosha.isPitraDosha ? "Present" : "Not Present"}
                 </span>
               </div>
-              <p className="text-xs text-[#5c4033]">{doshas.pitraDosha.description}</p>
+              <p className="text-xs text-[#5c4033]">{safeRender(doshas.pitraDosha.description)}</p>
             </div>
           </div>
         </div>
@@ -620,15 +646,15 @@ export function KundliReportDetails({
                     {idx + 1}
                   </div>
                   <div>
-                    <span className="font-bold text-sm text-[#2b1810] block">{dasha.planet} Mahadasha</span>
-                    <span className="text-[11px] text-[#5c4033]">Duration: {dasha.durationYears} Years</span>
+                    <span className="font-bold text-sm text-[#2b1810] block">{safeRender(dasha.planet)} Mahadasha</span>
+                    <span className="text-[11px] text-[#5c4033]">Duration: {safeRender(dasha.durationYears)} Years</span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
                   <div className="text-right text-xs">
-                    <span className="font-bold text-[#801c10] block">{dasha.startDate}</span>
-                    <span className="text-[11px] text-[#5c4033]">to {dasha.endDate}</span>
+                    <span className="font-bold text-[#801c10] block">{safeRender(dasha.startDate)}</span>
+                    <span className="text-[11px] text-[#5c4033]">to {safeRender(dasha.endDate)}</span>
                   </div>
                   {dasha.isActive && (
                     <span className="px-2.5 py-0.5 rounded-full bg-green-700 text-white font-bold text-[10px] uppercase">
@@ -656,20 +682,20 @@ export function KundliReportDetails({
 
             <div className="p-5 rounded-2xl bg-amber-50/70 border border-amber-200 space-y-3 text-xs">
               <div className="flex items-center justify-between">
-                <span className="font-bold text-base text-[#801c10]">{remedies.rudraksha.name}</span>
+                <span className="font-bold text-base text-[#801c10]">{safeRender(remedies.rudraksha.name)}</span>
                 <span className="px-3 py-1 rounded-full bg-[#1b4327] text-white font-bold text-xs">
-                  Ruling Planet: {remedies.rudraksha.planet}
+                  Ruling Planet: {safeRender(remedies.rudraksha.planet)}
                 </span>
               </div>
-              <p className="text-[#5c4033] leading-relaxed">{remedies.rudraksha.recommendation}</p>
+              <p className="text-[#5c4033] leading-relaxed">{safeRender(remedies.rudraksha.recommendation)}</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                 <div className="p-3 bg-white rounded-xl border border-amber-100">
                   <strong className="text-[#801c10] block mb-0.5">Mantra to Chant:</strong>
-                  <span className="font-mono text-[#2b1810]">{remedies.rudraksha.mantra}</span>
+                  <span className="font-mono text-[#2b1810]">{safeRender(remedies.rudraksha.mantra)}</span>
                 </div>
                 <div className="p-3 bg-white rounded-xl border border-amber-100">
                   <strong className="text-[#801c10] block mb-0.5">Primary Benefits:</strong>
-                  <span className="text-[#5c4033]">{remedies.rudraksha.benefits}</span>
+                  <span className="text-[#5c4033]">{safeRender(remedies.rudraksha.benefits)}</span>
                 </div>
               </div>
             </div>
@@ -685,31 +711,31 @@ export function KundliReportDetails({
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
               <div className="p-4 rounded-2xl bg-blue-50/60 border border-blue-200 space-y-2">
                 <span className="font-bold text-blue-900 block text-sm">Life Stone (जीवन रत्न)</span>
-                <p className="font-bold text-base text-[#801c10]">{remedies.gemstones.lifeStone.name}</p>
+                <p className="font-bold text-base text-[#801c10]">{safeRender(remedies.gemstones.lifeStone.name)}</p>
                 <div className="space-y-1 text-[#5c4033]">
-                  <div><strong>Finger:</strong> {remedies.gemstones.lifeStone.finger}</div>
-                  <div><strong>Metal:</strong> {remedies.gemstones.lifeStone.metal}</div>
-                  <div><strong>Planet:</strong> {remedies.gemstones.lifeStone.planet}</div>
+                  <div><strong>Finger:</strong> {safeRender(remedies.gemstones.lifeStone.finger)}</div>
+                  <div><strong>Metal:</strong> {safeRender(remedies.gemstones.lifeStone.metal)}</div>
+                  <div><strong>Planet:</strong> {safeRender(remedies.gemstones.lifeStone.planet)}</div>
                 </div>
               </div>
 
               <div className="p-4 rounded-2xl bg-emerald-50/60 border border-emerald-200 space-y-2">
                 <span className="font-bold text-emerald-900 block text-sm">Lucky Stone (भाग्य रत्न)</span>
-                <p className="font-bold text-base text-[#801c10]">{remedies.gemstones.luckyStone.name}</p>
+                <p className="font-bold text-base text-[#801c10]">{safeRender(remedies.gemstones.luckyStone.name)}</p>
                 <div className="space-y-1 text-[#5c4033]">
-                  <div><strong>Finger:</strong> {remedies.gemstones.luckyStone.finger}</div>
-                  <div><strong>Metal:</strong> {remedies.gemstones.luckyStone.metal}</div>
-                  <div><strong>Planet:</strong> {remedies.gemstones.luckyStone.planet}</div>
+                  <div><strong>Finger:</strong> {safeRender(remedies.gemstones.luckyStone.finger)}</div>
+                  <div><strong>Metal:</strong> {safeRender(remedies.gemstones.luckyStone.metal)}</div>
+                  <div><strong>Planet:</strong> {safeRender(remedies.gemstones.luckyStone.planet)}</div>
                 </div>
               </div>
 
               <div className="p-4 rounded-2xl bg-purple-50/60 border border-purple-200 space-y-2">
                 <span className="font-bold text-purple-900 block text-sm">Benefic Stone (कारक रत्न)</span>
-                <p className="font-bold text-base text-[#801c10]">{remedies.gemstones.beneficStone.name}</p>
+                <p className="font-bold text-base text-[#801c10]">{safeRender(remedies.gemstones.beneficStone.name)}</p>
                 <div className="space-y-1 text-[#5c4033]">
-                  <div><strong>Finger:</strong> {remedies.gemstones.beneficStone.finger}</div>
-                  <div><strong>Metal:</strong> {remedies.gemstones.beneficStone.metal}</div>
-                  <div><strong>Planet:</strong> {remedies.gemstones.beneficStone.planet}</div>
+                  <div><strong>Finger:</strong> {safeRender(remedies.gemstones.beneficStone.finger)}</div>
+                  <div><strong>Metal:</strong> {safeRender(remedies.gemstones.beneficStone.metal)}</div>
+                  <div><strong>Planet:</strong> {safeRender(remedies.gemstones.beneficStone.planet)}</div>
                 </div>
               </div>
             </div>

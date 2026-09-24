@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
-import { MapPin, Calendar, Sparkles, Loader2 } from "lucide-react";
+import React, { useState } from "react";
+import { MapPin, Calendar, Sparkles, Loader2, Navigation } from "lucide-react";
+import { LocationPickerModal } from "./LocationPickerModal";
 
 interface PanchangHeaderFormProps {
   selectedDate: string;
@@ -15,8 +16,8 @@ interface PanchangHeaderFormProps {
 const POPULAR_CITIES = [
   "Delhi, India",
   "Noida, India",
-  "Mumbai, India",
   "Varanasi, India",
+  "Mumbai, India",
   "Jaipur, India",
   "Bangalore, India",
 ];
@@ -29,6 +30,8 @@ export function PanchangHeaderForm({
   onFetchPanchang,
   isLoading = false,
 }: PanchangHeaderFormProps) {
+  const [isMapModalOpen, setIsMapModalOpen] = useState(false);
+
   // Format selected date nicely (e.g. Wednesday, 24 Sep 2026)
   const formattedDisplayDate = React.useMemo(() => {
     try {
@@ -55,6 +58,10 @@ export function PanchangHeaderForm({
       d.getDate()
     ).padStart(2, "0")}`;
     setSelectedDate(iso);
+  };
+
+  const handleLocationSelected = (newPlace: string) => {
+    setPlace(newPlace);
   };
 
   return (
@@ -84,7 +91,10 @@ export function PanchangHeaderForm({
           <Calendar className="w-4 h-4 text-[#801c10]" />
           <span>{formattedDisplayDate}</span>
           <span className="text-amber-700">•</span>
-          <span className="text-[#801c10]">{place}</span>
+          <span className="text-[#801c10] flex items-center gap-1">
+            <MapPin className="w-3.5 h-3.5 text-red-700 inline" />
+            {place}
+          </span>
         </div>
       </div>
 
@@ -124,20 +134,38 @@ export function PanchangHeaderForm({
             </div>
           </div>
 
-          {/* Place Input */}
+          {/* Place Input with Interactive Map Pin Button */}
           <div className="md:col-span-5 space-y-1.5">
-            <label className="text-xs font-bold text-[#3c2415] uppercase tracking-wider block">
-              City / Location
-            </label>
-            <div className="relative">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-[#3c2415] uppercase tracking-wider block">
+                City / Location
+              </label>
+              <button
+                type="button"
+                onClick={() => setIsMapModalOpen(true)}
+                className="text-[11px] font-bold text-[#801c10] hover:text-[#1b4327] flex items-center gap-1 cursor-pointer transition-colors"
+              >
+                <Navigation className="w-3 h-3 text-[#c87638]" />
+                <span>Open Map</span>
+              </button>
+            </div>
+            <div className="relative flex items-center">
               <input
                 type="text"
                 value={place}
                 onChange={(e) => setPlace(e.target.value)}
                 placeholder="Enter City, e.g., Delhi, India"
-                className="w-full bg-white border border-[#e6c896] rounded-xl py-2.5 pl-4 pr-10 text-sm font-semibold text-[#2b1810] focus:outline-none focus:ring-2 focus:ring-[#1b4327]/20 focus:border-[#1b4327] shadow-2xs"
+                className="w-full bg-white border border-[#e6c896] rounded-xl py-2.5 pl-4 pr-12 text-sm font-semibold text-[#2b1810] focus:outline-none focus:ring-2 focus:ring-[#1b4327]/20 focus:border-[#1b4327] shadow-2xs"
               />
-              <MapPin className="w-4 h-4 text-[#c87638] absolute right-3.5 top-1/2 -translate-y-1/2" />
+              {/* Clickable Map Pin Action Button */}
+              <button
+                type="button"
+                onClick={() => setIsMapModalOpen(true)}
+                title="Click to choose location on Map / GPS"
+                className="absolute right-2 p-1.5 rounded-lg bg-amber-100 hover:bg-amber-200 text-[#801c10] hover:text-[#1b4327] transition-all cursor-pointer group shadow-2xs"
+              >
+                <MapPin className="w-4 h-4 group-hover:scale-110 transition-transform text-[#801c10]" />
+              </button>
             </div>
           </div>
 
@@ -182,6 +210,14 @@ export function PanchangHeaderForm({
           ))}
         </div>
       </div>
+
+      {/* Interactive Location Picker Map Modal */}
+      <LocationPickerModal
+        isOpen={isMapModalOpen}
+        onClose={() => setIsMapModalOpen(false)}
+        currentPlace={place}
+        onSelectLocation={handleLocationSelected}
+      />
     </>
   );
 }

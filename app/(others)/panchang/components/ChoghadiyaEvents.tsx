@@ -68,47 +68,53 @@ export function ChoghadiyaEvents({
 
         {/* Choghadiya Items List */}
         <div className="space-y-2.5">
-          {currentList.map((item) => {
-            const isAuspicious = item.status === "Auspicious";
-            const isInauspicious = item.status === "Inauspicious";
+          {currentList.length === 0 ? (
+            <div className="p-8 text-center text-xs text-[#8c6d58] bg-amber-50/40 rounded-2xl border border-amber-100/80">
+              Loading Choghadiya Muhurats from API...
+            </div>
+          ) : (
+            currentList.map((item) => {
+              const isAuspicious = item.status === "Auspicious";
+              const isInauspicious = item.status === "Inauspicious";
 
-            return (
-              <div key={`${activeTab}-${item.id}`} className="flex items-center gap-3 group">
-                <div
-                  className={`w-7 h-7 rounded-lg font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs ${
-                    isAuspicious
-                      ? "bg-green-700 text-white"
-                      : isInauspicious
-                      ? "bg-red-700 text-white"
-                      : "bg-amber-700 text-white"
-                  }`}
-                >
-                  {item.id}
-                </div>
-                <div className="flex-1 flex items-center justify-between bg-amber-50/40 hover:bg-amber-50 p-2.5 rounded-xl border border-amber-100/90 transition-colors">
-                  <div>
-                    <span className="font-bold text-sm text-[#2b1810] mr-2">
-                      {item.name}
-                    </span>
-                    <span className="text-xs text-[#5c4033] font-medium">
-                      {item.time}
-                    </span>
-                  </div>
-                  <span
-                    className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
+              return (
+                <div key={`${activeTab}-${item.id}`} className="flex items-center gap-3 group">
+                  <div
+                    className={`w-7 h-7 rounded-lg font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs ${
                       isAuspicious
-                        ? "bg-green-100 text-green-800 border border-green-300"
+                        ? "bg-green-700 text-white"
                         : isInauspicious
-                        ? "bg-red-100 text-red-800 border border-red-300"
-                        : "bg-amber-100 text-amber-800 border border-amber-300"
+                        ? "bg-red-700 text-white"
+                        : "bg-amber-700 text-white"
                     }`}
                   >
-                    {item.status}
-                  </span>
+                    {item.id}
+                  </div>
+                  <div className="flex-1 flex items-center justify-between bg-amber-50/40 hover:bg-amber-50 p-2.5 rounded-xl border border-amber-100/90 transition-colors">
+                    <div>
+                      <span className="font-bold text-sm text-[#2b1810] mr-2">
+                        {item.name}
+                      </span>
+                      <span className="text-xs text-[#5c4033] font-medium">
+                        {item.time}
+                      </span>
+                    </div>
+                    <span
+                      className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
+                        isAuspicious
+                          ? "bg-green-100 text-green-800 border border-green-300"
+                          : isInauspicious
+                          ? "bg-red-100 text-red-800 border border-red-300"
+                          : "bg-amber-100 text-amber-800 border border-amber-300"
+                      }`}
+                    >
+                      {item.status}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
       </div>
 

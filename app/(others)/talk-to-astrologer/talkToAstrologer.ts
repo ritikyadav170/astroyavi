@@ -188,7 +188,7 @@ export function formatImageUrl(url?: string): string {
   ) {
     return trimmed;
   }
-  const envUrl =
+  const envUrl =  
     process.env.NEXT_PUBLIC_IMAGE_BASE_URL ||
     process.env.NEXT_PUBLIC_URL ||
     process.env.NEXT_PUBLIC_API_URL ||

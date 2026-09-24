@@ -17,6 +17,8 @@ import {
   Heart,
   Briefcase,
   Layers,
+  Download,
+  Printer,
 } from "lucide-react";
 import { KundliFormData, FullKundliReportData, reportTabs } from "../kundliApi";
 
@@ -62,6 +64,12 @@ export function KundliReportDetails({
   const [activeChart, setActiveChart] = useState<"D1" | "D9" | "MOON">("D1");
   const { basic, planets, charts, doshas, dashas, predictions, remedies } = reportData;
 
+  const handleExport = () => {
+    if (typeof window !== "undefined") {
+      window.print();
+    }
+  };
+
   const currentChartSvg =
     activeChart === "D1"
       ? charts.d1Svg
@@ -70,9 +78,9 @@ export function KundliReportDetails({
       : charts.moonSvg;
 
   return (
-    <div className="w-full max-w-[1150px] flex flex-col items-center animate-in fade-in duration-300 space-y-8">
+    <div className="w-full max-w-[1150px] flex flex-col items-center animate-in fade-in duration-300 space-y-8 print:p-0 print:space-y-4">
       {/* Top Action & Navigation Row */}
-      <div className="w-full flex items-center justify-between pb-2 border-b border-amber-200/80">
+      <div className="w-full flex items-center justify-between pb-2 border-b border-amber-200/80 print:hidden">
         <button
           type="button"
           onClick={onReset}
@@ -83,6 +91,16 @@ export function KundliReportDetails({
         </button>
 
         <div className="flex items-center gap-2">
+          {/* Export / Download PDF Button */}
+          <button
+            type="button"
+            onClick={handleExport}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#801c10] hover:bg-[#63140b] text-white font-bold text-xs transition-all shadow-xs cursor-pointer"
+          >
+            <Download className="w-3.5 h-3.5 text-amber-300" />
+            <span>Export Kundli (PDF)</span>
+          </button>
+
           <button
             type="button"
             onClick={handleShare}

@@ -1,32 +1,52 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { compatibilityData } from "../matchMaking";
 
-export function RadarChart() {
+interface RadarChartProps {
+  labels?: string[];
+  values?: number[];
+}
+
+const DEFAULT_LABELS = [
+  "Nature 5/6",
+  "Love 3/4",
+  "Health 8/8",
+  "Mentality 4/5",
+  "Compatibility 7/7",
+  "Dominance 2/2",
+  "Destiny 3/3",
+  "Work 1/1",
+];
+
+const DEFAULT_VALUES = [8.3, 7.5, 10, 8, 10, 10, 10, 10];
+
+export function RadarChart({
+  labels = DEFAULT_LABELS,
+  values = DEFAULT_VALUES,
+}: RadarChartProps) {
   const radialPoints = useMemo(() => {
     const centerX = 220;
     const centerY = 220;
-    const maxRadius = 150;
-    const labels = compatibilityData.labels.length;
+    const maxRadius = 140;
+    const count = labels.length;
 
-    return compatibilityData.values.map((value, index) => {
-      const angle = (Math.PI * 2 * index) / labels - Math.PI / 2;
-      const radius = (value / 8) * maxRadius;
+    return values.map((val, index) => {
+      const angle = (Math.PI * 2 * index) / count - Math.PI / 2;
+      const normalizedValue = Math.min(10, Math.max(0, val));
+      const radius = (normalizedValue / 10) * maxRadius;
       const x = centerX + Math.cos(angle) * radius;
       const y = centerY + Math.sin(angle) * radius;
       return { x, y };
     });
-  }, []);
+  }, [labels, values]);
 
-  const gridLevels = Array.from({ length: 5 }, (_, level) => level + 1);
-  const labels = compatibilityData.labels;
+  const gridLevels = [1, 2, 3, 4, 5];
 
   return (
-    <div className="relative mx-auto h-[420px] w-[440px]">
+    <div className="relative mx-auto h-[380px] w-full max-w-[440px]">
       <svg viewBox="0 0 440 440" className="h-full w-full overflow-visible">
         {gridLevels.map((level) => {
-          const radius = (level / 5) * 150;
+          const radius = (level / 5) * 140;
           const points = Array.from({ length: labels.length }, (_, index) => {
             const angle = (Math.PI * 2 * index) / labels.length - Math.PI / 2;
             const x = 220 + Math.cos(angle) * radius;
@@ -47,13 +67,13 @@ export function RadarChart() {
 
         {labels.map((label, index) => {
           const angle = (Math.PI * 2 * index) / labels.length - Math.PI / 2;
-          const x = 220 + Math.cos(angle) * 170;
-          const y = 220 + Math.sin(angle) * 170;
-          const textX = 220 + Math.cos(angle) * 200;
-          const textY = 220 + Math.sin(angle) * 200;
+          const x = 220 + Math.cos(angle) * 145;
+          const y = 220 + Math.sin(angle) * 145;
+          const textX = 220 + Math.cos(angle) * 175;
+          const textY = 220 + Math.sin(angle) * 175;
 
           return (
-            <g key={label}>
+            <g key={`${label}-${index}`}>
               <line
                 x1={220}
                 y1={220}
@@ -67,9 +87,9 @@ export function RadarChart() {
                 y={textY}
                 textAnchor="middle"
                 dominantBaseline="middle"
-                fontSize="12"
-                fill="#4a3020"
-                fontWeight={500}
+                fontSize="11"
+                fill="#2b1810"
+                fontWeight={600}
               >
                 {label}
               </text>
@@ -77,20 +97,23 @@ export function RadarChart() {
           );
         })}
 
+        {/* Shaded Area */}
         <polygon
           points={radialPoints.map((p) => `${p.x},${p.y}`).join(" ")}
-          fill="#b3a3df"
-          fillOpacity="0.4"
-          stroke="#8a7ae3"
-          strokeWidth="2"
+          fill="#1c5b49"
+          fillOpacity="0.25"
+          stroke="#1c5b49"
+          strokeWidth="2.5"
         />
+
+        {/* Data Points */}
         {radialPoints.map((p, index) => (
           <circle
             key={index}
             cx={p.x}
             cy={p.y}
-            r={5}
-            fill="#8a7ae3"
+            r={4.5}
+            fill="#801c10"
             stroke="#fff"
             strokeWidth="2"
           />

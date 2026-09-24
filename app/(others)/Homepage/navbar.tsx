@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ChevronDown, Menu, X, ArrowRight, User, Sparkles } from "lucide-react";
 import { SignupDialog } from "../../auth/signup/SignupDialog";
 import { formatImageUrl } from "@/lib/utils";
-import axios from "@/config/axios";
+import { useAuth } from "@/providers/AuthProvider";
 
 const LogOutIcon = ({ className = "h-4 w-4" }: { className?: string }) => (
   <svg
@@ -72,75 +72,15 @@ const FlameIcon = ({ className = "h-4 w-4" }: { className?: string }) => (
 );
 
 export function AstroNavbar() {
+  const { isLoggedIn, user, logout, isAuthModalOpen, openAuthModal, closeAuthModal } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userProfile, setUserProfile] = useState<{ name?: string; profileImage?: string } | null>(null);
   const [imgError, setImgError] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const profileDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
-    const checkAuth = async () => {
-      if (typeof window !== "undefined") {
-        const storedAuth = localStorage.getItem("astroyavi_logged_in");
-        const isAuth = storedAuth === "true";
-        setIsLoggedIn(isAuth);
-
-        const cachedUser = localStorage.getItem("astroyavi_user");
-        if (cachedUser) {
-          try {
-            const parsed = JSON.parse(cachedUser);
-            if (parsed && typeof parsed === "object") {
-              setUserProfile(parsed);
-              setImgError(false);
-            }
-          } catch {
-            setUserProfile(null);
-          }
-        }
-
-        // Fetch latest profile from API to ensure fresh profileImage
-        if (isAuth) {
-          const token =
-            localStorage.getItem("astroyavi_token") ||
-            localStorage.getItem("token") ||
-            localStorage.getItem("accessToken");
-
-          if (token) {
-            try {
-              const headers: Record<string, string> = {
-                Authorization: token.startsWith("Bearer ") ? token : `Bearer ${token}`,
-                token: token,
-              };
-              const res = await axios.get("/profile", { headers });
-              if (res?.data) {
-                const userObj =
-                  res.data.data?.user || res.data.user || res.data.data || res.data;
-                if (userObj && typeof userObj === "object") {
-                  setUserProfile(userObj);
-                  localStorage.setItem("astroyavi_user", JSON.stringify(userObj));
-                  setImgError(false);
-                }
-              }
-            } catch {
-              // Ignore background fetch error
-            }
-          }
-        }
-      }
-    };
-
-    checkAuth();
-    window.addEventListener("astroyavi_auth_change", checkAuth);
-    window.addEventListener("storage", checkAuth);
-
-    return () => {
-      window.removeEventListener("astroyavi_auth_change", checkAuth);
-      window.removeEventListener("storage", checkAuth);
-    };
   }, []);
 
   // Handle click outside profile dropdown
@@ -163,26 +103,24 @@ export function AstroNavbar() {
   }, [profileDropdownOpen]);
 
   const handleLogout = () => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("astroyavi_logged_in");
-      localStorage.removeItem("astroyavi_token");
-      localStorage.removeItem("token");
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("astroyavi_user");
-      window.dispatchEvent(new Event("astroyavi_auth_change"));
-    }
-    setIsLoggedIn(false);
-    setUserProfile(null);
     setProfileDropdownOpen(false);
     setMobileMenuOpen(false);
+    logout();
   };
 
   const handleProtectedClick = (e: React.MouseEvent) => {
     if (!isLoggedIn) {
       e.preventDefault();
-      setShowLoginModal(true);
+      openAuthModal();
     }
   };
+
+  const displayName =
+    typeof user?.name === "string" && user.name.trim()
+      ? user.name.trim()
+      : "Astroyavi User";
+
+  const userInitial = displayName.charAt(0).toUpperCase() || "U";
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[#fdf8f0]/95 backdrop-blur-md border-b border-[#e6c896]/60 shadow-sm transition-all duration-300">
@@ -197,7 +135,7 @@ export function AstroNavbar() {
               onError={(e) => {
                 (e.target as HTMLElement).setAttribute(
                   "src",
-                  "/images/logo.svg",
+                  "/images/logo.svg"
                 );
               }}
             />
@@ -207,7 +145,7 @@ export function AstroNavbar() {
           </span>
         </Link>
 
-        {/* Desktop Nav Links with Reflection Sheen & Golden Glow */}
+        {/* Desktop Nav Links */}
         <nav className="hidden lg:flex items-center gap-1 xl:gap-2 text-[14.5px] font-semibold text-[#2d1a0e]">
           {/* Talk to Astrologer */}
           <div className="relative group py-1.5 px-3 rounded-full transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/10 hover:via-orange-500/15 hover:to-amber-500/10 overflow-hidden cursor-pointer">
@@ -234,7 +172,7 @@ export function AstroNavbar() {
                     <span>{txt}</span>
                     <ArrowRight className="w-4 h-4 text-slate-400 group-hover/link:text-[#c85a17] transition-colors" />
                   </Link>
-                ),
+                )
               )}
             </div>
           </div>
@@ -359,16 +297,18 @@ export function AstroNavbar() {
                 aria-label="User Profile"
                 className="group relative flex h-10 w-10 items-center justify-center rounded-full border-2 border-amber-400/90 bg-[#163014] p-0.5 shadow-sm transition-all duration-300 hover:border-[#c85a17] hover:shadow-md hover:scale-105 active:scale-95 cursor-pointer"
               >
-                <div className="relative h-full w-full rounded-full overflow-hidden flex items-center justify-center">
-                  {userProfile?.profileImage && !imgError ? (
+                <div className="relative h-full w-full rounded-full overflow-hidden flex items-center justify-center bg-[#163014]">
+                  {user?.profileImage && !imgError ? (
                     <img
-                      src={formatImageUrl(userProfile.profileImage)}
-                      alt={typeof userProfile?.name === "string" && userProfile.name ? userProfile.name : "Profile"}
+                      src={formatImageUrl(user.profileImage)}
+                      alt={displayName}
                       onError={() => setImgError(true)}
                       className="h-full w-full object-cover rounded-full"
                     />
                   ) : (
-                    <User className="h-5 w-5 text-amber-200" />
+                    <span className="text-sm font-bold text-amber-200">
+                      {userInitial}
+                    </span>
                   )}
                 </div>
                 <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-500 shadow-xs" />
@@ -384,23 +324,23 @@ export function AstroNavbar() {
                     className="flex items-center gap-3 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50/60 p-3 border border-amber-200/50 hover:bg-amber-100/60 transition group/acc"
                   >
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#163014] text-amber-200 shadow-sm group-hover/acc:scale-105 transition-transform overflow-hidden border border-amber-300/60">
-                      {userProfile?.profileImage && !imgError ? (
+                      {user?.profileImage && !imgError ? (
                         <img
-                          src={formatImageUrl(userProfile.profileImage)}
-                          alt={typeof userProfile?.name === "string" && userProfile.name ? userProfile.name : "Profile"}
+                          src={formatImageUrl(user.profileImage)}
+                          alt={displayName}
                           onError={() => setImgError(true)}
                           className="h-full w-full object-cover rounded-full"
                         />
                       ) : (
-                        <User className="h-5 w-5" />
+                        <span className="text-sm font-bold text-amber-200">
+                          {userInitial}
+                        </span>
                       )}
                     </div>
                     <div className="flex flex-col truncate flex-1">
                       <div className="flex items-center gap-1.5">
                         <span className="text-xs font-bold text-slate-900 group-hover/acc:text-[#c85a17] transition-colors truncate">
-                          {typeof userProfile?.name === "string" && userProfile.name.trim()
-                            ? userProfile.name.trim()
-                            : "Astroyavi User"}
+                          {displayName}
                         </span>
                         <Sparkles className="h-3 w-3 text-[#c85a17] shrink-0" />
                       </div>
@@ -483,7 +423,7 @@ export function AstroNavbar() {
             <div className="flex items-center gap-3">
               <button
                 type="button"
-                onClick={() => setShowLoginModal(true)}
+                onClick={() => openAuthModal()}
                 className="relative group overflow-hidden px-5 py-2 text-sm font-semibold text-[#2d1a0e] border border-[#2d1a0e]/60 rounded-xl hover:border-[#c85a17] hover:text-[#c85a17] hover:shadow-sm transition-all duration-300 cursor-pointer"
               >
                 <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
@@ -519,20 +459,22 @@ export function AstroNavbar() {
                 className="flex items-center gap-3 hover:opacity-80 transition"
               >
                 <div className="h-10 w-10 rounded-full bg-[#163014] text-amber-200 flex items-center justify-center shadow-xs overflow-hidden border border-amber-300/60">
-                  {userProfile?.profileImage && !imgError ? (
+                  {user?.profileImage && !imgError ? (
                     <img
-                      src={formatImageUrl(userProfile.profileImage)}
-                      alt={typeof userProfile?.name === "string" && userProfile.name ? userProfile.name : "Profile"}
+                      src={formatImageUrl(user.profileImage)}
+                      alt={displayName}
                       onError={() => setImgError(true)}
                       className="h-full w-full object-cover rounded-full"
                     />
                   ) : (
-                    <User className="h-5 w-5" />
+                    <span className="text-sm font-bold text-amber-200">
+                      {userInitial}
+                    </span>
                   )}
                 </div>
                 <div>
                   <div className="text-sm font-bold text-slate-900">
-                    My Profile
+                    {displayName}
                   </div>
                   <div className="text-[11px] font-semibold text-emerald-700">
                     ● View Profile
@@ -644,7 +586,7 @@ export function AstroNavbar() {
                 <button
                   type="button"
                   onClick={() => {
-                    setShowLoginModal(true);
+                    openAuthModal();
                     setMobileMenuOpen(false);
                   }}
                   className="flex-1 text-center px-4 py-2.5 text-sm font-semibold border border-[#2d1a0e]/60 rounded-xl hover:bg-amber-50 transition-colors"
@@ -653,7 +595,7 @@ export function AstroNavbar() {
                 </button>
                 <button
                   onClick={() => {
-                    setShowLoginModal(true);
+                    openAuthModal();
                     setMobileMenuOpen(false);
                   }}
                   className="flex-1 px-4 py-2.5 text-sm font-semibold bg-[#1b4327] text-white rounded-xl active:scale-95 transition-transform"
@@ -666,13 +608,11 @@ export function AstroNavbar() {
         </div>
       )}
 
+      {/* Global Signup / Auth Modal */}
       <SignupDialog
-        isOpen={showLoginModal}
-        onClose={() => setShowLoginModal(false)}
-        onSuccess={() => {
-          setIsLoggedIn(true);
-          setShowLoginModal(false);
-        }}
+        isOpen={isAuthModalOpen}
+        onClose={closeAuthModal}
+        onSuccess={closeAuthModal}
       />
     </header>
   );

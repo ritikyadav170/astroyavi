@@ -15,14 +15,15 @@ import {
   Check,
   Search,
   Mail,
-  Phone,
   Sparkles,
   AlertCircle,
   Loader2,
   Smartphone,
+  Shield,
 } from "lucide-react";
 import axios from "../../../config/axios";
 import VerifyPage from "../verify/verifyPage";
+import { toast } from "@components/ui/toaster";
 
 export interface Country {
   code: string;
@@ -128,7 +129,7 @@ function CountryPicker({
       (c) =>
         c.name.toLowerCase().includes(q) ||
         c.dialCode.includes(q) ||
-        c.code.toLowerCase().includes(q),
+        c.code.toLowerCase().includes(q)
     );
   }, [searchQuery]);
 
@@ -270,13 +271,21 @@ function CountryPicker({
   );
 }
 
-interface SignupDialogProps {
+export interface SignupDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: () => void;
+  title?: string;
+  subtitle?: string;
 }
 
-export function SignupDialog({ isOpen, onClose, onSuccess }: SignupDialogProps) {
+export function SignupDialog({
+  isOpen,
+  onClose,
+  onSuccess,
+  title,
+  subtitle,
+}: SignupDialogProps) {
   const [mounted, setMounted] = useState(false);
   const [authMethod, setAuthMethod] = useState<"phone" | "email">("phone");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -343,12 +352,19 @@ export function SignupDialog({ isOpen, onClose, onSuccess }: SignupDialogProps) 
 
       await axios.post("/signUp", payload);
       setSubmitted(true);
-    } catch (requestError) {
-      setError(
+      toast.success("OTP Sent", {
+        description:
+          authMethod === "phone"
+            ? `Verification code sent to ${selectedCountry.dialCode} ${phoneNumber}`
+            : `Verification code sent to ${email}`,
+      });
+    } catch (requestError: unknown) {
+      const msg =
         requestError instanceof Error
           ? requestError.message
-          : "Unable to send OTP. Please try again.",
-      );
+          : "Unable to send OTP. Please try again.";
+      setError(msg);
+      toast.error("Failed to send OTP", { description: msg });
     } finally {
       setLoading(false);
     }
@@ -400,10 +416,10 @@ export function SignupDialog({ isOpen, onClose, onSuccess }: SignupDialogProps) 
                 id="signup-dialog-title"
                 className="font-serif text-2xl font-bold tracking-tight text-[#1e293b] sm:text-[26px]"
               >
-                Let&apos;s Get You Started
+                {title || "Let's Get You Started"}
               </h1>
               <p className="text-xs font-medium text-slate-500 sm:text-sm">
-                Choose your preferred method to sign up or log in
+                {subtitle || "Choose your preferred method to sign up or log in"}
               </p>
             </div>
 
@@ -443,7 +459,7 @@ export function SignupDialog({ isOpen, onClose, onSuccess }: SignupDialogProps) 
             </div>
 
             <form onSubmit={handleSubmit} className="mt-5 space-y-4">
-              {/* Stable Input Container (No Remount Blinking) */}
+              {/* Input Container */}
               <div className="space-y-1.5 text-left">
                 <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1">
                   {authMethod === "phone" ? "Mobile Number" : "Email Address"}
@@ -537,20 +553,10 @@ export function SignupDialog({ isOpen, onClose, onSuccess }: SignupDialogProps) 
                 )}
               </button>
 
-              {/* Alternative method link */}
-              <div className="pt-0.5">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setAuthMethod(authMethod === "phone" ? "email" : "phone");
-                    setError("");
-                  }}
-                  className="text-xs font-semibold text-[#c85a17] hover:underline decoration-amber-300 underline-offset-4 transition-colors cursor-pointer"
-                >
-                  {authMethod === "phone"
-                    ? "Or sign up with Email Address →"
-                    : "Or sign up with Mobile Number →"}
-                </button>
+              {/* Trust Badge */}
+              <div className="flex items-center justify-center gap-1.5 text-[11px] font-semibold text-slate-400">
+                <Shield className="h-3.5 w-3.5 text-emerald-600" />
+                <span>100% Privacy Guaranteed &bull; Verified Astrologers</span>
               </div>
 
               {/* Terms and Privacy Checkbox */}
@@ -587,4 +593,5 @@ export function SignupDialog({ isOpen, onClose, onSuccess }: SignupDialogProps) 
 
   return createPortal(dialogContent, document.body);
 }
+
 export default SignupDialog;

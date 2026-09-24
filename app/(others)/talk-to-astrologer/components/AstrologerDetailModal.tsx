@@ -18,7 +18,7 @@ import { formatImageUrl } from "@/lib/utils";
 // Import the new socket hook and chat window
 import { useChatSocket } from "@/hooks/useChatSocket";
 import { ChatWindow } from "./ChatWindow";
-import { SignupDialog } from "../../../auth/signup/SignupDialog";
+import { useAuth } from "@/providers/AuthProvider";
 
 interface AstrologerDetailModalProps {
   astrologerId: string | number | null;
@@ -56,9 +56,9 @@ export function AstrologerDetailModal({
   );
   const [loading, setLoading] = useState(false);
   const [modalImgError, setModalImgError] = useState(false);
-  const [showLoginDialog, setShowLoginDialog] = useState(false);
 
   // Retrieve user ID from localStorage (or parsed user object)
+
   const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -170,27 +170,30 @@ export function AstrologerDetailModal({
     );
   }
 
+  const { isLoggedIn, user: authUser, openAuthModal } = useAuth();
+
   const handleStartChat = () => {
     const user = getStoredUser();
 
-    if (!user.id) {
+    if (!isLoggedIn && !user.id) {
       toast.error(`Please login first to chat with ${astrologer?.name || "Astrologer"}.`);
-      setShowLoginDialog(true);
+      openAuthModal(() => {
+        const freshUser = getStoredUser();
+        if (freshUser.id) {
+          setUserId(freshUser.id);
+          sendChatRequest(astrologerId.toString(), freshUser.id, freshUser);
+        }
+      });
       return;
     }
 
-    setUserId(user.id);
-    sendChatRequest(astrologerId.toString(), user.id, user);
-  };
-
-  const handleLoginSuccess = () => {
-    setShowLoginDialog(false);
-    const user = getStoredUser();
-    if (user.id) {
-      setUserId(user.id);
-      sendChatRequest(astrologerId.toString(), user.id, user);
+    const currentUid = user.id || authUser?._id || authUser?.id;
+    if (currentUid) {
+      setUserId(currentUid);
+      sendChatRequest(astrologerId.toString(), currentUid, user);
     }
   };
+
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 p-4 backdrop-blur-md animate-in fade-in duration-200">
@@ -382,12 +385,6 @@ export function AstrologerDetailModal({
           </div>
         )}
       </div>
-
-      <SignupDialog
-        isOpen={showLoginDialog}
-        onClose={() => setShowLoginDialog(false)}
-        onSuccess={handleLoginSuccess}
-      />
     </div>
   );
-}
+}

@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import QueryProvider from "@providers/QueryProvider";
 import ToastProvider from "@providers/ToastProvider";
+import { AuthProvider } from "@providers/AuthProvider";
 import { Poppins as FontSans, Cormorant_Garamond as FontSerif } from "next/font/google";
 import { unstable_noStore as noStore } from "next/cache";
 import { APP_DESCRIPTION, APP_NAME, PRIMARY_COLOR } from "@data";
@@ -49,7 +50,9 @@ const RootLayout = async ({ children }: Readonly<{ children: ReactNode }>) => {
       </head>
       <body className={cn("relative font-sans antialiased bg-[#fdf8f0] text-slate-900 min-h-screen", fontSans.variable, fontSerif.variable)}>
         <QueryProvider>
-          <ToastProvider>{children}</ToastProvider>
+          <AuthProvider>
+            <ToastProvider>{children}</ToastProvider>
+          </AuthProvider>
         </QueryProvider>
       </body>
     </html>
@@ -57,3 +60,4 @@ const RootLayout = async ({ children }: Readonly<{ children: ReactNode }>) => {
 };
 
 export default RootLayout;
+

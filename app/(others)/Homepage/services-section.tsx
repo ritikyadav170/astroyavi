@@ -3,10 +3,10 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Star, User, ShieldCheck } from "lucide-react";
-import { SignupDialog } from "../../auth/signup/SignupDialog";
+import { useAuth } from "@/providers/AuthProvider";
 
 interface ServiceItem {
   id: string;
@@ -112,27 +112,15 @@ const services: ServiceItem[] = [
 
 export function ServicesSection() {
   const router = useRouter();
-  const [selectedProtectedService, setSelectedProtectedService] = useState<ServiceItem | null>(null);
+  const { isLoggedIn, openAuthModal } = useAuth();
 
   const handleServiceClick = (item: ServiceItem) => {
-    if (item.isFree) {
+    if (item.isFree || isLoggedIn) {
       router.push(item.link);
     } else {
-      const userLoggedIn = localStorage.getItem("astroyavi_logged_in") === "true";
-      if (userLoggedIn) {
+      openAuthModal(() => {
         router.push(item.link);
-      } else {
-        setSelectedProtectedService(item);
-      }
-    }
-  };
-
-  const handleLoginSuccess = () => {
-    localStorage.setItem("astroyavi_logged_in", "true");
-    if (selectedProtectedService) {
-      const link = selectedProtectedService.link;
-      setSelectedProtectedService(null);
-      router.push(link);
+      });
     }
   };
 
@@ -228,8 +216,6 @@ export function ServicesSection() {
           </div>
         </div>
       </div>
-
-      <SignupDialog isOpen={Boolean(selectedProtectedService)} onClose={() => setSelectedProtectedService(null)} onSuccess={handleLoginSuccess} />
     </section>
   );
-}
+}

@@ -31,6 +31,7 @@ import { Footer } from "../Homepage/footer";
 import axios from "../../../config/axios";
 import { toast } from "@components/ui/toaster";
 import { formatImageUrl } from "@/lib/utils";
+import { useAuth } from "@/providers/AuthProvider";
 
 export interface UserWallet {
   balance?: number;
@@ -238,16 +239,12 @@ export default function ProfilePage() {
     }
   };
 
+  const { logout: authLogout } = useAuth();
+
   const handleLogout = () => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("astroyavi_logged_in");
-      localStorage.removeItem("astroyavi_token");
-      localStorage.removeItem("token");
-      localStorage.removeItem("astroyavi_user");
-      window.dispatchEvent(new Event("astroyavi_auth_change"));
-      window.location.href = "/";
-    }
+    authLogout();
   };
+
 
   // Format creation date
   const memberSince = profile?.createdAt

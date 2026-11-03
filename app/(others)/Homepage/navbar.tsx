@@ -3,9 +3,11 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { ChevronDown, Menu, X, ArrowRight, User, Sparkles } from "lucide-react";
+import Image from "next/image";
 import { SignupDialog } from "../../auth/signup/SignupDialog";
 import { formatImageUrl } from "@/lib/utils";
 import { useAuth } from "@/providers/AuthProvider";
+import brandLogo from "../../../assets/brand-logo";
 
 const LogOutIcon = ({ className = "h-4 w-4" }: { className?: string }) => (
   <svg
@@ -125,24 +127,17 @@ export function AstroNavbar() {
   return (
     <header className="sticky top-0 z-50 w-full bg-[#fdf8f0]/95 backdrop-blur-md border-b border-[#e6c896]/60 shadow-sm transition-all duration-300">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
-        {/* Logo with Gold Aura Glow */}
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-11 h-11 rounded-full border-2 border-[#d4af37] flex items-center justify-center shadow-md relative overflow-hidden group-hover:scale-110 group-hover:rotate-[15deg] group-hover:border-amber-400 group-hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] transition-all duration-500 ease-out bg-[#131b3e]">
-            <img
-              src="/images/astroyavi_logo.jpeg"
-              alt="Astroyavi Logo"
-              className="w-full h-full object-cover rounded-full"
-              onError={(e) => {
-                (e.target as HTMLElement).setAttribute(
-                  "src",
-                  "/images/logo.svg"
-                );
-              }}
-            />
-          </div>
-          <span className="font-serif text-2xl font-bold tracking-tight text-[#2d1a0e] group-hover:text-[#c85a17] transition-colors duration-300">
-            Astroyavi
-          </span>
+        <Link
+          href="/"
+          aria-label="Astroyavi home"
+          className="group flex shrink-0 items-center rounded-2xl transition-transform duration-300 hover:scale-[1.03]"
+        >
+          <Image
+            src={brandLogo}
+            alt="Astroyavi — Your Stars. Your Journey."
+            priority
+            className="h-auto w-[clamp(148px,18vw,220px)] rounded-xl bg-white object-contain shadow-sm ring-1 ring-amber-900/10 transition-shadow group-hover:shadow-md"
+          />
         </Link>
 
         {/* Desktop Nav Links */}

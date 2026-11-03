@@ -117,7 +117,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
+import brandLogo from "../../../assets/brand-logo";
 
 export function Footer() {
   return (
@@ -126,17 +128,12 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10 pb-8 sm:pb-10">
 
           <div className="lg:col-span-5 space-y-5">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-full border-2 border-[#d4af37] flex items-center justify-center shadow-md relative overflow-hidden bg-[#131b3e] group-hover:scale-105 transition-transform duration-300">
-                <img
-                  src="/images/astroyavi_logo.jpeg"
-                  alt="Astroyavi Logo"
-                  className="w-full h-full object-cover rounded-full"
-                />
-              </div>
-              <span className="font-serif text-2xl font-bold tracking-tight text-[#2d1a0e]">
-                Astroyavi
-              </span>
+            <Link href="/" aria-label="Astroyavi home" className="inline-flex">
+              <Image
+                src={brandLogo}
+                alt="Astroyavi — Your Stars. Your Journey."
+                className="h-auto w-[min(100%,280px)] rounded-xl bg-white shadow-sm ring-1 ring-amber-900/10"
+              />
             </Link>
             <p className="text-xs sm:text-sm text-[#3c2415] leading-relaxed max-w-md font-sans">
               Discover your future with personalized astrology insights, daily horoscopes, and expert guidance based on your birth chart. Get accurate predictions, zodiac updates, and spiritual solutions to make better life decisions.

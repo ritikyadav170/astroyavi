@@ -27,9 +27,9 @@ export const metadata: Metadata = {
   title: APP_NAME,
   description: APP_DESCRIPTION,
   icons: {
-    icon: "/images/astroyavi_logo.jpeg",
-    shortcut: "/images/astroyavi_logo.jpeg",
-    apple: "/images/astroyavi_logo.jpeg",
+    icon: "/icons/icon-192x192.png",
+    shortcut: "/icons/icon-192x192.png",
+    apple: "/icons/icon-512x512.png",
   },
   metadataBase: new URL(process.env.NEXT_PUBLIC_URL || "http://localhost:3000"),
   openGraph: {
@@ -60,4 +60,3 @@ const RootLayout = async ({ children }: Readonly<{ children: ReactNode }>) => {
 };
 
 export default RootLayout;
-

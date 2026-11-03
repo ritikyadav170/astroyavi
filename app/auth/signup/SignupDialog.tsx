@@ -9,13 +9,13 @@ import React, {
 } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
+import Image from "next/image";
 import {
   X,
   ChevronDown,
   Check,
   Search,
   Mail,
-  Sparkles,
   AlertCircle,
   Loader2,
   Smartphone,
@@ -24,6 +24,7 @@ import {
 import axios from "../../../config/axios";
 import VerifyPage from "../verify/verifyPage";
 import { toast } from "@components/ui/toaster";
+import brandLogo from "../../../assets/brand-logo";
 
 export interface Country {
   code: string;
@@ -406,10 +407,11 @@ export function SignupDialog({
           />
         ) : (
           <>
-            {/* Header / Brand Icon */}
-            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-50 to-orange-100/70 border border-amber-200/60 shadow-sm text-[#c85a17]">
-              <Sparkles className="h-6 w-6 text-[#c85a17]" />
-            </div>
+            <Image
+              src={brandLogo}
+              alt="Astroyavi — Your Stars. Your Journey."
+              className="mx-auto mb-3 h-auto w-44 rounded-lg bg-white"
+            />
 
             <div className="space-y-1">
               <h1

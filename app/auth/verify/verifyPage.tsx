@@ -23,6 +23,7 @@ import {
 import { toast } from "@components/ui/toaster";
 import axios from "../../../config/axios";
 import { useAuth, UserProfileData } from "@/providers/AuthProvider";
+import brandLogo from "../../../assets/brand-logo";
 
 interface VerifyPageProps {
   authMethod?: "phone" | "email";
@@ -594,7 +595,10 @@ export function VerifyPage({
 
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#1f211f] px-4 py-8">
-      <div className="absolute inset-0 bg-[url('/images/astroyavi_logo.jpeg')] bg-cover bg-center opacity-10" />
+      <div
+        className="absolute inset-0 bg-cover bg-center opacity-10"
+        style={{ backgroundImage: `url("${brandLogo.src}")` }}
+      />
       <div className="absolute inset-0 bg-black/60 backdrop-blur-md" />
       {content}
     </main>

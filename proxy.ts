@@ -4,9 +4,23 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export const proxy = async (request: NextRequest) => {
+    if (
+        request.nextUrl.pathname === "/api/user" ||
+        request.nextUrl.pathname.startsWith("/api/user/")
+    ) {
+        const requestHeaders = new Headers(request.headers);
+        requestHeaders.delete("origin");
+        return NextResponse.next({
+            request: {
+                headers: requestHeaders,
+            },
+        });
+    }
+
     const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://160.187.87.138:9859";
+    const apiUrl =
+        process.env.NEXT_PUBLIC_API_URL || "http://160.187.87.138:9859/api/";
     const wsUrl = apiUrl.replace(/^http/, "ws");
 
     const cspHeader = `
@@ -59,5 +73,8 @@ export const proxy = async (request: NextRequest) => {
 };
 
 export const config = {
-    matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+    matcher: [
+        "/api/user/:path*",
+        "/((?!api|_next/static|_next/image|favicon.ico).*)",
+    ],
 };

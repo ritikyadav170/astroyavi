@@ -5,8 +5,9 @@ import { io, Socket } from "socket.io-client";
 import { toast } from "@components/ui/toaster";
 
 const getSocketUrl = () => {
-    const envUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:9859";
-    return envUrl.replace(/\/api\/user\/?$/, "").replace(/\/+$/, "");
+    const envUrl =
+        process.env.NEXT_PUBLIC_API_URL || "http://160.187.87.138:9859/api/";
+    return envUrl.replace(/\/api(?:\/user)?\/?$/, "").replace(/\/+$/, "");
 };
 
 const SOCKET_URL = getSocketUrl();

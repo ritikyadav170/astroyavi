@@ -190,8 +190,8 @@ export function formatImageUrl(url?: string): string {
   }
   const envUrl =  
     process.env.NEXT_PUBLIC_IMAGE_BASE_URL ||
-    process.env.NEXT_PUBLIC_URL ||
     process.env.NEXT_PUBLIC_API_URL ||
+    process.env.NEXT_PUBLIC_URL ||
     "";
   let hostOrigin = "";
   if (envUrl) {
@@ -429,4 +429,3 @@ export async function getAstrologerById(
     return null;
   }
 }
-

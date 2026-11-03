@@ -48,10 +48,13 @@ export function formatImageUrl(url?: string | null): string {
   ) {
     return trimmed;
   }
-  const base = process.env.NEXT_PUBLIC_API_URL || "http://localhost:9859";
+  const base = (
+    process.env.NEXT_PUBLIC_API_URL || "http://160.187.87.138:9859/api/"
+  )
+    .replace(/\/api(?:\/user)?\/?$/, "")
+    .replace(/\/+$/, "");
   if (trimmed.startsWith("/")) {
     return `${base}${trimmed}`;
   }
   return `${base}/${trimmed}`;
 }
-

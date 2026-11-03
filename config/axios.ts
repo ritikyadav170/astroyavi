@@ -6,12 +6,15 @@ const getBaseURL = () => {
   if (typeof window !== "undefined") {
     return "/api/user";
   }
-  const envUrl = process.env.NEXT_PUBLIC_API_URL || "http://160.187.87.138:9859";
+
+  const envUrl =
+    process.env.NEXT_PUBLIC_API_URL || "http://160.187.87.138:9859/api/";
   const cleanUrl = envUrl.replace(/\/+$/, "");
   if (cleanUrl.endsWith("/api/user")) {
     return cleanUrl;
   }
-  return `${cleanUrl}/api/user`;
+  const apiRoot = cleanUrl.replace(/\/api$/, "");
+  return `${apiRoot}/api/user`;
 };
 
 // Create an Axios instance with default settings.

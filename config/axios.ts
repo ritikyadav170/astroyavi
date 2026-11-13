@@ -3,10 +3,6 @@ import Axios from "axios";
 
 // Helper to get consistent API base URL pointing to /api/user
 const getBaseURL = () => {
-  if (typeof window !== "undefined") {
-    return "/api/user";
-  }
-
   const envUrl =
     process.env.NEXT_PUBLIC_API_URL || "http://160.187.87.138:9859/api/";
   const cleanUrl = envUrl.replace(/\/+$/, "");
@@ -38,7 +34,6 @@ axios.interceptors.request.use(
         config.headers.Authorization = token.startsWith("Bearer ")
           ? token
           : `Bearer ${token}`;
-        config.headers["token"] = token;
       }
     }
     return config;

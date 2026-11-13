@@ -311,7 +311,6 @@ export function VerifyPage({
       if (receivedToken && newName.trim()) {
         const headers = {
           Authorization: `Bearer ${receivedToken}`,
-          token: receivedToken,
         };
         await axios.patch("/profile", { name: newName.trim(), gender: newGender }, { headers });
       }

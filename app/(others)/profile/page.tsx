@@ -106,7 +106,6 @@ export default function ProfilePage() {
         headers["Authorization"] = token.startsWith("Bearer ")
           ? token
           : `Bearer ${token}`;
-        headers["token"] = token;
       }
 
       const res = await axios.get("/profile", { headers });
@@ -184,7 +183,6 @@ export default function ProfilePage() {
       const headers: Record<string, string> = {};
       if (token) {
         headers["Authorization"] = `Bearer ${token}`;
-        headers["token"] = token;
       }
 
       // Normalize maritalStatus to lowercase enum expected by backend

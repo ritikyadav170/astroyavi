@@ -124,7 +124,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         Authorization: currentToken.startsWith("Bearer ")
           ? currentToken
           : `Bearer ${currentToken}`,
-        token: currentToken,
       };
 
       const res = await axios.get("/profile", { headers });

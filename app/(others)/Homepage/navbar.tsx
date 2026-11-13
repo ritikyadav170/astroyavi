@@ -125,38 +125,38 @@ export function AstroNavbar() {
   const userInitial = displayName.charAt(0).toUpperCase() || "U";
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[#c7a64b]/50 bg-gradient-to-r from-[#f7f3e7]/95 via-[#fffaf0]/95 to-[#f4eedc]/95 shadow-[0_4px_18px_rgba(74,58,25,0.08)] backdrop-blur-md transition-all duration-300">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+    <header className="sticky top-0 z-50 w-full border-b border-[#d6c39b]/70 bg-[#fdf8f0]/95 shadow-[0_4px_18px_rgba(45,26,14,0.07)] backdrop-blur-md">
+      <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-4 px-4 py-2.5 sm:px-6 xl:px-8">
         <Link
           href="/"
           aria-label="Astroyavi home"
-          className="group flex shrink-0 items-center rounded-2xl transition-transform duration-300 hover:scale-[1.03]"
+          className="group flex shrink-0 items-center"
         >
           <Image
             src={brandLogo}
             alt="Astroyavi — Your Stars. Your Journey."
             priority
-            className="h-auto w-[clamp(148px,18vw,220px)] rounded-xl bg-white object-contain shadow-sm ring-1 ring-amber-900/10 transition-shadow group-hover:shadow-md"
+            className="h-auto w-[clamp(140px,13vw,180px)] object-contain transition-transform duration-200 group-hover:scale-[1.02]"
           />
         </Link>
 
         {/* Desktop Nav Links */}
-        <nav className="hidden lg:flex items-center gap-1 xl:gap-2 text-[14.5px] font-semibold text-[#2d1a0e]">
+        <nav className="hidden flex-nowrap items-center gap-0.5 whitespace-nowrap text-[13px] font-semibold text-[#2d1a0e] xl:flex 2xl:gap-1.5 [&>*]:shrink-0">
           {/* Talk to Astrologer */}
-          <div className="relative group py-1.5 px-3 rounded-full transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/10 hover:via-orange-500/15 hover:to-amber-500/10 overflow-hidden cursor-pointer">
+          <div className="relative group cursor-pointer whitespace-nowrap rounded-xl px-2 py-2 transition-colors duration-200 hover:bg-[#ede3d0]">
             <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
 
-            <div className="flex items-center gap-1 text-[#2d1a0e] group-hover:text-[#c85a17] transition-colors duration-300">
-              <Link href="/talk-to-astrologer" className="relative">
+            <div className="flex items-center gap-1 text-[#2d1a0e] transition-colors duration-200 group-hover:text-[#a14f18]">
+              <Link href="/talk-to-astrologer" className="relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c58d2b]">
                 <span>Talk to Astrologer</span>
               </Link>
-              <ChevronDown className="w-3.5 h-3.5 text-[#3c2415]/70 group-hover:rotate-180 group-hover:text-[#c85a17] transition-transform duration-300" />
+              <ChevronDown className="h-3.5 w-3.5 text-[#3c2415]/70 transition-transform duration-200 group-hover:rotate-180 group-hover:text-[#a14f18]" />
             </div>
 
             <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-[#c85a17] via-amber-400 to-[#c85a17] group-hover:w-3/4 transition-all duration-300 rounded-full shadow-[0_0_8px_#c85a17]"></span>
 
             {/* Dropdown Menu */}
-            <div className="absolute top-full left-0 hidden group-hover:flex flex-col bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-amber-200/80 p-2.5 min-w-[220px] animate-in fade-in slide-in-from-top-3 duration-200 z-50">
+            <div className="absolute left-0 top-full z-50 hidden min-w-[220px] flex-col rounded-xl border border-[#e5d7bb] bg-[#fffdf8] p-2 shadow-lg group-hover:flex">
               {["Chat with Astrologers", "Call with Astrologers"].map(
                 (txt, i) => (
                   <Link
@@ -175,7 +175,7 @@ export function AstroNavbar() {
           {/* Live Darshan */}
           <Link
             href="/live-darshan"
-            className="relative group py-1.5 px-3 rounded-full transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/10 hover:via-orange-500/15 hover:to-amber-500/10 overflow-hidden text-[#2d1a0e] hover:text-[#c85a17]"
+            className="relative group whitespace-nowrap rounded-xl px-2 py-2 text-[#2d1a0e] transition-colors duration-200 hover:bg-[#ede3d0] hover:text-[#a14f18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c58d2b]"
           >
             <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
             <span>Live Darshan</span>
@@ -183,23 +183,23 @@ export function AstroNavbar() {
           </Link>
 
           {/* Horoscope */}
-          <div className="relative group py-1.5 px-3 rounded-full transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/10 hover:via-orange-500/15 hover:to-amber-500/10 overflow-hidden cursor-pointer">
+          <div className="relative group cursor-pointer whitespace-nowrap rounded-xl px-2 py-2 transition-colors duration-200 hover:bg-[#ede3d0]">
             <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
 
-            <div className="flex items-center gap-1 text-[#2d1a0e] group-hover:text-[#c85a17] transition-colors duration-300">
+            <div className="flex items-center gap-1 text-[#2d1a0e] transition-colors duration-200 group-hover:text-[#a14f18]">
               <Link
                 href="/horoscope"
                 onClick={handleProtectedClick}
-                className="relative"
+                className="relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c58d2b]"
               >
                 <span>Horoscope</span>
               </Link>
-              <ChevronDown className="w-3.5 h-3.5 text-[#3c2415]/70 group-hover:rotate-180 group-hover:text-[#c85a17] transition-transform duration-300" />
+              <ChevronDown className="h-3.5 w-3.5 text-[#3c2415]/70 transition-transform duration-200 group-hover:rotate-180 group-hover:text-[#a14f18]" />
             </div>
 
             <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-[#c85a17] via-amber-400 to-[#c85a17] group-hover:w-3/4 transition-all duration-300 rounded-full shadow-[0_0_8px_#c85a17]"></span>
 
-            <div className="absolute top-full left-0 hidden group-hover:flex flex-col bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-amber-200/80 p-2.5 min-w-[220px] animate-in fade-in slide-in-from-top-3 duration-200 z-50">
+            <div className="absolute left-0 top-full z-50 hidden min-w-[220px] flex-col rounded-xl border border-[#e5d7bb] bg-[#fffdf8] p-2 shadow-lg group-hover:flex">
               {["Daily", "Tomorrow", "Weekly", "Monthly"].map((txt, i) => (
                 <Link
                   key={i}
@@ -218,7 +218,7 @@ export function AstroNavbar() {
           <Link
             href="/puja-booking"
             onClick={handleProtectedClick}
-            className="relative group py-1.5 px-3 rounded-full transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/10 hover:via-orange-500/15 hover:to-amber-500/10 overflow-hidden text-[#2d1a0e] hover:text-[#c85a17]"
+            className="relative group whitespace-nowrap rounded-xl px-2 py-2 text-[#2d1a0e] transition-colors duration-200 hover:bg-[#ede3d0] hover:text-[#a14f18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c58d2b]"
           >
             <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
             <span>Puja Booking</span>
@@ -229,7 +229,7 @@ export function AstroNavbar() {
           <Link
             href="/match-making"
             onClick={handleProtectedClick}
-            className="relative group py-1.5 px-3 rounded-full transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/10 hover:via-orange-500/15 hover:to-amber-500/10 overflow-hidden text-[#2d1a0e] hover:text-[#c85a17]"
+            className="relative group whitespace-nowrap rounded-xl px-2 py-2 text-[#2d1a0e] transition-colors duration-200 hover:bg-[#ede3d0] hover:text-[#a14f18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c58d2b]"
           >
             <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
             <span>Match Making</span>
@@ -239,7 +239,7 @@ export function AstroNavbar() {
           {/* Kundli */}
           <Link
             href="/kundli"
-            className="relative group py-1.5 px-3 rounded-full transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/10 hover:via-orange-500/15 hover:to-amber-500/10 overflow-hidden text-[#2d1a0e] hover:text-[#c85a17]"
+            className="relative group whitespace-nowrap rounded-xl px-2 py-2 text-[#2d1a0e] transition-colors duration-200 hover:bg-[#ede3d0] hover:text-[#a14f18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c58d2b]"
           >
             <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
             <span>Kundli</span>
@@ -249,7 +249,7 @@ export function AstroNavbar() {
           {/* Panchang */}
           <Link
             href="/panchang"
-            className="relative group py-1.5 px-3 rounded-full transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/10 hover:via-orange-500/15 hover:to-amber-500/10 overflow-hidden text-[#2d1a0e] hover:text-[#c85a17]"
+            className="relative group whitespace-nowrap rounded-xl px-2 py-2 text-[#2d1a0e] transition-colors duration-200 hover:bg-[#ede3d0] hover:text-[#a14f18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c58d2b]"
           >
             <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
             <span>Panchang</span>
@@ -259,7 +259,7 @@ export function AstroNavbar() {
           {/* Reports */}
           <Link
             href="/reports"
-            className="relative group py-1.5 px-3 rounded-full transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/10 hover:via-orange-500/15 hover:to-amber-500/10 overflow-hidden text-[#2d1a0e] hover:text-[#c85a17]"
+            className="relative group whitespace-nowrap rounded-xl px-2 py-2 text-[#2d1a0e] transition-colors duration-200 hover:bg-[#ede3d0] hover:text-[#a14f18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c58d2b]"
           >
             <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
             <span>Reports</span>
@@ -270,7 +270,7 @@ export function AstroNavbar() {
           {isLoggedIn && (
             <Link
               href="/puja-booking"
-              className="relative group py-1.5 px-3 rounded-full transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/10 hover:via-orange-500/15 hover:to-amber-500/10 overflow-hidden text-[#2d1a0e] hover:text-[#c85a17]"
+              className="relative group whitespace-nowrap rounded-xl px-2 py-2 text-[#2d1a0e] transition-colors duration-200 hover:bg-[#ede3d0] hover:text-[#a14f18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c58d2b]"
             >
               <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
               <span>Remedies</span>
@@ -280,7 +280,7 @@ export function AstroNavbar() {
         </nav>
 
         {/* Authentication or Profile Header Section */}
-        <div className="hidden lg:flex items-center gap-3 relative min-w-[100px] justify-end">
+        <div className="relative hidden min-w-0 items-center justify-end gap-3 xl:flex">
           {!mounted ? (
             <div className="h-9 w-20 rounded-xl bg-transparent" />
           ) : isLoggedIn ? (
@@ -419,9 +419,8 @@ export function AstroNavbar() {
               <button
                 type="button"
                 onClick={() => openAuthModal()}
-                className="relative group overflow-hidden px-5 py-2 text-sm font-semibold text-[#2d1a0e] border border-[#2d1a0e]/60 rounded-xl hover:border-[#c85a17] hover:text-[#c85a17] hover:shadow-sm transition-all duration-300 cursor-pointer"
+                className="rounded-xl border border-[#1b4327] bg-[#1b4327] px-4 py-2 text-sm font-semibold text-[#fffaf0] shadow-sm transition-colors hover:border-[#c58d2b] hover:bg-[#245333] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c58d2b] focus-visible:ring-offset-2"
               >
-                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
                 Sign up
               </button>
             </div>
@@ -431,8 +430,10 @@ export function AstroNavbar() {
         {/* Mobile Toggle */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="lg:hidden text-[#2d1a0e] p-2 rounded-lg bg-amber-100/50 border border-amber-900/20 active:scale-95 transition-transform duration-200"
+          className="rounded-xl border border-[#d6c39b] bg-[#f5ecd9] p-2 text-[#1b4327] transition-colors hover:bg-[#eee0c2] active:scale-95 xl:hidden"
           aria-label="Toggle Navigation"
+          aria-expanded={mobileMenuOpen}
+          aria-controls="mobile-navigation"
         >
           {mobileMenuOpen ? (
             <X className="w-6 h-6" />
@@ -444,7 +445,10 @@ export function AstroNavbar() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#fffdf9]/98 border-b border-amber-900/20 backdrop-blur-xl px-6 py-5 flex flex-col gap-4 text-[#2d1a0e] text-base font-medium shadow-2xl animate-in slide-in-from-top-4 fade-in duration-300 absolute w-full left-0">
+        <div
+          id="mobile-navigation"
+          className="absolute left-0 top-full z-50 flex w-full flex-col gap-2 border-b border-[#d6c39b]/70 bg-[#fdf8f0] px-5 py-5 text-base font-medium text-[#2d1a0e] shadow-xl backdrop-blur-xl animate-in slide-in-from-top-4 fade-in duration-300 xl:hidden"
+        >
           {/* If Logged In, show Mobile Profile Summary */}
           {isLoggedIn && (
             <div className="flex items-center justify-between p-3 rounded-2xl bg-amber-50/80 border border-amber-200/70 mb-1">
@@ -490,14 +494,14 @@ export function AstroNavbar() {
           <Link
             href="/talk-to-astrologer"
             onClick={() => setMobileMenuOpen(false)}
-            className="hover:text-[#c85a17] transition-colors"
+            className="rounded-lg px-3 py-2 text-[#2d1a0e] transition-colors hover:bg-[#ede3d0] hover:text-[#a14f18]"
           >
             Talk to Astrologer
           </Link>
           <Link
             href="/live-darshan"
             onClick={() => setMobileMenuOpen(false)}
-            className="hover:text-[#c85a17] transition-colors"
+            className="rounded-lg px-3 py-2 text-[#2d1a0e] transition-colors hover:bg-[#ede3d0] hover:text-[#a14f18]"
           >
             Live Darshan
           </Link>
@@ -507,7 +511,7 @@ export function AstroNavbar() {
               handleProtectedClick(e);
               setMobileMenuOpen(false);
             }}
-            className="hover:text-[#c85a17] transition-colors"
+            className="rounded-lg px-3 py-2 text-[#2d1a0e] transition-colors hover:bg-[#ede3d0] hover:text-[#a14f18]"
           >
             Horoscope
           </Link>
@@ -517,7 +521,7 @@ export function AstroNavbar() {
               handleProtectedClick(e);
               setMobileMenuOpen(false);
             }}
-            className="hover:text-[#c85a17] transition-colors"
+            className="rounded-lg px-3 py-2 text-[#2d1a0e] transition-colors hover:bg-[#ede3d0] hover:text-[#a14f18]"
           >
             Puja Booking
           </Link>
@@ -527,21 +531,21 @@ export function AstroNavbar() {
               handleProtectedClick(e);
               setMobileMenuOpen(false);
             }}
-            className="hover:text-[#c85a17] transition-colors"
+            className="rounded-lg px-3 py-2 text-[#2d1a0e] transition-colors hover:bg-[#ede3d0] hover:text-[#a14f18]"
           >
             Match Making
           </Link>
           <Link
             href="/kundli"
             onClick={() => setMobileMenuOpen(false)}
-            className="hover:text-[#c85a17] transition-colors"
+            className="rounded-lg px-3 py-2 text-[#2d1a0e] transition-colors hover:bg-[#ede3d0] hover:text-[#a14f18]"
           >
             Kundli
           </Link>
           <Link
             href="/panchang"
             onClick={() => setMobileMenuOpen(false)}
-            className="hover:text-[#c85a17] transition-colors"
+            className="rounded-lg px-3 py-2 text-[#2d1a0e] transition-colors hover:bg-[#ede3d0] hover:text-[#a14f18]"
           >
             Panchang
           </Link>
@@ -559,7 +563,7 @@ export function AstroNavbar() {
             <Link
               href="/puja-booking"
               onClick={() => setMobileMenuOpen(false)}
-              className="hover:text-[#c85a17] transition-colors"
+              className="rounded-lg px-3 py-2 text-[#2d1a0e] transition-colors hover:bg-[#ede3d0] hover:text-[#a14f18]"
             >
               Remedies
             </Link>

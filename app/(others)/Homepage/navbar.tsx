@@ -125,7 +125,7 @@ export function AstroNavbar() {
   const userInitial = displayName.charAt(0).toUpperCase() || "U";
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[#d6c39b]/70 bg-[#fdf8f0]/95 shadow-[0_4px_18px_rgba(45,26,14,0.07)] backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full bg-[#FCFBF4]/95 shadow-[0_4px_18px_rgba(45,26,14,0.07)] backdrop-blur-md">
       <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-4 px-4 py-2.5 sm:px-6 xl:px-8">
         <Link
           href="/"
@@ -144,8 +144,6 @@ export function AstroNavbar() {
         <nav className="hidden flex-nowrap items-center gap-0.5 whitespace-nowrap text-[13px] font-semibold text-[#2d1a0e] xl:flex 2xl:gap-1.5 [&>*]:shrink-0">
           {/* Talk to Astrologer */}
           <div className="relative group cursor-pointer whitespace-nowrap rounded-xl px-2 py-2 transition-colors duration-200 hover:bg-[#ede3d0]">
-            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
-
             <div className="flex items-center gap-1 text-[#2d1a0e] transition-colors duration-200 group-hover:text-[#a14f18]">
               <Link href="/talk-to-astrologer" className="relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c58d2b]">
                 <span>Talk to Astrologer</span>
@@ -177,15 +175,12 @@ export function AstroNavbar() {
             href="/live-darshan"
             className="relative group whitespace-nowrap rounded-xl px-2 py-2 text-[#2d1a0e] transition-colors duration-200 hover:bg-[#ede3d0] hover:text-[#a14f18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c58d2b]"
           >
-            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
             <span>Live Darshan</span>
             <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-[#c85a17] via-amber-400 to-[#c85a17] group-hover:w-3/4 transition-all duration-300 rounded-full shadow-[0_0_8px_#c85a17]"></span>
           </Link>
 
           {/* Horoscope */}
           <div className="relative group cursor-pointer whitespace-nowrap rounded-xl px-2 py-2 transition-colors duration-200 hover:bg-[#ede3d0]">
-            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
-
             <div className="flex items-center gap-1 text-[#2d1a0e] transition-colors duration-200 group-hover:text-[#a14f18]">
               <Link
                 href="/horoscope"
@@ -220,7 +215,6 @@ export function AstroNavbar() {
             onClick={handleProtectedClick}
             className="relative group whitespace-nowrap rounded-xl px-2 py-2 text-[#2d1a0e] transition-colors duration-200 hover:bg-[#ede3d0] hover:text-[#a14f18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c58d2b]"
           >
-            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
             <span>Puja Booking</span>
             <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-[#c85a17] via-amber-400 to-[#c85a17] group-hover:w-3/4 transition-all duration-300 rounded-full shadow-[0_0_8px_#c85a17]"></span>
           </Link>
@@ -231,7 +225,6 @@ export function AstroNavbar() {
             onClick={handleProtectedClick}
             className="relative group whitespace-nowrap rounded-xl px-2 py-2 text-[#2d1a0e] transition-colors duration-200 hover:bg-[#ede3d0] hover:text-[#a14f18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c58d2b]"
           >
-            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
             <span>Match Making</span>
             <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-[#c85a17] via-amber-400 to-[#c85a17] group-hover:w-3/4 transition-all duration-300 rounded-full shadow-[0_0_8px_#c85a17]"></span>
           </Link>
@@ -241,7 +234,6 @@ export function AstroNavbar() {
             href="/kundli"
             className="relative group whitespace-nowrap rounded-xl px-2 py-2 text-[#2d1a0e] transition-colors duration-200 hover:bg-[#ede3d0] hover:text-[#a14f18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c58d2b]"
           >
-            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
             <span>Kundli</span>
             <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-[#c85a17] via-amber-400 to-[#c85a17] group-hover:w-3/4 transition-all duration-300 rounded-full shadow-[0_0_8px_#c85a17]"></span>
           </Link>
@@ -251,7 +243,6 @@ export function AstroNavbar() {
             href="/panchang"
             className="relative group whitespace-nowrap rounded-xl px-2 py-2 text-[#2d1a0e] transition-colors duration-200 hover:bg-[#ede3d0] hover:text-[#a14f18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c58d2b]"
           >
-            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
             <span>Panchang</span>
             <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-[#c85a17] via-amber-400 to-[#c85a17] group-hover:w-3/4 transition-all duration-300 rounded-full shadow-[0_0_8px_#c85a17]"></span>
           </Link>
@@ -261,7 +252,6 @@ export function AstroNavbar() {
             href="/reports"
             className="relative group whitespace-nowrap rounded-xl px-2 py-2 text-[#2d1a0e] transition-colors duration-200 hover:bg-[#ede3d0] hover:text-[#a14f18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c58d2b]"
           >
-            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
             <span>Reports</span>
             <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-[#c85a17] via-amber-400 to-[#c85a17] group-hover:w-3/4 transition-all duration-300 rounded-full shadow-[0_0_8px_#c85a17]"></span>
           </Link>
@@ -272,7 +262,6 @@ export function AstroNavbar() {
               href="/puja-booking"
               className="relative group whitespace-nowrap rounded-xl px-2 py-2 text-[#2d1a0e] transition-colors duration-200 hover:bg-[#ede3d0] hover:text-[#a14f18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c58d2b]"
             >
-              <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-700 ease-in-out pointer-events-none"></div>
               <span>Remedies</span>
               <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-[#c85a17] via-amber-400 to-[#c85a17] group-hover:w-3/4 transition-all duration-300 rounded-full shadow-[0_0_8px_#c85a17]"></span>
             </Link>
@@ -447,7 +436,7 @@ export function AstroNavbar() {
       {mobileMenuOpen && (
         <div
           id="mobile-navigation"
-          className="absolute left-0 top-full z-50 flex w-full flex-col gap-2 border-b border-[#d6c39b]/70 bg-[#fdf8f0] px-5 py-5 text-base font-medium text-[#2d1a0e] shadow-xl backdrop-blur-xl animate-in slide-in-from-top-4 fade-in duration-300 xl:hidden"
+          className="absolute left-0 top-full z-50 flex w-full flex-col gap-2 border-b border-[#d6c39b]/70 bg-[#FCFBF4] px-5 py-5 text-base font-medium text-[#2d1a0e] shadow-xl backdrop-blur-xl animate-in slide-in-from-top-4 fade-in duration-300 xl:hidden"
         >
           {/* If Logged In, show Mobile Profile Summary */}
           {isLoggedIn && (

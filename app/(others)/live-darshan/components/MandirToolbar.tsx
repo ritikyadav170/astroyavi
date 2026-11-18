@@ -73,12 +73,12 @@ export function MandirToolbar({
         {/* Sort & Filter Button */}
         <button
           onClick={onOpenFilterModal}
-          className="px-5 py-3 bg-white border border-[#e2d5c3] hover:border-[#1b4327] rounded-full text-xs font-semibold text-slate-700 hover:text-[#1b4327] flex items-center justify-center gap-2.5 shadow-xs transition-all cursor-pointer whitespace-nowrap active:scale-95"
+          className="px-5 py-3 bg-white border border-[#e2d5c3] hover:border-[#DA9F1D] rounded-full text-xs font-semibold text-slate-700 hover:text-[#DA9F1D] flex items-center justify-center gap-2.5 shadow-xs transition-all cursor-pointer whitespace-nowrap active:scale-95"
         >
           <SlidersHorizontal className="w-4 h-4 text-slate-600" />
           <span>Sort & Filter</span>
           {activeFilterCount > 0 && (
-            <span className="w-5 h-5 bg-[#1b4327] text-white rounded-full text-[10px] font-bold flex items-center justify-center">
+            <span className="w-5 h-5 bg-[#DA9F1D] text-white rounded-full text-[10px] font-bold flex items-center justify-center">
               {activeFilterCount}
             </span>
           )}
@@ -107,8 +107,8 @@ export function MandirToolbar({
                 onClick={() => setSelectedCategory(cat)}
                 className={`px-5 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer ${
                   isActive
-                    ? "bg-[#1b4327] text-white shadow-md border border-[#1b4327]"
-                    : "bg-white text-slate-700 border border-[#e2d5c3] hover:border-amber-400 hover:bg-amber-50/50"
+                    ? "bg-[#DA9F1D] text-white shadow-md border border-[#DA9F1D]"
+                    : "bg-white text-slate-700 border border-[#DA9F1D]/50 hover:border-[#DA9F1D] hover:bg-amber-50/50"
                 }`}
               >
                 {cat}

@@ -24,7 +24,7 @@ function KundliAstrologerCard({
   return (
     <div
       onClick={() => onSelect(astrologer)}
-      className="bg-white rounded-3xl p-5 border border-[#e6c896] flex flex-col items-center text-center shadow-sm hover:shadow-xl hover:border-[#1b4327] transition-all cursor-pointer group"
+      className="bg-white rounded-3xl p-5 border border-[#DA9F1D] flex flex-col items-center text-center shadow-sm hover:shadow-xl hover:border-[#DA9F1D] transition-all cursor-pointer group"
     >
       <div className="relative mb-3 group-hover:scale-105 transition-transform">
         {hasImage ? (
@@ -32,11 +32,11 @@ function KundliAstrologerCard({
             src={imageUrl}
             alt={astrologer.name}
             onError={() => setImgError(true)}
-            className="w-16 h-16 rounded-full object-cover border-2 border-[#1b4327] shadow-md"
+            className="w-16 h-16 rounded-full object-cover border-2 border-[#DA9F1D] shadow-md"
           />
         ) : (
           <div
-            className={`w-16 h-16 rounded-full ${astrologer.bgColor || "bg-[#1b4327]"} border-2 border-[#1b4327] flex items-center justify-center text-white text-lg font-bold shadow-md`}
+            className={`w-16 h-16 rounded-full ${astrologer.bgColor || "bg-[#1b4327]"} border-2 border-[#DA9F1D] flex items-center justify-center text-white text-lg font-bold shadow-md`}
           >
             {astrologer.initials || "AS"}
           </div>

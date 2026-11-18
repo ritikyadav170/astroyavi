@@ -350,7 +350,7 @@ export function ChatWindow({
 
     return (
         <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="relative flex h-[88vh] w-full max-w-[560px] flex-col rounded-3xl border border-amber-200/90 bg-[#fdf8f0] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="relative flex h-[88vh] w-full max-w-[560px] flex-col rounded-3xl border border-amber-200/90 bg-[#FCFBF4] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
 
                 {/* Header */}
                 <div className="flex items-center justify-between border-b border-amber-200/60 bg-[#163014] px-5 py-3.5 text-white">
@@ -390,7 +390,7 @@ export function ChatWindow({
                 </div>
 
                 {/* Message Log */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-[#fdf8f0] scrollbar-thin">
+                <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-[#FCFBF4] scrollbar-thin">
                     {messages.length === 0 ? (
                         <div className="flex h-full flex-col items-center justify-center gap-2 text-center text-slate-400">
                             <UserIcon className="h-8 w-8 stroke-1 text-slate-300" />

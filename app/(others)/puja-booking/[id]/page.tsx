@@ -38,7 +38,7 @@ export default function PujaDetailPage() {
 
   if (!puja) {
     return (
-      <div className="min-h-screen bg-[#faf9f5] flex items-center justify-center">
+      <div className="min-h-screen bg-[#FCFBF4] flex items-center justify-center">
         <p className="text-slate-600">Loading Puja Details...</p>
       </div>
     );
@@ -52,7 +52,7 @@ export default function PujaDetailPage() {
   }));
 
   return (
-    <main className="min-h-screen bg-[#faf9f5] flex flex-col font-sans text-slate-800">
+    <main className="min-h-screen bg-[#FCFBF4] flex flex-col font-sans text-slate-800">
       {/* Navbar */}
       <AstroNavbar />
 

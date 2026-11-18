@@ -132,7 +132,7 @@ export function AstrologerDetailModal({
   if (isWaiting) {
     return (
       <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/70 p-4 backdrop-blur-md animate-in fade-in duration-200">
-        <div className="relative w-full max-w-sm rounded-3xl border border-amber-300/80 bg-[#fdf8f0] p-7 text-center shadow-2xl animate-in zoom-in-95 duration-200">
+        <div className="relative w-full max-w-sm rounded-3xl border border-amber-300/80 bg-[#FCFBF4] p-7 text-center shadow-2xl animate-in zoom-in-95 duration-200">
           {/* Pulsing Radar Ring Avatar */}
           <div className="relative mx-auto mb-5 h-24 w-24">
             <div className="absolute -inset-2 rounded-full bg-emerald-500/20 animate-ping pointer-events-none" />
@@ -197,7 +197,7 @@ export function AstrologerDetailModal({
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 p-4 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative max-h-[90vh] w-full max-w-[620px] overflow-y-auto rounded-[32px] border border-amber-200/90 bg-[#fdf8f0] p-6 shadow-2xl animate-in zoom-in-95 duration-200 sm:p-8 scrollbar-thin">
+      <div className="relative max-h-[90vh] w-full max-w-[620px] overflow-y-auto rounded-[32px] border border-amber-200/90 bg-[#FCFBF4] p-6 shadow-2xl animate-in zoom-in-95 duration-200 sm:p-8 scrollbar-thin">
         {/* Close Button */}
         <button
           type="button"

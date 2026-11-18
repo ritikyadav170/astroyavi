@@ -32,7 +32,7 @@ export function PujaToolbar({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search Pujas..."
-              className="w-full bg-white border border-slate-300 rounded-full py-2.5 pl-4 pr-10 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#1E3B2B] shadow-2xs transition-all"
+              className="w-full bg-white border border-slate-300 rounded-full py-2.5 pl-4 pr-10 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#DA9F1D] shadow-2xs transition-all"
             />
             {searchQuery ? (
               <button
@@ -49,9 +49,9 @@ export function PujaToolbar({
           {/* Sort & Filter Button */}
           <button
             onClick={() => setShowFilterModal(!showFilterModal)}
-            className="flex items-center justify-center gap-2 bg-white border border-slate-300 rounded-full px-5 py-2.5 text-sm font-medium text-slate-800 hover:bg-slate-50 transition-all shadow-2xs shrink-0 cursor-pointer"
+            className="flex items-center justify-center gap-2 bg-[#DA9F1D] hover:bg-[#c48e1a] border border-[#DA9F1D] rounded-full px-5 py-2.5 text-sm font-medium text-white transition-all shadow-2xs shrink-0 cursor-pointer"
           >
-            <SlidersHorizontal className="w-4 h-4 text-slate-700" />
+            <SlidersHorizontal className="w-4 h-4 text-white" />
             <span>Sort &amp; Filter</span>
           </button>
         </div>
@@ -64,10 +64,11 @@ export function PujaToolbar({
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all shrink-0 cursor-pointer ${isActive
-                    ? "bg-[#1E3B2B] text-white shadow-sm"
-                    : "bg-white border border-slate-300 text-slate-800 hover:border-slate-400 hover:bg-slate-50"
-                  }`}
+                className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all shrink-0 cursor-pointer ${
+                  isActive
+                    ? "bg-[#DA9F1D] text-white shadow-sm border border-[#DA9F1D]"
+                    : "bg-white border border-slate-300 text-slate-800 hover:border-[#DA9F1D] hover:text-[#DA9F1D] hover:bg-amber-50/30"
+                }`}
               >
                 {cat}
               </button>
@@ -99,10 +100,11 @@ export function PujaToolbar({
                   setSelectedCategory(cat);
                   setShowFilterModal(false);
                 }}
-                className={`px-4 py-2 rounded-xl text-xs font-semibold text-center border transition-all cursor-pointer ${selectedCategory === cat
-                    ? "bg-[#1E3B2B] text-white border-[#1E3B2B]"
-                    : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
-                  }`}
+                className={`px-4 py-2 rounded-xl text-xs font-semibold text-center border transition-all cursor-pointer ${
+                  selectedCategory === cat
+                    ? "bg-[#DA9F1D] text-white border-[#DA9F1D] shadow-sm"
+                    : "bg-slate-50 text-slate-700 border-slate-200 hover:border-[#DA9F1D] hover:text-[#DA9F1D] hover:bg-amber-50/50"
+                }`}
               >
                 {cat}
               </button>

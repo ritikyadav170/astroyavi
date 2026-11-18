@@ -31,7 +31,7 @@ function TopAstrologerCard({
   return (
     <div
       onClick={() => onSelect(astrologer)}
-      className="min-w-[260px] max-w-[280px] bg-white rounded-[2rem] p-6 border border-[#e6c896] flex flex-col items-center text-center shadow-sm hover:shadow-2xl hover:border-[#1b4327] hover:-translate-y-3 transition-all duration-500 ease-out group relative shrink-0 cursor-pointer"
+      className="min-w-[260px] max-w-[280px] bg-white rounded-[2rem] p-6 border border-[#DA9F1D] flex flex-col items-center text-center shadow-sm hover:shadow-2xl hover:border-[#DA9F1D] hover:-translate-y-3 transition-all duration-500 ease-out group relative shrink-0 cursor-pointer"
     >
       {/* Profile Avatar */}
       <div className="relative mb-4 group-hover:scale-110 transition-transform duration-500 ease-out">
@@ -40,11 +40,11 @@ function TopAstrologerCard({
             src={imageUrl}
             alt={astrologer.name}
             onError={() => setImgError(true)}
-            className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg"
+            className="w-24 h-24 rounded-full object-cover border-4 border-[#DA9F1D] shadow-lg"
           />
         ) : (
           <div
-            className={`w-24 h-24 rounded-full ${astrologer.bgColor || "bg-[#1b4327]"} border-4 border-white shadow-lg flex items-center justify-center text-white text-2xl font-bold`}
+            className={`w-24 h-24 rounded-full ${astrologer.bgColor || "bg-[#1b4327]"} border-4 border-[#DA9F1D] shadow-lg flex items-center justify-center text-white text-2xl font-bold`}
           >
             {astrologer.initials || "AS"}
           </div>
@@ -139,7 +139,7 @@ export function TopAstrologers() {
   };
 
   return (
-    <section className="w-full bg-[#fdf8f0] py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
+    <section className="w-full bg-[#FCFBF4] py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
       <div className="max-w-[1350px] mx-auto flex flex-col items-center">
         {/* Section Pill Title */}
         <div className="flex items-center gap-3 text-[#c87638] mb-4">
@@ -160,10 +160,11 @@ export function TopAstrologers() {
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`px-5 sm:px-6 py-2.5 text-xs sm:text-sm font-semibold rounded-full border transition-all duration-300 cursor-pointer ${activeCategory === cat
-                  ? "bg-[#1b4327] text-white border-[#1b4327] shadow-lg scale-105"
-                  : "bg-white text-[#2b1810] border-[#3c2415]/30 hover:border-[#1b4327] hover:bg-amber-50 hover:shadow-sm"
-                }`}
+              className={`px-5 sm:px-6 py-2.5 text-xs sm:text-sm font-semibold rounded-full border transition-all duration-300 cursor-pointer ${
+                activeCategory === cat
+                  ? "bg-[#DA9F1D] text-white border-[#DA9F1D] shadow-lg scale-105"
+                  : "bg-white text-[#2b1810] border-[#DA9F1D]/50 hover:border-[#DA9F1D] hover:bg-amber-50 hover:shadow-sm"
+              }`}
             >
               {cat}
             </button>

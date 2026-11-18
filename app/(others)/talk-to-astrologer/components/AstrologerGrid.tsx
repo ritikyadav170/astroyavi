@@ -25,7 +25,7 @@ function AstrologerCard({
   return (
     <div
       onClick={() => onSelect && onSelect(astrologer)}
-      className="bg-white rounded-3xl p-5 border border-[#e6c896] flex flex-col items-center text-center shadow-sm hover:shadow-2xl hover:border-[#1b4327] hover:-translate-y-2 transition-all duration-300 group relative cursor-pointer"
+      className="bg-white rounded-3xl p-5 border border-[#DA9F1D] flex flex-col items-center text-center shadow-sm hover:shadow-2xl hover:border-[#DA9F1D] hover:-translate-y-2 transition-all duration-300 group relative cursor-pointer"
     >
       {/* Profile Avatar with Online Badge */}
       <div className="relative mb-3 group-hover:scale-105 transition-transform duration-300">
@@ -34,11 +34,11 @@ function AstrologerCard({
             src={imageUrl}
             alt={astrologer.name}
             onError={() => setImgError(true)}
-            className="w-20 h-20 rounded-full object-cover border-2 border-[#1b4327] shadow-md"
+            className="w-20 h-20 rounded-full object-cover border-2 border-[#DA9F1D] shadow-md"
           />
         ) : (
           <div
-            className={`w-20 h-20 rounded-full ${astrologer.bgColor || "bg-[#1b4327]"} border-2 border-[#1b4327] flex items-center justify-center text-white text-xl font-bold shadow-md`}
+            className={`w-20 h-20 rounded-full ${astrologer.bgColor || "bg-[#1b4327]"} border-2 border-[#DA9F1D] flex items-center justify-center text-white text-xl font-bold shadow-md`}
           >
             {astrologer.initials || "AS"}
           </div>

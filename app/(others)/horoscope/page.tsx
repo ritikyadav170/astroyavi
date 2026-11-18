@@ -55,7 +55,7 @@ export default function HoroscopePage() {
   }, [selectedSign, selectedPeriod]);
 
   return (
-    <main className="min-h-screen bg-[#f8f7f4] text-[#2d1a0e]">
+    <main className="min-h-screen bg-[#FCFBF4] text-[#2d1a0e]">
       <AstroNavbar />
 
       <section className="mx-auto max-w-[1240px] px-4 pb-10 pt-6 sm:px-6 lg:px-8">

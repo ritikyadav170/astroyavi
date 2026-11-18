@@ -26,7 +26,7 @@ export function AstrologerRequestModal({
 
   return (
     <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="relative w-full max-w-sm rounded-3xl border border-amber-200 bg-[#fdf8f0] p-6 text-center shadow-2xl animate-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-sm rounded-3xl border border-amber-200 bg-[#FCFBF4] p-6 text-center shadow-2xl animate-in zoom-in-95 duration-200">
         
         {/* User Image */}
         <div className="relative mx-auto mb-3.5 h-20 w-20 overflow-hidden rounded-full border-2 border-amber-500 bg-[#1b4327] shadow-md">

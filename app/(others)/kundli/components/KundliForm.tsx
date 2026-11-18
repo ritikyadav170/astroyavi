@@ -197,10 +197,10 @@ export function KundliForm({
                     key={city}
                     type="button"
                     onClick={() => setFormData({ ...formData, placeOfBirth: city })}
-                    className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors cursor-pointer ${
+                    className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all cursor-pointer ${
                       formData.placeOfBirth.toLowerCase().includes(city.split(",")[0].toLowerCase())
-                        ? "bg-[#1b4327] text-white font-bold"
-                        : "bg-amber-50 hover:bg-amber-100 text-[#5c4033] border border-amber-200"
+                        ? "bg-[#DA9F1D] text-white font-bold ring-2 ring-[#DA9F1D] ring-offset-1 shadow-xs"
+                        : "bg-[#DA9F1D] hover:bg-[#c48e1a] text-white"
                     }`}
                   >
                     {city.split(",")[0]}

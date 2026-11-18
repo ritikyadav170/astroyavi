@@ -18,6 +18,7 @@ export interface ZodiacSign {
   name: ZodiacSignName;
   symbol: string;
   accent: string;
+  image: string;
 }
 
 export interface CategorySection {
@@ -34,18 +35,18 @@ export interface Astrologer {
 }
 
 export const signOptions: readonly ZodiacSign[] = [
-  { name: "Aries", symbol: "♈", accent: "#1f5b4c" },
-  { name: "Taurus", symbol: "♉", accent: "#1f5b4c" },
-  { name: "Gemini", symbol: "♊", accent: "#1f5b4c" },
-  { name: "Cancer", symbol: "♋", accent: "#1f5b4c" },
-  { name: "Leo", symbol: "♌", accent: "#1f5b4c" },
-  { name: "Virgo", symbol: "♍", accent: "#1f5b4c" },
-  { name: "Libra", symbol: "♎", accent: "#1f5b4c" },
-  { name: "Scorpio", symbol: "♏", accent: "#1f5b4c" },
-  { name: "Sagittarius", symbol: "♐", accent: "#1f5b4c" },
-  { name: "Capricorn", symbol: "♑", accent: "#1f5b4c" },
-  { name: "Aquarius", symbol: "♒", accent: "#1f5b4c" },
-  { name: "Pisces", symbol: "♓", accent: "#1f5b4c" },
+  { name: "Aries", symbol: "♈", accent: "#1f5b4c", image: "/images/horoscope/aries.png" },
+  { name: "Taurus", symbol: "♉", accent: "#1f5b4c", image: "/images/horoscope/taurus.png" },
+  { name: "Gemini", symbol: "♊", accent: "#1f5b4c", image: "/images/horoscope/gemini.png" },
+  { name: "Cancer", symbol: "♋", accent: "#1f5b4c", image: "/images/horoscope/cancer.png" },
+  { name: "Leo", symbol: "♌", accent: "#1f5b4c", image: "/images/horoscope/leo.png" },
+  { name: "Virgo", symbol: "♍", accent: "#1f5b4c", image: "/images/horoscope/virgo.png" },
+  { name: "Libra", symbol: "♎", accent: "#1f5b4c", image: "/images/horoscope/libra.png" },
+  { name: "Scorpio", symbol: "♏", accent: "#1f5b4c", image: "/images/horoscope/scorpio.png" },
+  { name: "Sagittarius", symbol: "♐", accent: "#1f5b4c", image: "/images/horoscope/sagittarius.png" },
+  { name: "Capricorn", symbol: "♑", accent: "#1f5b4c", image: "/images/horoscope/capricorn.png" },
+  { name: "Aquarius", symbol: "♒", accent: "#1f5b4c", image: "/images/horoscope/aquarius.png" },
+  { name: "Pisces", symbol: "♓", accent: "#1f5b4c", image: "/images/horoscope/pisces.png" },
 ] as const;
 
 export const timePeriods: readonly TimePeriod[] = [

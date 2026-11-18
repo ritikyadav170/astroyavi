@@ -59,7 +59,7 @@ export default function KundliPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#fdf8f0] selection:bg-amber-200 selection:text-amber-950 flex flex-col">
+    <main className="min-h-screen bg-[#FCFBF4] selection:bg-amber-200 selection:text-amber-950 flex flex-col">
       {/* Top Navbar */}
       <AstroNavbar />
 

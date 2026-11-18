@@ -5,7 +5,7 @@ import { FeatureBadges } from "./feature-badges";
 
 export function HeroSection() {
   return (
-    <section className="relative w-full min-h-screen bg-[#fdf8f0] flex flex-col justify-between">
+    <section className="relative w-full min-h-screen bg-[#FCFBF4] flex flex-col justify-between">
 
       {/* Background Overlay */}
       <div

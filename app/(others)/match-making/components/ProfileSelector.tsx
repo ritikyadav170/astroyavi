@@ -31,8 +31,8 @@ export function ProfileSelector({
               className={[
                 "relative flex h-[86px] w-[86px] items-center justify-center overflow-hidden rounded-full border-[3px] transition-all cursor-pointer",
                 selected
-                  ? "border-[#1c5b49] ring-4 ring-[#1c5b49]/10"
-                  : "border-[#dfd6c8]",
+                  ? "border-[#DA9F1D] ring-4 ring-[#DA9F1D]/20 shadow-md"
+                  : "border-[#DA9F1D]/50 hover:border-[#DA9F1D]",
               ].join(" ")}
               aria-label={`Select ${profile.label}`}
             >
@@ -42,7 +42,7 @@ export function ProfileSelector({
                 className="h-full w-full object-cover"
               />
               {selected && (
-                <span className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-[#1c5b49] text-xs font-bold text-white">
+                <span className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-[#DA9F1D] text-xs font-bold text-white shadow-xs">
                   ✓
                 </span>
               )}

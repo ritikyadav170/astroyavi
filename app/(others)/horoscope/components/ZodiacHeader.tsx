@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   signOptions,
   timePeriods,
@@ -14,7 +15,7 @@ interface ZodiacHeaderProps {
   setSelectedSign: (sign: ZodiacSignName) => void;
   selectedPeriod: TimePeriod;
   setSelectedPeriod: (period: TimePeriod) => void;
-  activeSign: ZodiacSign;
+  activeSign?: ZodiacSign;
 }
 
 export function ZodiacHeader({
@@ -22,7 +23,6 @@ export function ZodiacHeader({
   setSelectedSign,
   selectedPeriod,
   setSelectedPeriod,
-  activeSign,
 }: ZodiacHeaderProps) {
   return (
     <>
@@ -40,23 +40,40 @@ export function ZodiacHeader({
               onClick={() => setSelectedSign(sign.name)}
               className={[
                 "flex flex-col items-center gap-2 rounded-full transition-all duration-200",
-                selectedSign === sign.name ? "scale-[1.02]" : "opacity-100",
+                selectedSign === sign.name ? "scale-105" : "opacity-90 hover:opacity-100 hover:scale-105",
               ].join(" ")}
               aria-label={`Select ${sign.name}`}
             >
               <div
                 className={[
-                  "flex h-[78px] w-[78px] items-center justify-center rounded-full border-[3px] bg-[#f5f5f3] shadow-sm",
+                  "relative flex h-[78px] w-[78px] items-center justify-center rounded-full p-0.5 transition-all duration-200",
                   selectedSign === sign.name
-                    ? "border-[#1f5b4c] ring-2 ring-[#1f5b4c]/20"
-                    : "border-[#1f5b4c]/80",
+                    ? "ring-4 ring-[#DA9F1D] ring-offset-2 shadow-md"
+                    : "ring-2 ring-transparent hover:ring-[#DA9F1D]/30 shadow-sm",
                 ].join(" ")}
               >
-                <div className="flex h-[56px] w-[56px] items-center justify-center rounded-full border border-[#1f5b4c]/50 bg-white text-[2rem] text-[#1f5b4c]">
-                  {sign.symbol}
-                </div>
+                {sign.image ? (
+                  <Image
+                    src={sign.image}
+                    alt={sign.name}
+                    width={78}
+                    height={78}
+                    className="h-full w-full rounded-full object-contain"
+                  />
+                ) : (
+                  <div className="flex h-[56px] w-[56px] items-center justify-center rounded-full border border-[#1f5b4c]/50 bg-white text-[2rem] text-[#1f5b4c]">
+                    {sign.symbol}
+                  </div>
+                )}
               </div>
-              <span className="text-sm font-medium text-[#2d1a0e]">
+              <span
+                className={[
+                  "text-sm font-medium transition-colors",
+                  selectedSign === sign.name
+                    ? "font-bold text-[#DA9F1D]"
+                    : "text-[#2d1a0e]",
+                ].join(" ")}
+              >
                 {sign.name}
               </span>
             </button>
@@ -82,15 +99,6 @@ export function ZodiacHeader({
               {period}
             </button>
           ))}
-        </div>
-      </div>
-
-      {/* Hero Display Badge */}
-      <div className="mt-8 flex justify-center">
-        <div className="flex h-[250px] w-[300px] items-center justify-center rounded-full border-[2px] border-[#1f5b4c]/80 bg-[#f9f7f3] shadow-[inset_0_0_0_1px_rgba(31,91,76,0.12)]">
-          <div className="flex h-[180px] w-[180px] items-center justify-center rounded-full border-[4px] border-[#2d1a0e] bg-[#f8f8f5] text-[4.5rem] text-[#2d1a0e] shadow-inner">
-            {activeSign.symbol}
-          </div>
         </div>
       </div>
     </>

@@ -293,7 +293,7 @@ function ReportCard({
   return (
     <div
       onClick={() => onOpenPreview(report)}
-      className="bg-white rounded-2xl p-3.5 sm:p-4 border border-[#eeddc8] hover:border-[#1b4327] flex flex-col justify-between shadow-2xs hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group relative cursor-pointer overflow-hidden"
+      className="bg-white rounded-2xl p-3.5 sm:p-4 border border-[#DA9F1D] hover:border-[#DA9F1D] flex flex-col justify-between shadow-2xs hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group relative cursor-pointer overflow-hidden"
     >
       {/* Subtle Luxury Gradient Background Glow on Hover */}
       <div
@@ -334,10 +334,10 @@ function ReportCard({
               src={validImageUrl}
               alt={report.title}
               onError={() => setImgError(true)}
-              className="relative w-14 h-14 rounded-full object-cover border-2 border-[#1b4327] shadow-xs p-0.5 bg-amber-50/70"
+              className="relative w-14 h-14 rounded-full object-cover border-2 border-[#DA9F1D] shadow-xs p-0.5 bg-amber-50/70"
             />
           ) : (
-            <div className="relative w-14 h-14 rounded-full shadow-xs flex items-center justify-center">
+            <div className="relative w-14 h-14 rounded-full border-2 border-[#DA9F1D] shadow-xs flex items-center justify-center">
               {renderCategoryEmblem(report.categoryKey)}
             </div>
           )}
@@ -829,14 +829,14 @@ export function ReportsCatalog({
               onClick={() => setShowFilterDrawer(!showFilterDrawer)}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-xs sm:text-sm font-semibold border shadow-2xs transition-all cursor-pointer ${
                 showFilterDrawer || activeFiltersCount > 0
-                  ? "bg-[#1b4327] text-white border-[#1b4327] hover:bg-[#13321d]"
-                  : "bg-[#fffcf7] text-[#2b1810] border-[#e2cca4] hover:border-[#1b4327]"
+                  ? "bg-[#DA9F1D] text-white border-[#DA9F1D] hover:bg-[#c48e1a]"
+                  : "bg-[#fffcf7] text-[#2b1810] border-[#e2cca4] hover:border-[#DA9F1D]"
               }`}
             >
               <SlidersHorizontal className="w-3.5 h-3.5" />
               <span>Filters</span>
               {activeFiltersCount > 0 && (
-                <span className="w-5 h-5 rounded-full bg-amber-400 text-slate-900 text-[10px] font-extrabold flex items-center justify-center ml-0.5">
+                <span className="w-5 h-5 rounded-full bg-white text-[#DA9F1D] text-[10px] font-extrabold flex items-center justify-center ml-0.5">
                   {activeFiltersCount}
                 </span>
               )}
@@ -854,7 +854,7 @@ export function ReportsCatalog({
               key={tag}
               type="button"
               onClick={() => setSearchQuery(tag)}
-              className="shrink-0 px-2.5 py-1 rounded-full bg-amber-50/70 hover:bg-amber-100 text-[#5c4033] hover:text-[#801c10] border border-amber-200/60 transition-colors text-[11px] font-medium cursor-pointer"
+              className="shrink-0 px-2.5 py-1 rounded-full bg-[#DA9F1D] hover:bg-[#c48e1a] text-white border border-[#DA9F1D] transition-colors text-[11px] font-medium cursor-pointer shadow-2xs"
             >
               {tag}
             </button>
@@ -893,8 +893,8 @@ export function ReportsCatalog({
                   onClick={() => setSelectedCategory(cat.key)}
                   className={`shrink-0 inline-flex items-center gap-2 px-4 py-2 text-xs sm:text-sm font-semibold rounded-full border transition-all cursor-pointer select-none ${
                     isActive
-                      ? "bg-[#1b4327] text-white border-[#1b4327] shadow-md ring-2 ring-amber-300/40"
-                      : "bg-[#fffcf7] text-[#2b1810] border-[#e2cca4] hover:border-[#1b4327] hover:bg-white"
+                      ? "bg-[#DA9F1D] text-white border-[#DA9F1D] shadow-md ring-2 ring-[#DA9F1D]/30"
+                      : "bg-[#fffcf7] text-[#2b1810] border-[#e2cca4] hover:border-[#DA9F1D] hover:bg-white"
                   }`}
                 >
                   <span className="text-sm">{cat.icon || "📜"}</span>
@@ -956,8 +956,8 @@ export function ReportsCatalog({
                       onClick={() => setPriceFilter(p.id)}
                       className={`py-1.5 px-2 rounded-lg border text-center font-medium transition-colors cursor-pointer ${
                         priceFilter === p.id
-                          ? "bg-[#1b4327] text-white border-[#1b4327]"
-                          : "bg-white text-[#2b1810] border-[#eeddc8] hover:border-[#1b4327]"
+                          ? "bg-[#DA9F1D] text-white border-[#DA9F1D] font-bold shadow-xs"
+                          : "bg-white text-[#2b1810] border-[#eeddc8] hover:border-[#DA9F1D]"
                       }`}
                     >
                       {p.label}
@@ -984,8 +984,8 @@ export function ReportsCatalog({
                       onClick={() => setTypeFilter(t.id)}
                       className={`py-1.5 px-2 rounded-lg border text-center font-medium transition-colors cursor-pointer ${
                         typeFilter === t.id
-                          ? "bg-[#1b4327] text-white border-[#1b4327]"
-                          : "bg-white text-[#2b1810] border-[#eeddc8] hover:border-[#1b4327]"
+                          ? "bg-[#DA9F1D] text-white border-[#DA9F1D] font-bold shadow-xs"
+                          : "bg-white text-[#2b1810] border-[#eeddc8] hover:border-[#DA9F1D]"
                       }`}
                     >
                       {t.label}
@@ -1012,8 +1012,8 @@ export function ReportsCatalog({
                       onClick={() => setMinRating(r.val)}
                       className={`py-1.5 px-2 rounded-lg border text-center font-medium transition-colors cursor-pointer ${
                         minRating === r.val
-                          ? "bg-[#1b4327] text-white border-[#1b4327]"
-                          : "bg-white text-[#2b1810] border-[#eeddc8] hover:border-[#1b4327]"
+                          ? "bg-[#DA9F1D] text-white border-[#DA9F1D] font-bold shadow-xs"
+                          : "bg-white text-[#2b1810] border-[#eeddc8] hover:border-[#DA9F1D]"
                       }`}
                     >
                       {r.label}
@@ -1032,8 +1032,8 @@ export function ReportsCatalog({
                   onClick={() => setOnlyPopular(!onlyPopular)}
                   className={`w-full py-2 px-3 rounded-lg border font-medium flex items-center justify-between transition-colors cursor-pointer ${
                     onlyPopular
-                      ? "bg-[#1b4327] text-white border-[#1b4327]"
-                      : "bg-white text-[#2b1810] border-[#eeddc8] hover:border-[#1b4327]"
+                      ? "bg-[#DA9F1D] text-white border-[#DA9F1D] font-bold shadow-xs"
+                      : "bg-white text-[#2b1810] border-[#eeddc8] hover:border-[#DA9F1D]"
                   }`}
                 >
                   <span className="flex items-center gap-1.5">

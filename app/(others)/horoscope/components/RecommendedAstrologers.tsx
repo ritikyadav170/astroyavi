@@ -21,7 +21,7 @@ function RecommendedCard({
   return (
     <div
       onClick={() => onSelect(astro)}
-      className="rounded-[20px] border border-[#d9c7a1] bg-[#f8f5f1] p-4 shadow-[0_1px_0_rgba(0,0,0,0.02)] hover:shadow-xl hover:border-[#1f5b4c] transition-all cursor-pointer group flex flex-col items-center"
+      className="rounded-[20px] border border-[#DA9F1D] bg-[#f8f5f1] p-4 shadow-[0_1px_0_rgba(0,0,0,0.02)] hover:shadow-xl hover:border-[#DA9F1D] transition-all cursor-pointer group flex flex-col items-center"
     >
       <div className="mb-4 flex justify-center">
         <div className="relative group-hover:scale-105 transition-transform">
@@ -30,11 +30,11 @@ function RecommendedCard({
               src={imageUrl}
               alt={astro.name}
               onError={() => setImgError(true)}
-              className="h-[84px] w-[84px] rounded-full border-[3px] border-[#1f5b4c] object-cover"
+              className="h-[84px] w-[84px] rounded-full border-[3px] border-[#DA9F1D] object-cover"
             />
           ) : (
             <div
-              className={`h-[84px] w-[84px] rounded-full border-[3px] border-[#1f5b4c] ${astro.bgColor || "bg-[#1f5b4c]"} flex items-center justify-center text-white text-xl font-bold`}
+              className={`h-[84px] w-[84px] rounded-full border-[3px] border-[#DA9F1D] ${astro.bgColor || "bg-[#1f5b4c]"} flex items-center justify-center text-white text-xl font-bold`}
             >
               {astro.initials || "AS"}
             </div>
@@ -99,7 +99,7 @@ export function RecommendedAstrologers() {
   return (
     <>
       {/* Share Horoscope Report Banner */}
-      <div className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 rounded-[18px] border border-[#d7d3ca] bg-[#f4f2ee] p-4 shadow-sm">
+      <div className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 rounded-[18px] border border-[#DA9F1D] bg-[#f4f2ee] p-4 shadow-sm">
         <div className="flex items-center gap-4">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-[#d7d3ca] bg-[#f7f5f3] text-[#2d1a0e]">
             <Share2 className="h-5 w-5" />
@@ -128,7 +128,7 @@ export function RecommendedAstrologers() {
       <div className="mt-16">
         <div className="relative mb-8 text-center">
           <div className="absolute left-0 right-0 top-1/2 h-px -translate-y-1/2 bg-[#d8d0c3]" />
-          <span className="relative inline-block bg-[#f8f7f4] px-5 text-lg font-semibold tracking-wide text-[#2d1a0e]">
+          <span className="relative inline-block bg-[#FCFBF4] px-5 text-lg font-semibold tracking-wide text-[#2d1a0e]">
             Recommended Astrologers
           </span>
         </div>

@@ -78,9 +78,9 @@ export function AstrologerSearchToolbar({
 
             <button
               onClick={() => setShowFilterModal(!showFilterModal)}
-              className="flex items-center gap-2 bg-white border border-[#e6c896] hover:border-[#1b4327] px-4 py-2.5 rounded-full text-xs sm:text-sm font-semibold text-[#2b1810] shadow-xs transition-all cursor-pointer"
+              className="flex items-center gap-2 bg-white border border-[#e6c896] hover:border-[#DA9F1D] px-4 py-2.5 rounded-full text-xs sm:text-sm font-semibold text-[#2b1810] shadow-xs transition-all cursor-pointer"
             >
-              <SlidersHorizontal className="w-4 h-4 text-[#1b4327]" />
+              <SlidersHorizontal className="w-4 h-4 text-[#DA9F1D]" />
               <span>Sort &amp; Filter</span>
             </button>
           </div>
@@ -92,10 +92,11 @@ export function AstrologerSearchToolbar({
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`shrink-0 px-5 py-2 text-xs sm:text-sm font-semibold rounded-full border transition-all cursor-pointer ${activeCategory === cat
-                  ? "bg-[#1b4327] text-white border-[#1b4327] shadow-sm"
-                  : "bg-white text-[#2b1810] border-[#e6c896] hover:border-[#1b4327]"
-                }`}
+              className={`shrink-0 px-5 py-2 text-xs sm:text-sm font-semibold rounded-full border transition-all cursor-pointer ${
+                activeCategory === cat
+                  ? "bg-[#DA9F1D] text-white border-[#DA9F1D] shadow-sm"
+                  : "bg-white text-[#2b1810] border-[#DA9F1D]/50 hover:border-[#DA9F1D] hover:bg-amber-50"
+              }`}
             >
               {cat}
             </button>

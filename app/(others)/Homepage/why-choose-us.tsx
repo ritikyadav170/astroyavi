@@ -5,7 +5,7 @@ import { CheckCircle2, Lock, Tag } from "lucide-react";
 
 export function WhyChooseUs() {
   return (
-    <section className="w-full bg-[#fdf8f0] py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
+    <section className="w-full bg-[#FCFBF4] py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
       <div className="max-w-[1300px] mx-auto flex flex-col items-center">
 
         {/* Section Header */}

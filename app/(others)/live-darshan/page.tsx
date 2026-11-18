@@ -66,7 +66,7 @@ export default function LiveDarshanPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#faf9f5] flex flex-col font-sans text-slate-800 selection:bg-amber-200 selection:text-amber-950">
+    <main className="min-h-screen bg-[#FCFBF4] flex flex-col font-sans text-slate-800 selection:bg-amber-200 selection:text-amber-950">
       {/* Top Navigation */}
       <AstroNavbar />
 

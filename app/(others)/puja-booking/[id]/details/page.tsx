@@ -68,7 +68,7 @@ export default function PujaDetailsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#f7f5f1] text-[#2d1a0e]">
+    <main className="min-h-screen bg-[#FCFBF4] text-[#2d1a0e]">
       <AstroNavbar />
 
       <div className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6 lg:px-8">

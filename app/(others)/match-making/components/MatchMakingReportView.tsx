@@ -383,7 +383,7 @@ export function MatchMakingReportView({
       <div className="pt-6 border-t border-[#e2d6bc] print:hidden">
         <div className="relative mb-8 text-center">
           <div className="absolute left-0 right-0 top-1/2 h-px -translate-y-1/2 bg-[#d8d0c2]" />
-          <span className="relative inline-block bg-[#f6f5f1] px-5 text-base font-bold text-[#2d1a0e] uppercase tracking-wider">
+          <span className="relative inline-block bg-[#FCFBF4] px-5 text-base font-bold text-[#2d1a0e] uppercase tracking-wider">
             Consult Match Making Astrologers
           </span>
         </div>

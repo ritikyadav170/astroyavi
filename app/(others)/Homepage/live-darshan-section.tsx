@@ -17,7 +17,7 @@
 
 // export function LiveDarshanSection() {
 //   return (
-//     <section className="w-full bg-[#fdf8f0] py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
+//     <section className="w-full bg-[#FCFBF4] py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
 //       <div className="max-w-[1300px] mx-auto flex flex-col items-center">
 //         {/* Section Header */}
 //         <div className="flex items-center gap-3 text-[#c87638] mb-2">
@@ -100,7 +100,7 @@ const darshans = [
 
 export function LiveDarshanSection() {
   return (
-    <section className="w-full bg-[#fdf8f0] py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
+    <section className="w-full bg-[#FCFBF4] py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
       <div className="max-w-[1300px] mx-auto flex flex-col items-center">
         <div className="flex items-center gap-3 text-[#c87638] mb-4">
           <div className="h-[1px] w-16 bg-[#c87638]"></div>

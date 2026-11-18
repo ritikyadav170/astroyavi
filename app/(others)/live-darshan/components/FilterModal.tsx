@@ -78,7 +78,7 @@ export function FilterModal({
               onClick={() => setSortBy("popular")}
               className={`px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-between border transition-all cursor-pointer ${
                 sortBy === "popular"
-                  ? "bg-[#1b4327] text-white border-[#1b4327] shadow-sm"
+                  ? "bg-[#DA9F1D] text-white border-[#DA9F1D] shadow-sm"
                   : "bg-amber-50/50 text-slate-700 border-amber-200 hover:bg-amber-100/50"
               }`}
             >
@@ -89,7 +89,7 @@ export function FilterModal({
               onClick={() => setSortBy("name")}
               className={`px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-between border transition-all cursor-pointer ${
                 sortBy === "name"
-                  ? "bg-[#1b4327] text-white border-[#1b4327] shadow-sm"
+                  ? "bg-[#DA9F1D] text-white border-[#DA9F1D] shadow-sm"
                   : "bg-amber-50/50 text-slate-700 border-amber-200 hover:bg-amber-100/50"
               }`}
             >
@@ -153,7 +153,7 @@ export function FilterModal({
           </button>
           <button
             onClick={onClose}
-            className="px-6 py-2.5 bg-[#1b4327] hover:bg-[#13321d] text-white font-semibold text-xs rounded-full shadow-md transition-all cursor-pointer"
+            className="px-6 py-2.5 bg-[#DA9F1D] hover:bg-[#c48e1a] text-white font-semibold text-xs rounded-full shadow-md transition-all cursor-pointer"
           >
             Apply Filters
           </button>

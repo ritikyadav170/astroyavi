@@ -125,7 +125,7 @@ export function ServicesSection() {
   };
 
   return (
-    <section className="w-full bg-[#fdf8f0] py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
+    <section className="w-full bg-[#FCFBF4] py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
       <div className="max-w-[1300px] mx-auto flex flex-col items-center">
 
         <div className="flex items-center gap-3 text-[#c87638] mb-4">
@@ -143,7 +143,7 @@ export function ServicesSection() {
             <div
               key={item.id}
               onClick={() => handleServiceClick(item)}
-              className="bg-white rounded-3xl p-8 border border-[#e6c896]/80 flex flex-col items-center text-center shadow-sm hover:shadow-xl hover:border-[#c85a17] hover:-translate-y-2 transition-all duration-500 ease-out group relative cursor-pointer"
+              className="bg-white rounded-3xl p-8 border border-[#DA9F1D] flex flex-col items-center text-center shadow-sm hover:shadow-xl hover:border-[#DA9F1D] hover:-translate-y-2 transition-all duration-500 ease-out group relative cursor-pointer"
             >
               {item.isFree && (
                 <span className="absolute top-5 right-5 bg-emerald-50 text-emerald-800 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-emerald-200 shadow-sm">

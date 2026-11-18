@@ -176,7 +176,7 @@
 }
 
 :root {
-	--background: hsl(213 100% 98%);
+	--background: #FCFBF4;
 	--foreground: hsl(222 47% 11%);
 	--card: hsl(213 100% 98%);
 	--card-foreground: hsl(225 6% 13%);

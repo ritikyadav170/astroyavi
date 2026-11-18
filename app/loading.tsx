@@ -4,7 +4,7 @@ import brandLogo from "../assets/brand-logo";
 
 const LoadingPage = () => {
   return (
-    <main className="flex min-h-screen w-full items-center justify-center bg-[#fdf8f0] text-slate-900 transition-opacity duration-200">
+    <main className="flex min-h-screen w-full items-center justify-center bg-[#FCFBF4] text-slate-900 transition-opacity duration-200">
       <div className="flex flex-col items-center gap-5">
         <Image
           src={brandLogo}

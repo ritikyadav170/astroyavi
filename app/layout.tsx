@@ -48,7 +48,7 @@ const RootLayout = async ({ children }: Readonly<{ children: ReactNode }>) => {
       <head>
         <meta content={PRIMARY_COLOR} name="theme-color" nonce={nonce} />
       </head>
-      <body className={cn("relative font-sans antialiased bg-[#fdf8f0] text-slate-900 min-h-screen", fontSans.variable, fontSerif.variable)}>
+      <body className={cn("relative font-sans antialiased bg-[#FCFBF4] text-slate-900 min-h-screen", fontSans.variable, fontSerif.variable)}>
         <QueryProvider>
           <AuthProvider>
             <ToastProvider>{children}</ToastProvider>

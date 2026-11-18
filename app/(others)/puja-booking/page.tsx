@@ -30,7 +30,7 @@ export default function PujaBookingPage() {
   }, [searchQuery, selectedCategory]);
 
   return (
-    <main className="min-h-screen bg-[#faf9f5] flex flex-col font-sans text-slate-800">
+    <main className="min-h-screen bg-[#FCFBF4] flex flex-col font-sans text-slate-800">
       {/* Header / Navbar */}
       <AstroNavbar />
 
